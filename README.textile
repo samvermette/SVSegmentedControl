@@ -3,7 +3,7 @@ h1. SVSegmentedControl
 SVSegmentedControl is a customizable UI control class that mimics UISegmentedControl but that looks like an UISwitch.
 
 
-!http://samvermette.com/files/svsegmentedcontrol2.png!
+!http://samvermette.com/files/svsegmentedcontrol3.png!
 
 h2. Installation
 
