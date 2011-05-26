@@ -1,0 +1,59 @@
+h1. SVSegmentedControl
+
+SVSegmentedControl is a customizable UI control class that mimics UISegmentedControl's function but that looks like an UISwitch. Use it anywhere you would have used UISegmentedControl.
+
+!http://samvermette.com/files/svshareviewcontroller2.png!
+
+h2. Installation
+
+* Drag the @SVSegmentedControl/SVSegmentedControl@ folder into your project.
+* Add the *QuartzCore* framework to your project.
+
+h2. Usage
+
+(see sample Xcode project in @/Demo@)
+
+In its simplest form, you would create an SVSegmentedControl like this:
+
+<pre>
+segmentedControl = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Section 1", @"Section 2", nil]];
+segmentedControl.delegate = self;
+
+[self.view addSubview:segmentedControl];
+[segmentedControl release];
+</pre>
+
+position it using its @center@ property:
+
+<pre>
+segmentedControl.center = CGPointMake(160, 70);
+</pre>
+
+You can also customize SVSegmentedControl through available properties:
+
+<pre>
+@property (nonatomic, retain) UIFont *font; // default is [UIFont boldSystemFontOfSize:15]
+@property (nonatomic, retain) UIColor *textColor; // default is [UIColor grayColor];
+@property (nonatomic, retain) UIColor *shadowColor;  // default is [UIColor blackColor]
+@property (nonatomic, readwrite) CGSize shadowOffset;  // default is CGSizeMake(0, -1)
+@property (nonatomic, readwrite) CGFloat segmentPadding; // default is 10.0
+@property (nonatomic, readwrite) CGFloat height; // default is 32.0
+</pre>
+
+These settings are applied to both the inactive text and the thumb. If you wish to customize specifically the thumb's properties, you can do so with the following properties:
+
+<pre>
+@property (nonatomic, retain) UIColor *tintColor; // default is [UIColor grayColor]
+@property (nonatomic, retain) UIColor *textColor; // default is [UIColor whiteColor]
+@property (nonatomic, retain) UIColor *shadowColor; // default is [UIColor blackColor]
+@property (nonatomic, readwrite) CGSize shadowOffset; // default is CGSizeMake(0, -1)
+</pre>
+
+
+h2. Adopting the SVSegmentedControlDelegate protocol
+
+To respond to the selectedIndex change, you'll need to implement this delegate method:
+
+<pre>
+- (void)segmentedControl:(SVSegmentedControl*)segmentedControl didSelectIndex:(NSUInteger)index;
+</pre>
