@@ -1,6 +1,9 @@
 h1. SVSegmentedControl
 
-SVSegmentedControl is a customizable UI control class that mimics UISegmentedControl's function but that looks like an UISwitch. Use it anywhere you would have used UISegmentedControl.
+SVSegmentedControl is a customizable UI control class that mimics UISegmentedControl but that looks like an UISwitch. Use it anywhere you would a UISegmentedControl.
+
+
+!http://samvermette.com/files/svsegmentedcontrol.png!
 
 h2. Installation
 
@@ -11,7 +14,7 @@ h2. Usage
 
 (see sample Xcode project in @/Demo@)
 
-In its simplest form, you would create an SVSegmentedControl like this:
+In its simplest form, this is how you create an SVSegmentedControl instance:
 
 <pre>
 segmentedControl = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Section 1", @"Section 2", nil]];
@@ -49,7 +52,7 @@ Its thumb (@SVSegmentedThumb@) can be customized as well:
 @property (nonatomic, readwrite) CGSize shadowOffset; // default is CGSizeMake(0, -1)
 </pre>
 
-*Note*: to customize the thumb's appearance, you'll have to set the properties through SVSegmentedControl's own @thumb@ property. For instance, setting the @tintColor@ is done using:
+*Note*: to customize the thumb's appearance, you'll have to set the properties through SVSegmentedControl's @thumb@ property. For instance, setting the thumb's @tintColor@ is done with:
 
 <pre>
 segmentedControl.thumb.tintColor = someColor;
