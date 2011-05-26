@@ -94,14 +94,7 @@
 	
 	[self moveThumbToIndex:0 animate:NO];
 	
-	if(!self.thumb.font)
-		self.thumb.font = self.font;
-	
-	if(!self.thumb.textColor)
-		self.thumb.textColor = self.textColor;
-	
-	if(!self.thumb.shadowColor)
-		self.thumb.shadowColor = self.shadowColor;
+	self.thumb.font = self.font;
 	
 	[self insertSubview:self.thumb atIndex:0];
 	[self.thumb release];

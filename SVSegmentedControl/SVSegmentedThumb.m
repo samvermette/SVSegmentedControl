@@ -44,6 +44,8 @@
 		[label release];
 		
 		self.textColor = [UIColor whiteColor];
+		self.shadowColor = [UIColor blackColor];
+		self.shadowOffset = CGSizeMake(0, -1);
 		self.tintColor = [UIColor grayColor];
     }
 	
