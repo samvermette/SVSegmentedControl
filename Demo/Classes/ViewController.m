@@ -24,7 +24,7 @@
 	[self.view addSubview:navSC];
 	[navSC release];
 	
-	navSC.center = CGPointMake(150, 70);
+	navSC.center = CGPointMake(160, 70);
 	
 	
 	// 2nd CONTROL
@@ -37,7 +37,7 @@
 	[self.view addSubview:redSC];
 	[redSC release];
 	
-	redSC.center = CGPointMake(150, 170);
+	redSC.center = CGPointMake(160, 170);
 	
 	
 	// 3rd CONTROL
@@ -53,7 +53,7 @@
 	[self.view addSubview:grayRC];
 	[grayRC release];
 	
-	grayRC.center = CGPointMake(150, 270);
+	grayRC.center = CGPointMake(160, 270);
 	
 	
 	// 4th CONTROL
@@ -72,7 +72,7 @@
 	[self.view addSubview:yellowRC];
 	[yellowRC release];
 	
-	yellowRC.center = CGPointMake(150, 370);
+	yellowRC.center = CGPointMake(160, 370);
 	
 	
 	
