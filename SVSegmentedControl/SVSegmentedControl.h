@@ -24,6 +24,7 @@
 }
 
 @property (nonatomic, assign) id<SVSegmentedControlDelegate> delegate;
+@property (nonatomic, readwrite) NSUInteger selectedIndex;
 @property (nonatomic, readonly) SVSegmentedThumb *thumb;
 
 @property (nonatomic, retain) UIFont *font; // default is [UIFont boldSystemFontOfSize:15]

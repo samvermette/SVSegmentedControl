@@ -24,7 +24,7 @@
 
 @implementation SVSegmentedControl
 
-@synthesize delegate, thumb;
+@synthesize delegate, selectedIndex, thumb;
 @synthesize font, textColor, shadowColor, shadowOffset, segmentPadding, height;
 
 #pragma mark -
@@ -223,19 +223,19 @@
 	
 	[self.thumb deactivate];
 
-	int selectedIndex;
+	int index;
 	
 	if(snapToIndex != -1)
-		selectedIndex = snapToIndex;
+		index = snapToIndex;
 	else
-		selectedIndex = floor(self.thumb.center.x/segmentWidth);
+		index = floor(self.thumb.center.x/segmentWidth);
 	
-	self.thumb.title = [titlesArray objectAtIndex:selectedIndex];
+	self.thumb.title = [titlesArray objectAtIndex:index];
 	
 	if(animated)
-		[self moveThumbToIndex:selectedIndex animate:YES];
+		[self moveThumbToIndex:index animate:YES];
 	else
-		self.thumb.frame = CGRectInset(thumbRects[selectedIndex], 2, 2);
+		self.thumb.frame = CGRectInset(thumbRects[index], 2, 2);
 	
 	snapToIndex = 0;
 }
@@ -243,9 +243,10 @@
 - (void)activate {
 	
 	tracking = moved = NO;
-	int selectedIndex = floor(self.thumb.center.x/segmentWidth);
-	self.thumb.title = [titlesArray objectAtIndex:selectedIndex];
-	[delegate segmentedControl:self didSelectIndex:selectedIndex];
+	
+	self.selectedIndex = floor(self.thumb.center.x/segmentWidth);
+	self.thumb.title = [titlesArray objectAtIndex:self.selectedIndex];
+	[delegate segmentedControl:self didSelectIndex:self.selectedIndex];
 	
 	[UIView animateWithDuration:0.1 
 						  delay:0 
