@@ -41,6 +41,7 @@ SVSegmentedControl can be customized with the following properties:
 @property (nonatomic, readwrite) CGSize shadowOffset;  // default is CGSizeMake(0, -1)
 @property (nonatomic, readwrite) CGFloat segmentPadding; // default is 10.0
 @property (nonatomic, readwrite) CGFloat height; // default is 32.0
+@property BOOL fadeLabelsBetweenSegments; // default is NO
 </pre>
 
 Its thumb (@SVSegmentedThumb@) can be customized as well: 
@@ -58,10 +59,26 @@ Its thumb (@SVSegmentedThumb@) can be customized as well:
 segmentedControl.thumb.tintColor = someColor;
 </pre>
 
-h2. Adopting the SVSegmentedControlDelegate protocol
+h2. Responding to value changes
 
-Chances are you'll want to implement this delegate method so you can respond to the selected index change:
+There are two ways: by adpoting the SVSegmentedControlDelegate, or using a block.
+
+h3. Adopting the SVSegmentedControlDelegate protocol
+
+Implement this delegate method so you can respond to the selected index change:
 
 <pre>
 - (void)segmentedControl:(SVSegmentedControl*)segmentedControl didSelectIndex:(NSUInteger)index;
+</pre>
+
+h3. Using a block
+
+Assign a block to the selectedSegmentChangedHandler property:
+
+<pre>
+	segmentedControl.selectedSegmentChangedHandler = ^(id sender) {
+		SVSegmentedControl *segmentedControl = (SVSegmentedControl *)sender;
+
+		NSLog(@"segmentedControl did select index %i", segmentedControl.selectedIndex);
+	};
 </pre>

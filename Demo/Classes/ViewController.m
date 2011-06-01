@@ -43,7 +43,11 @@
 	// 3rd CONTROL
 	
 	SVSegmentedControl *grayRC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Section 1", @"Section 2", nil]];
-	grayRC.delegate = self;
+	grayRC.selectedSegmentChangedHandler = ^(id sender) {
+		SVSegmentedControl *grayRC = (SVSegmentedControl *)sender;
+		NSLog(@"segmentedControl %i did select index %i (captured via block)", grayRC.tag, grayRC.selectedIndex);
+	};
+	grayRC.fadeLabelsBetweenSegments = YES;
 	grayRC.font = [UIFont boldSystemFontOfSize:19];
 	grayRC.segmentPadding = 14;
 	grayRC.height = 46;
@@ -59,7 +63,11 @@
 	// 4th CONTROL
 	
 	SVSegmentedControl *yellowRC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"One", @"Two", @"Three", nil]];
-	yellowRC.delegate = self;
+	yellowRC.selectedSegmentChangedHandler = ^(id sender) {
+		SVSegmentedControl *yellowRC = (SVSegmentedControl *)sender;
+		NSLog(@"segmentedControl %i did select index %i (captured via block)", yellowRC.tag, yellowRC.selectedIndex);
+	};
+	yellowRC.fadeLabelsBetweenSegments = YES;
 	yellowRC.font = [UIFont fontWithName:@"Marker Felt" size:20];
 	yellowRC.segmentPadding = 14;
 	yellowRC.height = 40;
@@ -88,7 +96,7 @@
 
 - (void)segmentedControl:(SVSegmentedControl*)segmentedControl didSelectIndex:(NSUInteger)index {
 	
-	NSLog(@"segmentedControl %i did select index %i", segmentedControl.tag, index);
+	NSLog(@"segmentedControl %i did select index %i (captured via delegate method)", segmentedControl.tag, index);
 }
 
 /*

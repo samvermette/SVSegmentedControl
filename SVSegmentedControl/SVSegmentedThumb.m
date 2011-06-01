@@ -11,13 +11,15 @@
 
 @implementation SVSegmentedThumb
 
-@synthesize title, font, tintColor, textColor, shadowColor, shadowOffset;
+@synthesize title, secondTitle, titleAlpha, secondTitleAlpha, font, tintColor, textColor, shadowColor, shadowOffset;
 
 - (void)dealloc {
 	self.title = nil;
+	self.secondTitle = nil;
 	self.tintColor = nil;
 	self.textColor = nil;
 	self.shadowColor = nil;
+	self.font = nil;
 	
     [super dealloc];
 }
@@ -43,6 +45,13 @@
 		[self addSubview:label];
 		[label release];
 		
+		secondLabel = [[UILabel alloc] initWithFrame:self.bounds];
+		secondLabel.textAlignment = UITextAlignmentCenter;
+		secondLabel.font = self.font;
+		secondLabel.backgroundColor = [UIColor clearColor];
+		[self addSubview:secondLabel];
+		[secondLabel release];
+
 		self.textColor = [UIColor whiteColor];
 		self.shadowColor = [UIColor blackColor];
 		self.shadowOffset = CGSizeMake(0, -1);
@@ -54,7 +63,7 @@
 
 - (void)setFrame:(CGRect)newFrame {
 	[super setFrame:newFrame];
-	label.frame = self.bounds;
+	label.frame = secondLabel.frame = self.bounds;
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -117,37 +126,74 @@
 #pragma mark Setters
 
 - (void)setTitle:(NSString *)newString {
-	label.text = newString;
-}
+	[title release];
 
-- (void)setFont:(UIFont *)newFont {
-	font = newFont;
-	label.font = newFont;
-}
-
-- (void)setTintColor:(UIColor *)newColor {
-	
-	if(tintColor)
-		[tintColor release], tintColor = nil;
-	
-	if(newColor) {
-		tintColor = [newColor retain];
-		[self setNeedsDisplay];
+	if (newString)
+	{
+		title = [newString retain];
+		label.text = newString;
 	}
 }
 
+- (void)setSecondTitle:(NSString *)newString {
+	[secondTitle release];
+
+	if (newString)
+	{
+		secondTitle = [newString retain];
+		secondLabel.text = newString;
+	}
+}
+
+- (void)setFont:(UIFont *)newFont {
+	[font release];
+
+	if (newFont)
+	{
+		font = [newFont retain];
+		label.font = secondLabel.font = newFont;
+	}
+}
+
+- (void)setTintColor:(UIColor *)newColor {
+	[tintColor release];
+	
+	if (newColor)
+		tintColor = [newColor retain];
+
+	[self setNeedsDisplay];
+}
+
 - (void)setTextColor:(UIColor *)newColor {
-	textColor = newColor;
-	label.textColor = newColor;
+	[textColor release];
+
+	if (newColor)
+	{
+		textColor = [newColor retain];
+		label.textColor = secondLabel.textColor = newColor;
+	}
 }
 
 - (void)setShadowColor:(UIColor *)newColor {
-	shadowColor = newColor;
-	label.shadowColor = newColor;
+	[shadowColor release];
+
+	if (newColor)
+	{
+		shadowColor = [newColor retain];
+		label.shadowColor = secondLabel.shadowColor = newColor;
+	}
 }
 
 - (void)setShadowOffset:(CGSize)newOffset {
-	label.shadowOffset = newOffset;
+	label.shadowOffset = secondLabel.shadowOffset = newOffset;
+}
+
+- (void)setTitleAlpha:(CGFloat)newTitleAlpha {
+	label.alpha = newTitleAlpha;
+}
+
+- (void)setSecondTitleAlpha:(CGFloat)newSecondTitleAlpha {
+	secondLabel.alpha = newSecondTitleAlpha;
 }
 
 #pragma mark -
