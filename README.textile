@@ -35,13 +35,14 @@ h2. Customization
 SVSegmentedControl can be customized with the following properties:
 
 <pre>
+@property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
 @property (nonatomic, retain) UIFont *font; // default is [UIFont boldSystemFontOfSize:15]
 @property (nonatomic, retain) UIColor *textColor; // default is [UIColor grayColor];
 @property (nonatomic, retain) UIColor *shadowColor;  // default is [UIColor blackColor]
 @property (nonatomic, readwrite) CGSize shadowOffset;  // default is CGSizeMake(0, -1)
 @property (nonatomic, readwrite) CGFloat segmentPadding; // default is 10.0
 @property (nonatomic, readwrite) CGFloat height; // default is 32.0
-@property BOOL fadeLabelsBetweenSegments; // default is NO
+@property (nonatomic, readwrite) BOOL fadeLabelsBetweenSegments; // default is NO
 </pre>
 
 Its thumb (@SVSegmentedThumb@) can be customized as well: 
@@ -61,24 +62,23 @@ segmentedControl.thumb.tintColor = someColor;
 
 h2. Responding to value changes
 
-There are two ways: by adpoting the SVSegmentedControlDelegate, or using a block.
+There are two ways to respond to the @selectedIndex@ change:
 
-h3. Adopting the SVSegmentedControlDelegate protocol
+h3. 1. Adopting the SVSegmentedControlDelegate protocol
 
-Implement this delegate method so you can respond to the selected index change:
+Implement this delegate method:
 
 <pre>
 - (void)segmentedControl:(SVSegmentedControl*)segmentedControl didSelectIndex:(NSUInteger)index;
 </pre>
 
-h3. Using a block
+h3. 2. Using a block handler
 
-Assign a block to the selectedSegmentChangedHandler property:
+Assign a block to the @selectedSegmentChangedHandler@ property:
 
 <pre>
-	segmentedControl.selectedSegmentChangedHandler = ^(id sender) {
-		SVSegmentedControl *segmentedControl = (SVSegmentedControl *)sender;
-
-		NSLog(@"segmentedControl did select index %i", segmentedControl.selectedIndex);
-	};
+segmentedControl.selectedSegmentChangedHandler = ^(id sender) {
+	SVSegmentedControl *segmentedControl = (SVSegmentedControl *)sender;
+	NSLog(@"segmentedControl did select index %i", segmentedControl.selectedIndex);
+};
 </pre>
