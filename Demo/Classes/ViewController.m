@@ -32,7 +32,7 @@
 	SVSegmentedControl *redSC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"About", @"Help", @"Credits", nil]];
 	redSC.delegate = self;
 	
-	redSC.fadeLabelsBetweenSegments = YES;
+	redSC.crossFadeLabelsOnDrag = YES;
 	redSC.thumb.tintColor = [UIColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1];
 	redSC.selectedIndex = 1;
 	
@@ -69,7 +69,7 @@
 		SVSegmentedControl *yellowRC = (SVSegmentedControl *)sender;
 		NSLog(@"segmentedControl %i did select index %i (captured via block)", yellowRC.tag, yellowRC.selectedIndex);
 	};
-	yellowRC.fadeLabelsBetweenSegments = YES;
+	yellowRC.crossFadeLabelsOnDrag = YES;
 	yellowRC.font = [UIFont fontWithName:@"Marker Felt" size:20];
 	yellowRC.segmentPadding = 14;
 	yellowRC.height = 40;

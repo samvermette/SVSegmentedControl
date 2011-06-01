@@ -26,7 +26,7 @@
 @implementation SVSegmentedControl
 
 @synthesize delegate, selectedSegmentChangedHandler, selectedIndex, thumb;
-@synthesize font, textColor, shadowColor, shadowOffset, segmentPadding, height, fadeLabelsBetweenSegments;
+@synthesize font, textColor, shadowColor, shadowOffset, segmentPadding, height, crossFadeLabelsOnDrag;
 
 #pragma mark -
 #pragma mark Life Cycle
@@ -168,7 +168,7 @@
 	if(CGRectContainsPoint(self.thumb.bounds, cPos)) {
 		tracking = YES;
 
-		if (!self.fadeLabelsBetweenSegments)
+		if (!self.crossFadeLabelsOnDrag)
 			[self.thumb deactivate];
 	
 		dragOffset = (self.thumb.frame.size.width/2)-cPos.x;
@@ -194,7 +194,7 @@
 		snapToIndex = floor(self.thumb.center.x/segmentWidth);
 		[self snap:NO];
 
-		if (self.fadeLabelsBetweenSegments)
+		if (self.crossFadeLabelsOnDrag)
 			[self updateTitles];
 		return;
 	}
@@ -203,7 +203,7 @@
 		self.thumb.center = CGPointMake(cPos.x+dragOffset, self.thumb.center.y);
 		moved = YES;
 
-		if (self.fadeLabelsBetweenSegments)
+		if (self.crossFadeLabelsOnDrag)
 			[self updateTitles];
 	}
 }
@@ -241,7 +241,7 @@
 
 - (void)snap:(BOOL)animated {
 
-	if (!self.fadeLabelsBetweenSegments)
+	if (!self.crossFadeLabelsOnDrag)
 		[self.thumb deactivate];
 
 	int index;
@@ -306,7 +306,7 @@
 					 animations:^{
 						 activated = YES;
 
-						 if (!self.fadeLabelsBetweenSegments)
+						 if (!self.crossFadeLabelsOnDrag)
 							 [self.thumb activate];
 					 }
 					 completion:NULL];
@@ -326,7 +326,7 @@
 - (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate {
 
 	if(animate) {
-		if (!self.fadeLabelsBetweenSegments)
+		if (!self.crossFadeLabelsOnDrag)
 			[self.thumb deactivate];
 		
 		[UIView animateWithDuration:0.2 
@@ -335,7 +335,7 @@
 						 animations:^{
 							 self.thumb.frame = CGRectInset(thumbRects[segmentIndex], 2, 2);
 
-							 if (self.fadeLabelsBetweenSegments)
+							 if (self.crossFadeLabelsOnDrag)
 								 [self updateTitles];
 						 }
 						 completion:^(BOOL finished){

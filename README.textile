@@ -42,7 +42,7 @@ SVSegmentedControl can be customized with the following properties:
 @property (nonatomic, readwrite) CGSize shadowOffset;  // default is CGSizeMake(0, -1)
 @property (nonatomic, readwrite) CGFloat segmentPadding; // default is 10.0
 @property (nonatomic, readwrite) CGFloat height; // default is 32.0
-@property (nonatomic, readwrite) BOOL fadeLabelsBetweenSegments; // default is NO
+@property (nonatomic, readwrite) BOOL crossFadeLabelsOnDrag; // default is NO
 </pre>
 
 Its thumb (@SVSegmentedThumb@) can be customized as well: 
