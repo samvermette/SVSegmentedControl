@@ -11,6 +11,7 @@
 
 @interface SVSegmentedThumb : UIView {
 	UILabel *label;
+	UILabel *secondLabel;
 	BOOL selected;
 }
 
@@ -20,6 +21,9 @@
 @property (nonatomic, readwrite) CGSize shadowOffset; // default is CGSizeMake(0, -1)
 
 @property (nonatomic, retain) NSString *title;
+@property (nonatomic, retain) NSString *secondTitle;
+@property (nonatomic, readwrite) CGFloat titleAlpha;
+@property (nonatomic, readwrite) CGFloat secondTitleAlpha;
 @property (nonatomic, retain) UIFont *font;
 
 - (void)activate;
