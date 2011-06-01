@@ -32,6 +32,9 @@
 #pragma mark Life Cycle
 
 - (void)dealloc {
+	
+	[titlesArray release];
+	
 	self.delegate = nil;
 	self.selectedSegmentChangedHandler = nil;
 	self.font = nil;
@@ -63,8 +66,8 @@
 	return self;
 }
 
-- (void)willMoveToSuperview:(UIView *)newSuperview
-{
+- (void)willMoveToSuperview:(UIView *)newSuperview {
+	
 	if (!newSuperview)
 		return;
 

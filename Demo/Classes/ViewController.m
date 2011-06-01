@@ -32,6 +32,7 @@
 	SVSegmentedControl *redSC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"About", @"Help", @"Credits", nil]];
 	redSC.delegate = self;
 	
+	redSC.fadeLabelsBetweenSegments = YES;
 	redSC.thumb.tintColor = [UIColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1];
 	
 	[self.view addSubview:redSC];
@@ -47,7 +48,7 @@
 		SVSegmentedControl *grayRC = (SVSegmentedControl *)sender;
 		NSLog(@"segmentedControl %i did select index %i (captured via block)", grayRC.tag, grayRC.selectedIndex);
 	};
-	grayRC.fadeLabelsBetweenSegments = YES;
+
 	grayRC.font = [UIFont boldSystemFontOfSize:19];
 	grayRC.segmentPadding = 14;
 	grayRC.height = 46;
