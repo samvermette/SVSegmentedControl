@@ -61,6 +61,8 @@
 	self.segmentPadding = 10.0;
 	self.height = 32.0;
 	
+	self.selectedIndex = 0;
+	
 	thumb = [[SVSegmentedThumb alloc] initWithFrame:CGRectZero];
 
 	return self;
@@ -100,12 +102,12 @@
 	self.thumb.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:thumb.bounds cornerRadius:2].CGPath;
 	self.thumb.title = [titlesArray objectAtIndex:0];
 	
-	[self moveThumbToIndex:0 animate:NO];
-	
 	self.thumb.font = self.font;
 	
 	[self insertSubview:self.thumb atIndex:0];
 	[thumb release];
+	
+	self.selectedIndex = selectedIndex;
 }
 
 
@@ -345,6 +347,13 @@
 		self.thumb.frame = CGRectInset(thumbRects[segmentIndex], 2, 2);
 		[self activate];
 	}
+}
+
+- (void)setSelectedIndex:(NSUInteger)newIndex {
+	
+	selectedIndex = newIndex;
+	self.thumb.frame = CGRectInset(thumbRects[newIndex], 2, 2);
+	self.thumb.title = [titlesArray objectAtIndex:newIndex];
 }
 
 

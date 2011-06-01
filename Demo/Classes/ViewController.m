@@ -34,6 +34,7 @@
 	
 	redSC.fadeLabelsBetweenSegments = YES;
 	redSC.thumb.tintColor = [UIColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1];
+	redSC.selectedIndex = 1;
 	
 	[self.view addSubview:redSC];
 	[redSC release];
@@ -72,6 +73,7 @@
 	yellowRC.font = [UIFont fontWithName:@"Marker Felt" size:20];
 	yellowRC.segmentPadding = 14;
 	yellowRC.height = 40;
+	yellowRC.selectedIndex = 2;
 	
 	yellowRC.thumb.tintColor = [UIColor colorWithRed:0.999 green:0.889 blue:0.312 alpha:1.000];
 	yellowRC.thumb.textColor = [UIColor blackColor];

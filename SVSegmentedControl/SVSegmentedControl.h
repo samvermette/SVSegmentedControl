@@ -27,7 +27,7 @@
 @property (nonatomic, copy) void (^selectedSegmentChangedHandler)(id sender);
 
 @property (nonatomic, readonly) SVSegmentedThumb *thumb;
-@property NSUInteger selectedIndex;
+@property NSUInteger selectedIndex; // default is 0
 
 @property (nonatomic, retain) UIFont *font; // default is [UIFont boldSystemFontOfSize:15]
 @property (nonatomic, retain) UIColor *textColor; // default is [UIColor grayColor];
