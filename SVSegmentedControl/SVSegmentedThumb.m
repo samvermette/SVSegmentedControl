@@ -19,6 +19,7 @@
 	self.tintColor = nil;
 	self.textColor = nil;
 	self.shadowColor = nil;
+	self.font = nil;
 	
     [super dealloc];
 }
@@ -125,37 +126,62 @@
 #pragma mark Setters
 
 - (void)setTitle:(NSString *)newString {
-	label.text = newString;
-}
+	[title release];
 
-- (void)setSecondTitle:(NSString *)newString {
-	secondLabel.text = newString;
-}
-
-- (void)setFont:(UIFont *)newFont {
-	font = newFont;
-	label.font = secondLabel.font = newFont;
-}
-
-- (void)setTintColor:(UIColor *)newColor {
-	
-	if(tintColor)
-		[tintColor release], tintColor = nil;
-	
-	if(newColor) {
-		tintColor = [newColor retain];
-		[self setNeedsDisplay];
+	if (newString)
+	{
+		title = [newString retain];
+		label.text = newString;
 	}
 }
 
+- (void)setSecondTitle:(NSString *)newString {
+	[secondTitle release];
+
+	if (newString)
+	{
+		secondTitle = [newString retain];
+		secondLabel.text = newString;
+	}
+}
+
+- (void)setFont:(UIFont *)newFont {
+	[font release];
+
+	if (newFont)
+	{
+		font = [newFont retain];
+		label.font = secondLabel.font = newFont;
+	}
+}
+
+- (void)setTintColor:(UIColor *)newColor {
+	[tintColor release];
+	
+	if (newColor)
+		tintColor = [newColor retain];
+
+	[self setNeedsDisplay];
+}
+
 - (void)setTextColor:(UIColor *)newColor {
-	textColor = newColor;
-	label.textColor = secondLabel.textColor = newColor;
+	[textColor release];
+
+	if (newColor)
+	{
+		textColor = [newColor retain];
+		label.textColor = secondLabel.textColor = newColor;
+	}
 }
 
 - (void)setShadowColor:(UIColor *)newColor {
-	shadowColor = newColor;
-	label.shadowColor = secondLabel.shadowColor = newColor;
+	[shadowColor release];
+
+	if (newColor)
+	{
+		shadowColor = [newColor retain];
+		label.shadowColor = secondLabel.shadowColor = newColor;
+	}
 }
 
 - (void)setShadowOffset:(CGSize)newOffset {

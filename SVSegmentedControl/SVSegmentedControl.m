@@ -63,9 +63,11 @@
 	return self;
 }
 
+- (void)willMoveToSuperview:(UIView *)newSuperview
+{
+	if (!newSuperview)
+		return;
 
-- (void)willMoveToSuperview:(UIView *)newSuperview {
-	
 	int c = [titlesArray count];
 	int i = 0;
 	
