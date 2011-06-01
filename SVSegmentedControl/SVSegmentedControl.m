@@ -17,6 +17,7 @@
 
 - (void)activate;
 - (void)snap:(BOOL)animated;
+- (void)updateTitles;
 - (void)toggle;
 
 @end
@@ -24,13 +25,15 @@
 
 @implementation SVSegmentedControl
 
-@synthesize delegate, selectedIndex, thumb;
-@synthesize font, textColor, shadowColor, shadowOffset, segmentPadding, height;
+@synthesize delegate, selectedSegmentChangedHandler, selectedIndex, thumb;
+@synthesize font, textColor, shadowColor, shadowOffset, segmentPadding, height, fadeLabelsBetweenSegments;
 
 #pragma mark -
 #pragma mark Life Cycle
 
 - (void)dealloc {
+	self.delegate = nil;
+	self.selectedSegmentChangedHandler = nil;
 	self.font = nil;
 	self.textColor = nil;
 	self.shadowColor = nil;
@@ -60,9 +63,11 @@
 	return self;
 }
 
+- (void)willMoveToSuperview:(UIView *)newSuperview
+{
+	if (!newSuperview)
+		return;
 
-- (void)willMoveToSuperview:(UIView *)newSuperview {
-	
 	int c = [titlesArray count];
 	int i = 0;
 	
@@ -97,7 +102,7 @@
 	self.thumb.font = self.font;
 	
 	[self insertSubview:self.thumb atIndex:0];
-	[self.thumb release];
+	[thumb release];
 }
 
 
@@ -122,7 +127,8 @@
 	CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);	
 	CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
 	CGGradientRelease(gradient);
-	
+	CGColorSpaceRelease(colorSpace);
+
 	CGContextSetShadowWithColor(context, self.shadowOffset, 0, self.shadowColor.CGColor);
 	[self.textColor set];
 	
@@ -156,7 +162,9 @@
 	
 	if(CGRectContainsPoint(self.thumb.bounds, cPos)) {
 		tracking = YES;
-		[self.thumb deactivate];
+
+		if (!self.fadeLabelsBetweenSegments)
+			[self.thumb deactivate];
 	
 		dragOffset = (self.thumb.frame.size.width/2)-cPos.x;
 		return;
@@ -173,18 +181,25 @@
 	CGFloat newMaxX = newPos+(CGRectGetWidth(self.thumb.frame)/2);
 	CGFloat newMinX = newPos-(CGRectGetWidth(self.thumb.frame)/2);
 	
-	CGFloat pMaxX = CGRectGetMaxX(self.bounds);
-	CGFloat pMinX = CGRectGetMinX(self.bounds);
+	CGFloat buffer = 2.0;		// to prevent the thumb from moving slightly too far
+	CGFloat pMaxX = CGRectGetMaxX(self.bounds) - buffer;
+	CGFloat pMinX = CGRectGetMinX(self.bounds) + buffer;
 	
 	if(newMaxX > pMaxX || newMinX < pMinX) {
 		snapToIndex = floor(self.thumb.center.x/segmentWidth);
 		[self snap:NO];
+
+		if (self.fadeLabelsBetweenSegments)
+			[self updateTitles];
 		return;
 	}
 	
 	else if(tracking) {
 		self.thumb.center = CGPointMake(cPos.x+dragOffset, self.thumb.center.y);
 		moved = YES;
+
+		if (self.fadeLabelsBetweenSegments)
+			[self updateTitles];
 	}
 }
 
@@ -220,8 +235,9 @@
 #pragma mark -
 
 - (void)snap:(BOOL)animated {
-	
-	[self.thumb deactivate];
+
+	if (!self.fadeLabelsBetweenSegments)
+		[self.thumb deactivate];
 
 	int index;
 	
@@ -231,7 +247,7 @@
 		index = floor(self.thumb.center.x/segmentWidth);
 	
 	self.thumb.title = [titlesArray objectAtIndex:index];
-	
+
 	if(animated)
 		[self moveThumbToIndex:index animate:YES];
 	else
@@ -240,20 +256,53 @@
 	snapToIndex = 0;
 }
 
+- (void)updateTitles {
+	int hoverIndex = floor(self.thumb.center.x/segmentWidth);
+	
+	BOOL secondTitleOnLeft = ((self.thumb.center.x / segmentWidth) - hoverIndex) < 0.5;
+	
+	if (secondTitleOnLeft && hoverIndex > 0)
+	{
+		self.thumb.titleAlpha = 0.5 + ((self.thumb.center.x / segmentWidth) - hoverIndex);
+		self.thumb.secondTitle = [titlesArray objectAtIndex:hoverIndex - 1];
+		self.thumb.secondTitleAlpha = 0.5 - ((self.thumb.center.x / segmentWidth) - hoverIndex);
+	}
+	else if (hoverIndex + 1 < titlesArray.count)
+	{
+		self.thumb.titleAlpha = 0.5 + (1 - ((self.thumb.center.x / segmentWidth) - hoverIndex));
+		self.thumb.secondTitle = [titlesArray objectAtIndex:hoverIndex + 1];
+		self.thumb.secondTitleAlpha = ((self.thumb.center.x / segmentWidth) - hoverIndex) - 0.5;
+	}
+	else
+	{
+		self.thumb.secondTitle = nil;
+		self.thumb.titleAlpha = 1.0;
+	}
+
+	self.thumb.title = [titlesArray objectAtIndex:hoverIndex];
+}
+
 - (void)activate {
 	
 	tracking = moved = NO;
 	
 	self.selectedIndex = floor(self.thumb.center.x/segmentWidth);
 	self.thumb.title = [titlesArray objectAtIndex:self.selectedIndex];
-	[delegate segmentedControl:self didSelectIndex:self.selectedIndex];
+
+	if ([(id)self.delegate respondsToSelector:@selector(segmentedControl:didSelectIndex:)])
+		[self.delegate segmentedControl:self didSelectIndex:selectedIndex];
 	
+	if (self.selectedSegmentChangedHandler)
+		self.selectedSegmentChangedHandler(self);
+
 	[UIView animateWithDuration:0.1 
 						  delay:0 
 						options:UIViewAnimationOptionAllowUserInteraction 
 					 animations:^{
 						 activated = YES;
-						 [self.thumb activate];
+
+						 if (!self.fadeLabelsBetweenSegments)
+							 [self.thumb activate];
 					 }
 					 completion:NULL];
 }
@@ -272,13 +321,17 @@
 - (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate {
 
 	if(animate) {
-		[self.thumb deactivate];
+		if (!self.fadeLabelsBetweenSegments)
+			[self.thumb deactivate];
 		
 		[UIView animateWithDuration:0.2 
 							  delay:0 
 							options:UIViewAnimationOptionCurveEaseOut 
 						 animations:^{
 							 self.thumb.frame = CGRectInset(thumbRects[segmentIndex], 2, 2);
+
+							 if (self.fadeLabelsBetweenSegments)
+								 [self updateTitles];
 						 }
 						 completion:^(BOOL finished){
 							 [self activate];

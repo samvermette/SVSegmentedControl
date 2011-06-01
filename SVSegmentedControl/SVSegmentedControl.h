@@ -24,6 +24,7 @@
 }
 
 @property (nonatomic, assign) id<SVSegmentedControlDelegate> delegate;
+@property (nonatomic, copy) void (^selectedSegmentChangedHandler)(id sender);
 @property (nonatomic, readwrite) NSUInteger selectedIndex;
 @property (nonatomic, readonly) SVSegmentedThumb *thumb;
 
@@ -33,6 +34,7 @@
 @property (nonatomic, readwrite) CGSize shadowOffset;  // default is CGSizeMake(0, -1)
 @property (nonatomic, readwrite) CGFloat segmentPadding; // default is 10.0
 @property (nonatomic, readwrite) CGFloat height; // default is 32.0
+@property BOOL fadeLabelsBetweenSegments;
 
 - (SVSegmentedControl*)initWithSectionTitles:(NSArray*)titlesArray;
 - (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate;
