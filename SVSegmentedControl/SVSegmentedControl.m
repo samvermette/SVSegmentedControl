@@ -241,8 +241,10 @@
 
 - (void)snap:(BOOL)animated {
 
-	if (!self.crossFadeLabelsOnDrag)
+	if(!self.crossFadeLabelsOnDrag)
 		[self.thumb deactivate];
+    else
+        self.thumb.secondTitleAlpha = 0;
 
 	int index;
 	
