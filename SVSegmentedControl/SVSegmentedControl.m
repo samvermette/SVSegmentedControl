@@ -70,7 +70,7 @@
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
 	
-	if (!newSuperview)
+	if(!newSuperview || newSuperview == nil)
 		return;
 
 	int c = [titlesArray count];
