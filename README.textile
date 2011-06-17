@@ -35,6 +35,9 @@ h2. Customization
 SVSegmentedControl can be customized with the following properties:
 
 <pre>
+@property (nonatomic, retain) UIColor *containerColor; // default is [UIColor blackColor]
+@property (nonatomic, retain) UIColor *containerGradientColor; // default is [UIColor darkGrayColor]
+@property (nonatomic, readwrite) BOOL copySuperViewTintColor; // default is NO
 @property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
 @property (nonatomic, retain) UIFont *font; // default is [UIFont boldSystemFontOfSize:15]
 @property (nonatomic, retain) UIColor *textColor; // default is [UIColor grayColor];
