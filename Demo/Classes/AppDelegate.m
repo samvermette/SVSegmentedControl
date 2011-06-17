@@ -21,9 +21,10 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
     // Override point for customization after application launch.
-
+    UINavigationController* navControl = [[UINavigationController alloc] initWithRootViewController:self.viewController];
 	// Set the view controller as the window's root view controller and display.
-    self.window.rootViewController = self.viewController;
+    self.window.rootViewController = navControl;
+    [navControl release];
     [self.window makeKeyAndVisible];
 
     return YES;

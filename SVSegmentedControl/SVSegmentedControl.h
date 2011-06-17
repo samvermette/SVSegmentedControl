@@ -3,6 +3,7 @@
 //  SWSegmentedControl
 //
 //  Created by Sam Vermette on 26.10.10.
+//  Updated by Bruno Bilescky on 17.06.11
 //  Copyright 2010 Sam Vermette. All rights reserved.
 //
 
@@ -19,7 +20,7 @@
 	
 	BOOL tracking, moved, activated;
 	float dragOffset, halfSize;
-	NSMutableArray *titlesArray;
+	NSArray *titlesArray;
 	CGFloat segmentWidth;
 }
 
@@ -36,6 +37,10 @@
 @property (nonatomic, readwrite) CGFloat segmentPadding; // default is 10.0
 @property (nonatomic, readwrite) CGFloat height; // default is 32.0
 @property (nonatomic, readwrite) BOOL crossFadeLabelsOnDrag; // default is NO
+@property (nonatomic, retain) UIColor *containerColor; // default is [UIColor blackColor]
+@property (nonatomic, retain) UIColor *containerGradientColor; // default is [UIColor darkGrayColor]
+@property (nonatomic, readwrite) BOOL copySuperViewTintColor;
+
 
 - (SVSegmentedControl*)initWithSectionTitles:(NSArray*)titlesArray;
 - (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate;

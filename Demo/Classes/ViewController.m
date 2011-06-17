@@ -18,14 +18,15 @@
 	
 	// 1st CONTROL
 	
-	SVSegmentedControl *navSC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Section 1", @"Section 2", nil]];
+	SVSegmentedControl *navSC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Section 1", @"Section 2", @"About", nil]];
+    navSC.copySuperViewTintColor = NO;
 	navSC.delegate = self;
-
-	[self.view addSubview:navSC];
+    navSC.textColor = [UIColor lightGrayColor];
+    navSC.thumb.tintColor = [UIColor colorWithRed:0.7 green:0.7 blue:0.7 alpha:1];
+    navSC.containerColor = [UIColor blackColor];
+	self.navigationItem.titleView = navSC;
+    
 	[navSC release];
-	
-	navSC.center = CGPointMake(160, 70);
-	
 	
 	// 2nd CONTROL
 	
@@ -35,7 +36,8 @@
 	redSC.crossFadeLabelsOnDrag = YES;
 	redSC.thumb.tintColor = [UIColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1];
 	redSC.selectedIndex = 1;
-	
+    redSC.containerGradientColor = [UIColor lightGrayColor];
+    redSC.textColor = [UIColor lightGrayColor];
 	[self.view addSubview:redSC];
 	[redSC release];
 	
@@ -53,6 +55,9 @@
 	grayRC.font = [UIFont boldSystemFontOfSize:19];
 	grayRC.segmentPadding = 14;
 	grayRC.height = 46;
+    grayRC.containerColor = [UIColor grayColor];
+    grayRC.containerGradientColor = [UIColor grayColor];
+    grayRC.textColor = [UIColor lightGrayColor];
 	
 	grayRC.thumb.tintColor = [UIColor colorWithRed:0 green:0.5 blue:0.1 alpha:1];
 	

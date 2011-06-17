@@ -26,7 +26,7 @@
 @implementation SVSegmentedControl
 
 @synthesize delegate, selectedSegmentChangedHandler, selectedIndex, thumb;
-@synthesize font, textColor, shadowColor, shadowOffset, segmentPadding, height, crossFadeLabelsOnDrag;
+@synthesize font, textColor, shadowColor, shadowOffset, segmentPadding, height, crossFadeLabelsOnDrag, containerColor, containerGradientColor, copySuperViewTintColor;
 
 #pragma mark -
 #pragma mark Life Cycle
@@ -44,35 +44,43 @@
     [super dealloc];
 }
 
-- (id)initWithSectionTitles:(NSArray*)array {
-	
-	titlesArray = [array retain];
-	
-	self = [super initWithFrame:CGRectZero];
-	self.backgroundColor = [UIColor clearColor];
-	self.clipsToBounds = YES;
-	self.userInteractionEnabled = YES;
-	
-	self.font = [UIFont boldSystemFontOfSize:15];
-	self.textColor = [UIColor grayColor];
-	self.shadowColor = [UIColor blackColor];
-	self.shadowOffset = CGSizeMake(0, -1);
-	
-	self.segmentPadding = 10.0;
-	self.height = 32.0;
-	
-	self.selectedIndex = 0;
-	
-	thumb = [[SVSegmentedThumb alloc] initWithFrame:CGRectZero];
+- (id)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self){
+        self.backgroundColor = [UIColor clearColor];
+        self.clipsToBounds = YES;
+        self.userInteractionEnabled = YES;
+        self.font = [UIFont boldSystemFontOfSize:15];
+        self.textColor = [UIColor grayColor];
+        self.shadowColor = [UIColor blackColor];
+        self.shadowOffset = CGSizeMake(0, -1);
+        self.containerColor = [UIColor blackColor];
+        self.containerGradientColor = [UIColor darkGrayColor];
+        self.segmentPadding = 10.0;
+        self.height = 32.0;
+        self.selectedIndex = 0;
+        thumb = [[SVSegmentedThumb alloc] initWithFrame:CGRectZero];
+    }
+    return self;
+}
 
-	return self;
+- (id)initWithSectionTitles:(NSArray*)array {
+	self = [self initWithFrame:CGRectZero];
+    if (self) {
+        titlesArray = [array retain];
+    }
+    return self;
 }
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
 	
 	if(!newSuperview || newSuperview == nil)
 		return;
-
+    
+    if (self.copySuperViewTintColor && [newSuperview respondsToSelector:@selector(tintColor)]){
+        self.containerGradientColor = [newSuperview performSelector:@selector(tintColor)];
+    }
+    
 	int c = [titlesArray count];
 	int i = 0;
 	
@@ -112,28 +120,23 @@
 
 
 - (void)drawRect:(CGRect)rect {
-
+    
 	CGContextRef context = UIGraphicsGetCurrentContext();
 	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
-
-	CGContextSaveGState(context);
-	
-	CGPathRef roundedRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:4].CGPath;
+    CGPathRef roundedRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:4].CGPath;
 	CGContextAddPath(context, roundedRect);
 	CGContextClip(context);
-		
+	CGContextSaveGState(context);
+    
 	// BACKGROUND GRADIENT
 	
-	CGFloat components[4] = {    
-		0, 0.55,
-		0, 0.4
-	};
+	NSArray* colors = [NSArray arrayWithObjects:self.containerGradientColor.CGColor, self.containerColor.CGColor,nil];
 	
-	CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);	
+	CGGradientRef gradient = CGGradientCreateWithColors(colorSpace, (CFArrayRef)colors, NULL);	
 	CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
 	CGGradientRelease(gradient);
 	CGColorSpaceRelease(colorSpace);
-
+    
 	CGContextSetShadowWithColor(context, self.shadowOffset, 0, self.shadowColor.CGColor);
 	[self.textColor set];
 	
@@ -149,6 +152,8 @@
 		[titleString drawInRect:CGRectMake((segmentWidth*i), posY, segmentWidth, self.font.pointSize) withFont:self.font lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
 		i++;
 	}
+    
+    
 	
 	CGContextRestoreGState(context);
 	
@@ -167,10 +172,10 @@
 	
 	if(CGRectContainsPoint(self.thumb.bounds, cPos)) {
 		tracking = YES;
-
+        
 		if (!self.crossFadeLabelsOnDrag)
 			[self.thumb deactivate];
-	
+        
 		dragOffset = (self.thumb.frame.size.width/2)-cPos.x;
 		return;
 	}
@@ -193,7 +198,7 @@
 	if(newMaxX > pMaxX || newMinX < pMinX) {
 		snapToIndex = floor(self.thumb.center.x/segmentWidth);
 		[self snap:NO];
-
+        
 		if (self.crossFadeLabelsOnDrag)
 			[self updateTitles];
 		return;
@@ -202,7 +207,7 @@
 	else if(tracking) {
 		self.thumb.center = CGPointMake(cPos.x+dragOffset, self.thumb.center.y);
 		moved = YES;
-
+        
 		if (self.crossFadeLabelsOnDrag)
 			[self updateTitles];
 	}
@@ -240,12 +245,12 @@
 #pragma mark -
 
 - (void)snap:(BOOL)animated {
-
+    
 	if(!self.crossFadeLabelsOnDrag)
 		[self.thumb deactivate];
     else
         self.thumb.secondTitleAlpha = 0;
-
+    
 	int index;
 	
 	if(snapToIndex != -1)
@@ -254,7 +259,7 @@
 		index = floor(self.thumb.center.x/segmentWidth);
 	
 	self.thumb.title = [titlesArray objectAtIndex:index];
-
+    
 	if(animated)
 		[self moveThumbToIndex:index animate:YES];
 	else
@@ -285,7 +290,7 @@
 		self.thumb.secondTitle = nil;
 		self.thumb.titleAlpha = 1.0;
 	}
-
+    
 	self.thumb.title = [titlesArray objectAtIndex:hoverIndex];
 }
 
@@ -295,19 +300,19 @@
 	
 	self.selectedIndex = floor(self.thumb.center.x/segmentWidth);
 	self.thumb.title = [titlesArray objectAtIndex:self.selectedIndex];
-
+    
 	if ([(id)self.delegate respondsToSelector:@selector(segmentedControl:didSelectIndex:)])
 		[self.delegate segmentedControl:self didSelectIndex:selectedIndex];
 	
 	if (self.selectedSegmentChangedHandler)
 		self.selectedSegmentChangedHandler(self);
-
+    
 	[UIView animateWithDuration:0.1 
 						  delay:0 
 						options:UIViewAnimationOptionAllowUserInteraction 
 					 animations:^{
 						 activated = YES;
-
+                         
 						 if (!self.crossFadeLabelsOnDrag)
 							 [self.thumb activate];
 					 }
@@ -326,7 +331,7 @@
 }
 
 - (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate {
-
+    
 	if(animate) {
 		if (!self.crossFadeLabelsOnDrag)
 			[self.thumb deactivate];
@@ -336,7 +341,7 @@
 							options:UIViewAnimationOptionCurveEaseOut 
 						 animations:^{
 							 self.thumb.frame = CGRectInset(thumbRects[segmentIndex], 2, 2);
-
+                             
 							 if (self.crossFadeLabelsOnDrag)
 								 [self updateTitles];
 						 }
