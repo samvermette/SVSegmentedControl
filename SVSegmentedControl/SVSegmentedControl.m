@@ -46,7 +46,7 @@
 
 - (id)initWithSectionTitles:(NSArray*)array {
 	
-	titlesArray = [array retain];
+	titlesArray = [array mutableCopy];
 	
 	self = [super initWithFrame:CGRectZero];
 	self.backgroundColor = [UIColor clearColor];
