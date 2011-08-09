@@ -44,26 +44,25 @@
 }
 
 - (id)initWithSectionTitles:(NSArray*)array {
-	
-	titlesArray = [array mutableCopy];
-	
-	self = [super initWithFrame:CGRectZero];
-	self.backgroundColor = [UIColor clearColor];
-	self.clipsToBounds = YES;
-	self.userInteractionEnabled = YES;
-	
-	self.font = [UIFont boldSystemFontOfSize:15];
-	self.textColor = [UIColor grayColor];
-	self.shadowColor = [UIColor blackColor];
-	self.shadowOffset = CGSizeMake(0, -1);
-	
-	self.segmentPadding = 10.0;
-	self.height = 32.0;
-	
-	self.selectedIndex = 0;
-	
-	thumb = [[SVSegmentedThumb alloc] initWithFrame:CGRectZero];
-
+	if (self = [super initWithFrame:CGRectZero]) {
+        titlesArray = [array mutableCopy];
+        
+        self.backgroundColor = [UIColor clearColor];
+        self.clipsToBounds = YES;
+        self.userInteractionEnabled = YES;
+        
+        self.font = [UIFont boldSystemFontOfSize:15];
+        self.textColor = [UIColor grayColor];
+        self.shadowColor = [UIColor blackColor];
+        self.shadowOffset = CGSizeMake(0, -1);
+        
+        self.segmentPadding = 10.0;
+        self.height = 32.0;
+        
+        self.selectedIndex = 0;
+        
+        thumb = [[SVSegmentedThumb alloc] initWithFrame:CGRectZero];
+    }
 	return self;
 }
 
