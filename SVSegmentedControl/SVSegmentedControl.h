@@ -12,7 +12,7 @@
 
 @protocol SVSegmentedControlDelegate;
 
-@interface SVSegmentedControl : UIView {
+@interface SVSegmentedControl : UIControl {
 	SVSegmentedThumb *thumb;
 	CGRect thumbRects[5];
 	NSUInteger snapToIndex;

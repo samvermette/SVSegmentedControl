@@ -156,32 +156,32 @@
 }
 
 #pragma mark -
-#pragma mark Touch
+#pragma mark Tracking
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	
-	CGPoint cPos = [[touches anyObject] locationInView:self.thumb];
+- (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    [super beginTrackingWithTouch:touch withEvent:event];
+    
+    CGPoint cPos = [touch locationInView:self.thumb];
 	activated = NO;
 	
 	snapToIndex = floor(self.thumb.center.x/segmentWidth);
 	
 	if(CGRectContainsPoint(self.thumb.bounds, cPos)) {
 		tracking = YES;
-
+        
 		if (!self.crossFadeLabelsOnDrag)
 			[self.thumb deactivate];
-	
+        
 		dragOffset = (self.thumb.frame.size.width/2)-cPos.x;
-		return;
 	}
+    
+    return YES;
 }
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-	
-	if(!tracking)
-		return;
-	
-	CGPoint cPos = [[touches anyObject] locationInView:self];
+- (BOOL)continueTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    [super continueTrackingWithTouch:touch withEvent:event];
+    
+    CGPoint cPos = [touch locationInView:self];
 	CGFloat newPos = cPos.x+dragOffset;
 	CGFloat newMaxX = newPos+(CGRectGetWidth(self.thumb.frame)/2);
 	CGFloat newMinX = newPos-(CGRectGetWidth(self.thumb.frame)/2);
@@ -193,25 +193,26 @@
 	if(newMaxX > pMaxX || newMinX < pMinX) {
 		snapToIndex = floor(self.thumb.center.x/segmentWidth);
 		[self snap:NO];
-
+        
 		if (self.crossFadeLabelsOnDrag)
 			[self updateTitles];
-		return;
 	}
 	
 	else if(tracking) {
 		self.thumb.center = CGPointMake(cPos.x+dragOffset, self.thumb.center.y);
 		moved = YES;
-
+        
 		if (self.crossFadeLabelsOnDrag)
 			[self updateTitles];
 	}
+    
+    return YES;
 }
 
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	
-	CGPoint cPos = [[touches anyObject] locationInView:self];
+- (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    [super endTrackingWithTouch:touch withEvent:event];
+    
+    CGPoint cPos = [touch locationInView:self];
 	CGFloat pMaxX = CGRectGetMaxX(self.bounds);
 	CGFloat pMinX = CGRectGetMinX(self.bounds);
 	
@@ -230,10 +231,10 @@
 		[self activate];
 }
 
-
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-	
-	if(tracking)
+- (void)cancelTrackingWithEvent:(UIEvent *)event {
+    [super cancelTrackingWithEvent:event];
+    
+    if(tracking)
 		[self snap:NO];
 }
 
@@ -295,7 +296,7 @@
 	
 	self.selectedIndex = floor(self.thumb.center.x/segmentWidth);
 	self.thumb.title = [titlesArray objectAtIndex:self.selectedIndex];
-
+    
 	if ([(id)self.delegate respondsToSelector:@selector(segmentedControl:didSelectIndex:)])
 		[self.delegate segmentedControl:self didSelectIndex:selectedIndex];
 	
