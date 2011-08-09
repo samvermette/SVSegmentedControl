@@ -25,7 +25,7 @@
 
 @implementation SVSegmentedControl
 
-@synthesize delegate, selectedSegmentChangedHandler, selectedIndex, thumb;
+@synthesize selectedSegmentChangedHandler, selectedIndex, thumb;
 @synthesize font, textColor, shadowColor, shadowOffset, segmentPadding, height, crossFadeLabelsOnDrag;
 
 #pragma mark -
@@ -35,7 +35,6 @@
 	
 	[titlesArray release];
 	
-	self.delegate = nil;
 	self.selectedSegmentChangedHandler = nil;
 	self.font = nil;
 	self.textColor = nil;
@@ -297,8 +296,7 @@
 	self.selectedIndex = floor(self.thumb.center.x/segmentWidth);
 	self.thumb.title = [titlesArray objectAtIndex:self.selectedIndex];
     
-	if ([(id)self.delegate respondsToSelector:@selector(segmentedControl:didSelectIndex:)])
-		[self.delegate segmentedControl:self didSelectIndex:selectedIndex];
+    [self sendActionsForControlEvents:UIControlEventValueChanged];
 	
 	if (self.selectedSegmentChangedHandler)
 		self.selectedSegmentChangedHandler(self);

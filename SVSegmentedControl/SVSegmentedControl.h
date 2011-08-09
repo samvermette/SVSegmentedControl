@@ -7,10 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
 #import "SVSegmentedThumb.h"
-
-@protocol SVSegmentedControlDelegate;
 
 @interface SVSegmentedControl : UIControl {
 	SVSegmentedThumb *thumb;
@@ -23,7 +20,6 @@
 	CGFloat segmentWidth;
 }
 
-@property (nonatomic, assign) id<SVSegmentedControlDelegate> delegate;
 @property (nonatomic, copy) void (^selectedSegmentChangedHandler)(id sender);
 
 @property (nonatomic, readonly) SVSegmentedThumb *thumb;
@@ -39,12 +35,5 @@
 
 - (SVSegmentedControl*)initWithSectionTitles:(NSArray*)titlesArray;
 - (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate;
-
-@end
-
-
-@protocol SVSegmentedControlDelegate
-
-- (void)segmentedControl:(SVSegmentedControl*)segmentedControl didSelectIndex:(NSUInteger)index;
 
 @end
