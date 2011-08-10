@@ -19,7 +19,7 @@
 	// 1st CONTROL
 	
 	SVSegmentedControl *navSC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Section 1", @"Section 2", nil]];
-	navSC.delegate = self;
+    [navSC addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
 
 	[self.view addSubview:navSC];
 	[navSC release];
@@ -30,7 +30,7 @@
 	// 2nd CONTROL
 	
 	SVSegmentedControl *redSC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"About", @"Help", @"Credits", nil]];
-	redSC.delegate = self;
+    [redSC addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
 	
 	redSC.crossFadeLabelsOnDrag = YES;
 	redSC.thumb.tintColor = [UIColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1];
@@ -97,9 +97,8 @@
 #pragma mark -
 #pragma mark SPSegmentedControl
 
-- (void)segmentedControl:(SVSegmentedControl*)segmentedControl didSelectIndex:(NSUInteger)index {
-	
-	NSLog(@"segmentedControl %i did select index %i (captured via delegate method)", segmentedControl.tag, index);
+- (void)segmentedControlChangedValue:(SVSegmentedControl*)segmentedControl {
+	NSLog(@"segmentedControl %i did select index %i (captured via delegate method)", segmentedControl.tag, segmentedControl.selectedIndex);
 }
 
 /*

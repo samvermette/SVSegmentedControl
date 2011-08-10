@@ -10,9 +10,11 @@
 
 #import "SVSegmentedControl.h"
 
-@interface ViewController : UIViewController <SVSegmentedControlDelegate> {
+@interface ViewController : UIViewController {
 
 }
+
+- (void)segmentedControlChangedValue:(SVSegmentedControl*)segmentedControl;
 
 @end
 
