@@ -25,7 +25,7 @@
 
 @implementation SVSegmentedControl
 
-@synthesize delegate, selectedSegmentChangedHandler, selectedIndex, thumb;
+@synthesize selectedSegmentChangedHandler, selectedIndex, thumb;
 @synthesize font, textColor, shadowColor, shadowOffset, segmentPadding, height, crossFadeLabelsOnDrag;
 
 #pragma mark -
@@ -35,7 +35,6 @@
 	
 	[titlesArray release];
 	
-	self.delegate = nil;
 	self.selectedSegmentChangedHandler = nil;
 	self.font = nil;
 	self.textColor = nil;
@@ -45,26 +44,25 @@
 }
 
 - (id)initWithSectionTitles:(NSArray*)array {
-	
-	titlesArray = [array mutableCopy];
-	
-	self = [super initWithFrame:CGRectZero];
-	self.backgroundColor = [UIColor clearColor];
-	self.clipsToBounds = YES;
-	self.userInteractionEnabled = YES;
-	
-	self.font = [UIFont boldSystemFontOfSize:15];
-	self.textColor = [UIColor grayColor];
-	self.shadowColor = [UIColor blackColor];
-	self.shadowOffset = CGSizeMake(0, -1);
-	
-	self.segmentPadding = 10.0;
-	self.height = 32.0;
-	
-	self.selectedIndex = 0;
-	
-	thumb = [[SVSegmentedThumb alloc] initWithFrame:CGRectZero];
-
+	if (self = [super initWithFrame:CGRectZero]) {
+        titlesArray = [array mutableCopy];
+        
+        self.backgroundColor = [UIColor clearColor];
+        self.clipsToBounds = YES;
+        self.userInteractionEnabled = YES;
+        
+        self.font = [UIFont boldSystemFontOfSize:15];
+        self.textColor = [UIColor grayColor];
+        self.shadowColor = [UIColor blackColor];
+        self.shadowOffset = CGSizeMake(0, -1);
+        
+        self.segmentPadding = 10.0;
+        self.height = 32.0;
+        
+        self.selectedIndex = 0;
+        
+        thumb = [[SVSegmentedThumb alloc] initWithFrame:CGRectZero];
+    }
 	return self;
 }
 
@@ -156,32 +154,32 @@
 }
 
 #pragma mark -
-#pragma mark Touch
+#pragma mark Tracking
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-	
-	CGPoint cPos = [[touches anyObject] locationInView:self.thumb];
+- (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    [super beginTrackingWithTouch:touch withEvent:event];
+    
+    CGPoint cPos = [touch locationInView:self.thumb];
 	activated = NO;
 	
 	snapToIndex = floor(self.thumb.center.x/segmentWidth);
 	
 	if(CGRectContainsPoint(self.thumb.bounds, cPos)) {
 		tracking = YES;
-
+        
 		if (!self.crossFadeLabelsOnDrag)
 			[self.thumb deactivate];
-	
+        
 		dragOffset = (self.thumb.frame.size.width/2)-cPos.x;
-		return;
 	}
+    
+    return YES;
 }
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-	
-	if(!tracking)
-		return;
-	
-	CGPoint cPos = [[touches anyObject] locationInView:self];
+- (BOOL)continueTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    [super continueTrackingWithTouch:touch withEvent:event];
+    
+    CGPoint cPos = [touch locationInView:self];
 	CGFloat newPos = cPos.x+dragOffset;
 	CGFloat newMaxX = newPos+(CGRectGetWidth(self.thumb.frame)/2);
 	CGFloat newMinX = newPos-(CGRectGetWidth(self.thumb.frame)/2);
@@ -193,25 +191,26 @@
 	if(newMaxX > pMaxX || newMinX < pMinX) {
 		snapToIndex = floor(self.thumb.center.x/segmentWidth);
 		[self snap:NO];
-
+        
 		if (self.crossFadeLabelsOnDrag)
 			[self updateTitles];
-		return;
 	}
 	
 	else if(tracking) {
 		self.thumb.center = CGPointMake(cPos.x+dragOffset, self.thumb.center.y);
 		moved = YES;
-
+        
 		if (self.crossFadeLabelsOnDrag)
 			[self updateTitles];
 	}
+    
+    return YES;
 }
 
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-	
-	CGPoint cPos = [[touches anyObject] locationInView:self];
+- (void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
+    [super endTrackingWithTouch:touch withEvent:event];
+    
+    CGPoint cPos = [touch locationInView:self];
 	CGFloat pMaxX = CGRectGetMaxX(self.bounds);
 	CGFloat pMinX = CGRectGetMinX(self.bounds);
 	
@@ -230,10 +229,10 @@
 		[self activate];
 }
 
-
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-	
-	if(tracking)
+- (void)cancelTrackingWithEvent:(UIEvent *)event {
+    [super cancelTrackingWithEvent:event];
+    
+    if(tracking)
 		[self snap:NO];
 }
 
@@ -295,9 +294,8 @@
 	
 	self.selectedIndex = floor(self.thumb.center.x/segmentWidth);
 	self.thumb.title = [titlesArray objectAtIndex:self.selectedIndex];
-
-	if ([(id)self.delegate respondsToSelector:@selector(segmentedControl:didSelectIndex:)])
-		[self.delegate segmentedControl:self didSelectIndex:selectedIndex];
+    
+    [self sendActionsForControlEvents:UIControlEventValueChanged];
 	
 	if (self.selectedSegmentChangedHandler)
 		self.selectedSegmentChangedHandler(self);
