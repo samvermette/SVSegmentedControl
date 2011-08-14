@@ -40,7 +40,7 @@ SVSegmentedControl can be customized with the following properties:
 @property (nonatomic, retain) UIColor *textColor; // default is [UIColor grayColor];
 @property (nonatomic, retain) UIColor *shadowColor;  // default is [UIColor blackColor]
 @property (nonatomic, readwrite) CGSize shadowOffset;  // default is CGSizeMake(0, -1)
-@property (nonatomic, readwrite) CGFloat segmentPadding; // default is 10.0
+@property (nonatomic, readwrite) UIEdgeInsets titleEdgeInsets; // default is UIEdgeInsetsMake(0, 10, 0, 10)
 @property (nonatomic, readwrite) CGFloat height; // default is 32.0
 @property (nonatomic, readwrite) BOOL crossFadeLabelsOnDrag; // default is NO
 </pre>
@@ -62,7 +62,7 @@ segmentedControl.thumb.tintColor = someColor;
 
 h2. Responding to value changes
 
-SVSegmentedControl is now a UIControl (thanks "Oliver Letterer":https://github.com/OliverLetterer) and so you respond to value changes using the usual @addTarget:action:forControlEvents:@ method:
+SVSegmentedControl is now an UIControl subclass (thanks "Oliver Letterer":https://github.com/OliverLetterer) and so you respond to value changes using the standard @addTarget:action:forControlEvents:@ method:
 
 <pre>
 [mySegmentedControl addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];

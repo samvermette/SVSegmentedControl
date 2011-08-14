@@ -33,7 +33,8 @@
 @property (nonatomic, retain) UIColor *textColor; // default is [UIColor grayColor];
 @property (nonatomic, retain) UIColor *shadowColor;  // default is [UIColor blackColor]
 @property (nonatomic, readwrite) CGSize shadowOffset;  // default is CGSizeMake(0, -1)
-@property (nonatomic, readwrite) CGFloat segmentPadding; // default is 10.0
+@property (nonatomic, readwrite) CGFloat segmentPadding DEPRECATED_ATTRIBUTE; // deprecated: use titleEdgeInsets instead
+@property (nonatomic, readwrite) UIEdgeInsets titleEdgeInsets; // default is UIEdgeInsetsMake(0, 10, 0, 10)
 @property (nonatomic, readwrite) CGFloat height; // default is 32.0
 @property (nonatomic, readwrite) BOOL crossFadeLabelsOnDrag; // default is NO
 

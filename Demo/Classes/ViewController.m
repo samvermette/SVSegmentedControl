@@ -48,7 +48,7 @@
     [grayRC addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
 
 	grayRC.font = [UIFont boldSystemFontOfSize:19];
-	grayRC.segmentPadding = 14;
+	grayRC.titleEdgeInsets = UIEdgeInsetsMake(0, 14, 0, 14);
 	grayRC.height = 46;
 	
 	grayRC.thumb.tintColor = [UIColor colorWithRed:0 green:0.5 blue:0.1 alpha:1];
@@ -66,7 +66,7 @@
 
 	yellowRC.crossFadeLabelsOnDrag = YES;
 	yellowRC.font = [UIFont fontWithName:@"Marker Felt" size:20];
-	yellowRC.segmentPadding = 14;
+	yellowRC.titleEdgeInsets = UIEdgeInsetsMake(0, 14, 0, 14);
 	yellowRC.height = 40;
 	yellowRC.selectedIndex = 2;
 	

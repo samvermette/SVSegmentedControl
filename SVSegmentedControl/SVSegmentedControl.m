@@ -26,7 +26,7 @@
 @implementation SVSegmentedControl
 
 @synthesize delegate, selectedSegmentChangedHandler, selectedIndex, thumb;
-@synthesize font, textColor, shadowColor, shadowOffset, segmentPadding, height, crossFadeLabelsOnDrag;
+@synthesize font, textColor, shadowColor, shadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag;
 
 #pragma mark -
 #pragma mark Life Cycle
@@ -61,7 +61,7 @@
         self.shadowColor = [UIColor blackColor];
         self.shadowOffset = CGSizeMake(0, -1);
         
-        self.segmentPadding = 10.0;
+        self.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 10);
         self.height = 32.0;
         
         self.selectedIndex = 0;
@@ -84,10 +84,11 @@
 	
 	for(NSString *titleString in titlesArray) {
 		
-		CGFloat stringWidth = [titleString sizeWithFont:self.font].width+((self.segmentPadding+2)*2);
+		CGFloat stringWidth = [titleString sizeWithFont:self.font].width+(self.titleEdgeInsets.left+self.titleEdgeInsets.right+4);
 		
 		if(stringWidth > segmentWidth)
 			segmentWidth = stringWidth;
+        
 		i++;
 	}
 	
@@ -190,7 +191,7 @@
 	CGFloat newMaxX = newPos+(CGRectGetWidth(self.thumb.frame)/2);
 	CGFloat newMinX = newPos-(CGRectGetWidth(self.thumb.frame)/2);
 	
-	CGFloat buffer = 2.0;		// to prevent the thumb from moving slightly too far
+	CGFloat buffer = 2.0; // to prevent the thumb from moving slightly too far
 	CGFloat pMaxX = CGRectGetMaxX(self.bounds) - buffer;
 	CGFloat pMinX = CGRectGetMinX(self.bounds) + buffer;
 	
@@ -362,6 +363,13 @@
 		self.thumb.frame = CGRectInset(thumbRects[segmentIndex], 2, 2);
 		[self activate];
 	}
+}
+
+- (void)setSegmentPadding:(CGFloat)newPadding {
+    // deprecated, this method is provided for backward compatibility
+    // use titleEdgeInsets instead
+    
+    self.titleEdgeInsets = UIEdgeInsetsMake(0, newPadding, 0, newPadding);
 }
 
 - (void)setSelectedIndex:(NSUInteger)newIndex {
