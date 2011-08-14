@@ -8,6 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "SVSegmentedThumb.h"
+#import <AvailabilityMacros.h>
+
+@protocol SVSegmentedControlDelegate;
 
 @interface SVSegmentedControl : UIControl {
 	SVSegmentedThumb *thumb;
@@ -20,7 +23,8 @@
 	CGFloat segmentWidth;
 }
 
-@property (nonatomic, copy) void (^selectedSegmentChangedHandler)(id sender);
+@property (nonatomic, assign) id<SVSegmentedControlDelegate> delegate DEPRECATED_ATTRIBUTE; // deprecated: use addTarget:action:forControlEvents: instead
+@property (nonatomic, copy) void (^selectedSegmentChangedHandler)(id sender) DEPRECATED_ATTRIBUTE; // deprecated: use addTarget:action:forControlEvents: instead
 
 @property (nonatomic, readonly) SVSegmentedThumb *thumb;
 @property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
@@ -35,5 +39,12 @@
 
 - (SVSegmentedControl*)initWithSectionTitles:(NSArray*)titlesArray;
 - (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate;
+
+@end
+
+
+@protocol SVSegmentedControlDelegate
+
+- (void)segmentedControl:(SVSegmentedControl*)segmentedControl didSelectIndex:(NSUInteger)index;
 
 @end

@@ -45,10 +45,7 @@
 	// 3rd CONTROL
 	
 	SVSegmentedControl *grayRC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Section 1", @"Section 2", nil]];
-	grayRC.selectedSegmentChangedHandler = ^(id sender) {
-		SVSegmentedControl *grayRC = (SVSegmentedControl *)sender;
-		NSLog(@"segmentedControl %i did select index %i (captured via block)", grayRC.tag, grayRC.selectedIndex);
-	};
+    [grayRC addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
 
 	grayRC.font = [UIFont boldSystemFontOfSize:19];
 	grayRC.segmentPadding = 14;
@@ -65,10 +62,8 @@
 	// 4th CONTROL
 	
 	SVSegmentedControl *yellowRC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"One", @"Two", @"Three", nil]];
-	yellowRC.selectedSegmentChangedHandler = ^(id sender) {
-		SVSegmentedControl *yellowRC = (SVSegmentedControl *)sender;
-		NSLog(@"segmentedControl %i did select index %i (captured via block)", yellowRC.tag, yellowRC.selectedIndex);
-	};
+    [yellowRC addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
+
 	yellowRC.crossFadeLabelsOnDrag = YES;
 	yellowRC.font = [UIFont fontWithName:@"Marker Felt" size:20];
 	yellowRC.segmentPadding = 14;
@@ -84,7 +79,6 @@
 	[yellowRC release];
 	
 	yellowRC.center = CGPointMake(160, 370);
-	
 	
 	
 	navSC.tag = 1;

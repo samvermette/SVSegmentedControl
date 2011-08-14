@@ -18,7 +18,7 @@ In its simplest form, this is how you create an SVSegmentedControl instance:
 
 <pre>
 segmentedControl = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Section 1", @"Section 2", nil]];
-segmentedControl.delegate = self;
+[segmentedControl addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
 
 [self.view addSubview:segmentedControl];
 [segmentedControl release];
@@ -62,23 +62,12 @@ segmentedControl.thumb.tintColor = someColor;
 
 h2. Responding to value changes
 
-There are two ways to respond to the @selectedIndex@ change:
-
-h3. 1. Adopting the SVSegmentedControlDelegate protocol
-
-Implement this delegate method:
+SVSegmentedControl is now a UIControl (thanks OliverLetterer) and so you respond to value changes using the usual @addTarget:action:forControlEvents:@ method. Something like:
 
 <pre>
-- (void)segmentedControl:(SVSegmentedControl*)segmentedControl didSelectIndex:(NSUInteger)index;
-</pre>
+[mySegmentedControl addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
 
-h3. 2. Using a block handler
-
-Assign a block to the @selectedSegmentChangedHandler@ property:
-
-<pre>
-segmentedControl.selectedSegmentChangedHandler = ^(id sender) {
-	SVSegmentedControl *segmentedControl = (SVSegmentedControl *)sender;
+- (void)segmentedControlChangedValue:(SVSegmentedControl*)segmentedControl {
 	NSLog(@"segmentedControl did select index %i", segmentedControl.selectedIndex);
-};
+}
 </pre>

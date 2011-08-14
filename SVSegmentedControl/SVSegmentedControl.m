@@ -25,7 +25,7 @@
 
 @implementation SVSegmentedControl
 
-@synthesize selectedSegmentChangedHandler, selectedIndex, thumb;
+@synthesize delegate, selectedSegmentChangedHandler, selectedIndex, thumb;
 @synthesize font, textColor, shadowColor, shadowOffset, segmentPadding, height, crossFadeLabelsOnDrag;
 
 #pragma mark -
@@ -35,7 +35,10 @@
 	
 	[titlesArray release];
 	
-	self.selectedSegmentChangedHandler = nil;
+    // avoid deprecated warnings
+    [self setValue:nil forKey:@"selectedSegmentChangedHandler"];
+    [self setValue:nil forKey:@"delegate"];
+
 	self.font = nil;
 	self.textColor = nil;
 	self.shadowColor = nil;
@@ -43,7 +46,9 @@
     [super dealloc];
 }
 
+
 - (id)initWithSectionTitles:(NSArray*)array {
+    
 	if (self = [super initWithFrame:CGRectZero]) {
         titlesArray = [array mutableCopy];
         
@@ -65,6 +70,7 @@
     }
 	return self;
 }
+
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
 	
@@ -297,8 +303,17 @@
     
     [self sendActionsForControlEvents:UIControlEventValueChanged];
 	
-	if (self.selectedSegmentChangedHandler)
-		self.selectedSegmentChangedHandler(self);
+	if([self valueForKey:@"selectedSegmentChangedHandler"]) {
+        void (^changedHandler)(id sender) = [self valueForKey:@"selectedSegmentChangedHandler"];
+		changedHandler(self);
+    }
+    
+    if([self valueForKey:@"delegate"]) {
+        id controlDelegate = [self valueForKey:@"delegate"];
+        
+        if([controlDelegate respondsToSelector:@selector(segmentedControl:didSelectIndex:)])
+            [controlDelegate segmentedControl:self didSelectIndex:selectedIndex];
+    }
 
 	[UIView animateWithDuration:0.1 
 						  delay:0 
