@@ -240,8 +240,18 @@
 		[self snap:YES];
 	} 
 	
-	else
-		[self activate];
+	else {
+        CGFloat posX = cPos.x;
+        
+        if(posX < pMinX)
+            posX = pMinX;
+        
+        if(posX > pMaxX)
+            posX = pMaxX-1;
+        
+        snapToIndex = floor(posX/segmentWidth);
+        [self snap:YES];
+    }
 }
 
 - (void)cancelTrackingWithEvent:(UIEvent *)event {
