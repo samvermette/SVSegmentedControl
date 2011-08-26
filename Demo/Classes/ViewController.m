@@ -19,8 +19,11 @@
 	// 1st CONTROL
 	
 	SVSegmentedControl *navSC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Section 1", @"Section 2", nil]];
-    [navSC addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
-
+    navSC.selectedSegmentChangedHandler = ^(id sender) {
+        SVSegmentedControl *segmentedControl = (SVSegmentedControl *)sender;
+        NSLog(@"segmentedControl did select index %i (via block handler)", segmentedControl.selectedIndex);
+    };
+    
 	[self.view addSubview:navSC];
 	[navSC release];
 	
@@ -92,7 +95,7 @@
 #pragma mark SPSegmentedControl
 
 - (void)segmentedControlChangedValue:(SVSegmentedControl*)segmentedControl {
-	NSLog(@"segmentedControl %i did select index %i (captured via delegate method)", segmentedControl.tag, segmentedControl.selectedIndex);
+	NSLog(@"segmentedControl %i did select index %i (via UIControl method)", segmentedControl.tag, segmentedControl.selectedIndex);
 }
 
 /*
