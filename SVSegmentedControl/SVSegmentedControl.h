@@ -24,7 +24,7 @@
 }
 
 @property (nonatomic, assign) id<SVSegmentedControlDelegate> delegate DEPRECATED_ATTRIBUTE; // deprecated: use addTarget:action:forControlEvents: instead
-@property (nonatomic, copy) void (^selectedSegmentChangedHandler)(id sender) DEPRECATED_ATTRIBUTE; // deprecated: use addTarget:action:forControlEvents: instead
+@property (nonatomic, copy) void (^selectedSegmentChangedHandler)(id sender); // you can also use addTarget:action:forControlEvents:
 
 @property (nonatomic, readonly) SVSegmentedThumb *thumb;
 @property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0

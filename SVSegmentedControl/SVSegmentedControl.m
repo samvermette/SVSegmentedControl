@@ -35,8 +35,9 @@
 	
 	[titlesArray release];
 	
+    self.selectedSegmentChangedHandler = nil;
+    
     // avoid deprecated warnings
-    [self setValue:nil forKey:@"selectedSegmentChangedHandler"];
     [self setValue:nil forKey:@"delegate"];
 
 	self.font = nil;
@@ -307,10 +308,8 @@
 	
 	self.thumb.title = [titlesArray objectAtIndex:self.selectedIndex];
     	
-	if([self valueForKey:@"selectedSegmentChangedHandler"]) {
-        void (^changedHandler)(id sender) = [self valueForKey:@"selectedSegmentChangedHandler"];
-		changedHandler(self);
-    }
+	if(self.selectedSegmentChangedHandler)
+		self.selectedSegmentChangedHandler(self);
     
     if([self valueForKey:@"delegate"]) {
         id controlDelegate = [self valueForKey:@"delegate"];

@@ -79,6 +79,15 @@ Providing an action method ending with a semicolon, the sender object is therefo
 }
 </pre>
 
+If you're a big fan of blocks, you can also respond to value changes using a block handler:
+
+<pre>
+segmentedControl.selectedSegmentChangedHandler = ^(id sender) {
+	SVSegmentedControl *segmentedControl = (SVSegmentedControl *)sender;
+	NSLog(@"segmentedControl did select index %i", segmentedControl.selectedIndex);
+};
+</pre>
+
 h2. Credits
 
 SVSegmentedControl is brought to you by "Sam Vermette":http://samvermette.com ("@samvermette":http://twitter.com/samvermette) and "contributors to the project":https://github.com/samvermette/SVSegmentedControl/contributors. If you have feature suggestions or bug reports, feel free to help out by sending pull requests or by "creating new issues":https://github.com/samvermette/SVSegmentedControl/issues/new. If you're using SVSegmentedControl in your project, proper attribution would be nice.
