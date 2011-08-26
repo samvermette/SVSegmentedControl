@@ -36,6 +36,7 @@ SVSegmentedControl can be customized with the following properties:
 
 <pre>
 @property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
+@property (nonatomic, retain) UIImage *backgroundImage; // default is nil
 @property (nonatomic, retain) UIFont *font; // default is [UIFont boldSystemFontOfSize:15]
 @property (nonatomic, retain) UIColor *textColor; // default is [UIColor grayColor];
 @property (nonatomic, retain) UIColor *shadowColor;  // default is [UIColor blackColor]
@@ -48,6 +49,8 @@ SVSegmentedControl can be customized with the following properties:
 Its thumb (@SVSegmentedThumb@) can be customized as well: 
 
 <pre>
+@property (nonatomic, retain) UIImage *backgroundImage; // default is nil
+@property (nonatomic, retain) UIImage *highlightedBackgroundImage; // default is nil
 @property (nonatomic, retain) UIColor *tintColor; // default is [UIColor grayColor]
 @property (nonatomic, retain) UIColor *textColor; // default is [UIColor whiteColor]
 @property (nonatomic, retain) UIColor *shadowColor; // default is [UIColor blackColor]

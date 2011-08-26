@@ -20,7 +20,7 @@
 	BOOL tracking, moved, activated;
 	float dragOffset, halfSize;
 	NSMutableArray *titlesArray;
-	CGFloat segmentWidth;
+	CGFloat segmentWidth, thumbHeight;
 }
 
 @property (nonatomic, assign) id<SVSegmentedControlDelegate> delegate DEPRECATED_ATTRIBUTE; // deprecated: use addTarget:action:forControlEvents: instead
@@ -29,6 +29,7 @@
 @property (nonatomic, readonly) SVSegmentedThumb *thumb;
 @property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
 
+@property (nonatomic, retain) UIImage *backgroundImage; // default is nil
 @property (nonatomic, retain) UIFont *font; // default is [UIFont boldSystemFontOfSize:15]
 @property (nonatomic, retain) UIColor *textColor; // default is [UIColor grayColor];
 @property (nonatomic, retain) UIColor *shadowColor;  // default is [UIColor blackColor]

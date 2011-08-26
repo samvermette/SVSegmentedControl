@@ -9,11 +9,17 @@
 #import "SVSegmentedThumb.h"
 #import <QuartzCore/QuartzCore.h>
 
+#import "SVSegmentedControl.h"
+
 @implementation SVSegmentedThumb
 
-@synthesize title, secondTitle, titleAlpha, secondTitleAlpha, font, tintColor, textColor, shadowColor, shadowOffset;
+@synthesize segmentedControl, backgroundImage, highlightedBackgroundImage, castsShadow, title, secondTitle, titleAlpha, secondTitleAlpha, font, tintColor, textColor, shadowColor, shadowOffset;
 
 - (void)dealloc {
+    
+    self.backgroundImage = nil;
+    self.highlightedBackgroundImage = nil;
+    
 	self.title = nil;
 	self.secondTitle = nil;
 	self.tintColor = nil;
@@ -61,64 +67,69 @@
     return self;
 }
 
-- (void)setFrame:(CGRect)newFrame {
-	[super setFrame:newFrame];
-	label.frame = secondLabel.frame = self.bounds;
-}
 
 - (void)drawRect:(CGRect)rect {
-	
-	CGContextRef context = UIGraphicsGetCurrentContext();
-	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
-	
-	// STROKE GRADIENT
-	
-	CGPathRef strokeRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:2].CGPath;
-	CGContextAddPath(context, strokeRect);
-	CGContextClip(context);
-	
-	CGContextSaveGState(context);
-	
-	CGFloat strokeComponents[4] = {    
-		0.55, 1,
-		0.40, 1
-	};
-	
-	if(selected) {
-		strokeComponents[0]-=0.1;
-		strokeComponents[2]-=0.1;
-	}
-	
-	CGGradientRef strokeGradient = CGGradientCreateWithColorComponents(colorSpace, strokeComponents, NULL, 2);	
-	CGContextDrawLinearGradient(context, strokeGradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)), 0);
-	CGGradientRelease(strokeGradient);
-	
-	
-	// FILL GRADIENT
-	
-	CGPathRef fillRect = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(rect, 1, 1) cornerRadius:1].CGPath;
-	CGContextAddPath(context, fillRect);
-	CGContextClip(context);
-	
-	CGFloat fillComponents[4] = {    
-		0.5, 1,
-		0.35, 1
-	};
-	
-	if(selected) {
-		fillComponents[0]-=0.1;
-		fillComponents[2]-=0.1;
-	}
-	
-	CGGradientRef fillGradient = CGGradientCreateWithColorComponents(colorSpace, fillComponents, NULL, 2);	
-	CGContextDrawLinearGradient(context, fillGradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)), 0);
-	CGGradientRelease(fillGradient);
-	
-	CGColorSpaceRelease(colorSpace);
-	
-	CGContextRestoreGState(context);
-	[self.tintColor set];
-	UIRectFillUsingBlendMode(rect, kCGBlendModeOverlay);
+        
+    if(self.backgroundImage && !selected)
+        [self.backgroundImage drawInRect:rect];
+    
+    else if(self.highlightedBackgroundImage && selected)
+        [self.highlightedBackgroundImage drawInRect:rect];
+    
+    else {
+        
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+        
+        // STROKE GRADIENT
+        
+        CGPathRef strokeRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:2].CGPath;
+        CGContextAddPath(context, strokeRect);
+        CGContextClip(context);
+        
+        CGContextSaveGState(context);
+        
+        CGFloat strokeComponents[4] = {    
+            0.55, 1,
+            0.40, 1
+        };
+        
+        if(selected) {
+            strokeComponents[0]-=0.1;
+            strokeComponents[2]-=0.1;
+        }
+        
+        CGGradientRef strokeGradient = CGGradientCreateWithColorComponents(colorSpace, strokeComponents, NULL, 2);	
+        CGContextDrawLinearGradient(context, strokeGradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)), 0);
+        CGGradientRelease(strokeGradient);
+        
+        
+        // FILL GRADIENT
+        
+        CGPathRef fillRect = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(rect, 1, 1) cornerRadius:1].CGPath;
+        CGContextAddPath(context, fillRect);
+        CGContextClip(context);
+        
+        CGFloat fillComponents[4] = {    
+            0.5, 1,
+            0.35, 1
+        };
+        
+        if(selected) {
+            fillComponents[0]-=0.1;
+            fillComponents[2]-=0.1;
+        }
+        
+        CGGradientRef fillGradient = CGGradientCreateWithColorComponents(colorSpace, fillComponents, NULL, 2);	
+        CGContextDrawLinearGradient(context, fillGradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)), 0);
+        CGGradientRelease(fillGradient);
+        
+        CGColorSpaceRelease(colorSpace);
+        
+        CGContextRestoreGState(context);
+        [self.tintColor set];
+        UIRectFillUsingBlendMode(rect, kCGBlendModeOverlay);
+    }
 }
 
 
@@ -128,8 +139,7 @@
 - (void)setTitle:(NSString *)newString {
 	[title release];
 
-	if (newString)
-	{
+	if (newString) {
 		title = [newString retain];
 		label.text = newString;
 	}
@@ -198,11 +208,24 @@
 
 #pragma mark -
 
+- (void)setFrame:(CGRect)newFrame {
+	[super setFrame:newFrame];
+    
+    newFrame.size.height = self.superview.frame.size.height-5;
+	label.frame = secondLabel.frame = CGRectMake(0, 0+self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom, newFrame.size.width, newFrame.size.height);
+}
+
+
+- (void)setCastsShadow:(BOOL)b {
+    self.layer.shadowOpacity = b ? 1 : 0;
+}
+
+
 - (void)setSelected:(BOOL)s {
 	
 	selected = s;
 	
-	if(selected)
+	if(selected && !self.segmentedControl.crossFadeLabelsOnDrag)
 		self.alpha = 0.8;
 	else
 		self.alpha = 1;
@@ -210,14 +233,19 @@
 	[self setNeedsDisplay];
 }
 
+
 - (void)activate {
 	[self setSelected:NO];
-	label.alpha = 1;
+    
+    if(!self.segmentedControl.crossFadeLabelsOnDrag)
+        label.alpha = 1;
 }
 
 - (void)deactivate {
 	[self setSelected:YES];
-	label.alpha = 0;
+    
+    if(!self.segmentedControl.crossFadeLabelsOnDrag)
+        label.alpha = 0;
 }
 
 

@@ -26,7 +26,7 @@
 @implementation SVSegmentedControl
 
 @synthesize delegate, selectedSegmentChangedHandler, selectedIndex, thumb;
-@synthesize font, textColor, shadowColor, shadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag;
+@synthesize backgroundImage, font, textColor, shadowColor, shadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag;
 
 #pragma mark -
 #pragma mark Life Cycle
@@ -42,6 +42,7 @@
 	self.font = nil;
 	self.textColor = nil;
 	self.shadowColor = nil;
+    self.backgroundImage = nil;
 	
     [super dealloc];
 }
@@ -55,6 +56,7 @@
         self.backgroundColor = [UIColor clearColor];
         self.clipsToBounds = YES;
         self.userInteractionEnabled = YES;
+        self.clipsToBounds = NO;
         
         self.font = [UIFont boldSystemFontOfSize:15];
         self.textColor = [UIColor grayColor];
@@ -98,51 +100,63 @@
 	
 	i = 0;
     
+    thumbHeight = self.thumb.backgroundImage ? self.thumb.backgroundImage.size.height : self.height-5;
+    
 	for(NSString *titleString in titlesArray) {
-		thumbRects[i] = CGRectMake(segmentWidth*i, 0, segmentWidth, CGRectGetHeight(self.bounds)-1);
+		thumbRects[i] = CGRectMake(segmentWidth*i+2, 2, segmentWidth-4, thumbHeight);
 		i++;
 	} 
 	
-	self.thumb.frame = CGRectInset(thumbRects[0], 2, 2);
+	self.thumb.frame = thumbRects[0];
 	self.thumb.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:thumb.bounds cornerRadius:2].CGPath;
 	self.thumb.title = [titlesArray objectAtIndex:0];
+    self.thumb.segmentedControl = self;
 	
 	self.thumb.font = self.font;
 	
 	[self insertSubview:self.thumb atIndex:0];
 	[thumb release];
 	
-	self.selectedIndex = selectedIndex;
+    [self moveThumbToIndex:selectedIndex animate:NO];
 }
 
 
 - (void)drawRect:(CGRect)rect {
 
-	CGContextRef context = UIGraphicsGetCurrentContext();
-	CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+    CGContextRef context = UIGraphicsGetCurrentContext();
 
-	CGContextSaveGState(context);
-	
-	CGPathRef roundedRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:4].CGPath;
-	CGContextAddPath(context, roundedRect);
-	CGContextClip(context);
-		
-	// BACKGROUND GRADIENT
-	
-	CGFloat components[4] = {    
-		0, 0.55,
-		0, 0.4
-	};
-	
-	CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);	
-	CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
-	CGGradientRelease(gradient);
-	CGColorSpaceRelease(colorSpace);
+    if(self.backgroundImage)
+        [self.backgroundImage drawInRect:rect];
+    
+    else {
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
 
+        CGContextSaveGState(context);
+        
+        CGPathRef roundedRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:4].CGPath;
+        CGContextAddPath(context, roundedRect);
+        CGContextClip(context);
+            
+        // BACKGROUND GRADIENT
+        
+        CGFloat components[4] = {    
+            0, 0.55,
+            0, 0.4
+        };
+        
+        CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);	
+        CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
+        CGGradientRelease(gradient);
+        CGColorSpaceRelease(colorSpace);
+        
+        [[[UIImage imageNamed:@"SVSegmentedControl.bundle/inner-shadow"] stretchableImageWithLeftCapWidth:4 topCapHeight:5] drawInRect:rect];
+    }
+    
 	CGContextSetShadowWithColor(context, self.shadowOffset, 0, self.shadowColor.CGColor);
+    
 	[self.textColor set];
 	
-	CGFloat posY = ceil((CGRectGetHeight(rect)-self.font.pointSize+self.font.descender)/2);
+	CGFloat posY = ceil((CGRectGetHeight(rect)-self.font.pointSize+self.font.descender)/2)+self.titleEdgeInsets.top-self.titleEdgeInsets.bottom;
 	int pointSize = self.font.pointSize;
 	
 	if(pointSize%2 != 0)
@@ -154,10 +168,6 @@
 		[titleString drawInRect:CGRectMake((segmentWidth*i), posY, segmentWidth, self.font.pointSize) withFont:self.font lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
 		i++;
 	}
-	
-	CGContextRestoreGState(context);
-	
-	[SVSegmentedControlBG drawInRect:rect];
 }
 
 #pragma mark -
@@ -173,10 +183,7 @@
 	
 	if(CGRectContainsPoint(self.thumb.bounds, cPos)) {
 		tracking = YES;
-        
-		if (!self.crossFadeLabelsOnDrag)
-			[self.thumb deactivate];
-        
+        [self.thumb deactivate];
 		dragOffset = (self.thumb.frame.size.width/2)-cPos.x;
 	}
     
@@ -247,9 +254,9 @@
 
 - (void)snap:(BOOL)animated {
 
-	if(!self.crossFadeLabelsOnDrag)
-		[self.thumb deactivate];
-    else
+	[self.thumb deactivate];
+    
+    if(self.crossFadeLabelsOnDrag)
         self.thumb.secondTitleAlpha = 0;
 
 	int index;
@@ -264,7 +271,7 @@
 	if(animated)
 		[self moveThumbToIndex:index animate:YES];
 	else
-		self.thumb.frame = CGRectInset(thumbRects[index], 2, 2);
+		self.thumb.frame = thumbRects[index];
 	
 	snapToIndex = 0;
 }
@@ -274,20 +281,19 @@
 	
 	BOOL secondTitleOnLeft = ((self.thumb.center.x / segmentWidth) - hoverIndex) < 0.5;
 	
-	if (secondTitleOnLeft && hoverIndex > 0)
-	{
+	if (secondTitleOnLeft && hoverIndex > 0) {
 		self.thumb.titleAlpha = 0.5 + ((self.thumb.center.x / segmentWidth) - hoverIndex);
 		self.thumb.secondTitle = [titlesArray objectAtIndex:hoverIndex - 1];
 		self.thumb.secondTitleAlpha = 0.5 - ((self.thumb.center.x / segmentWidth) - hoverIndex);
 	}
-	else if (hoverIndex + 1 < titlesArray.count)
-	{
+	
+    else if (hoverIndex + 1 < titlesArray.count) {
 		self.thumb.titleAlpha = 0.5 + (1 - ((self.thumb.center.x / segmentWidth) - hoverIndex));
 		self.thumb.secondTitle = [titlesArray objectAtIndex:hoverIndex + 1];
 		self.thumb.secondTitleAlpha = ((self.thumb.center.x / segmentWidth) - hoverIndex) - 0.5;
 	}
-	else
-	{
+	
+    else {
 		self.thumb.secondTitle = nil;
 		self.thumb.titleAlpha = 1.0;
 	}
@@ -299,11 +305,8 @@
 	
 	tracking = moved = NO;
 	
-	self.selectedIndex = floor(self.thumb.center.x/segmentWidth);
 	self.thumb.title = [titlesArray objectAtIndex:self.selectedIndex];
-    
-    [self sendActionsForControlEvents:UIControlEventValueChanged];
-	
+    	
 	if([self valueForKey:@"selectedSegmentChangedHandler"]) {
         void (^changedHandler)(id sender) = [self valueForKey:@"selectedSegmentChangedHandler"];
 		changedHandler(self);
@@ -321,9 +324,7 @@
 						options:UIViewAnimationOptionAllowUserInteraction 
 					 animations:^{
 						 activated = YES;
-
-						 if (!self.crossFadeLabelsOnDrag)
-							 [self.thumb activate];
+						 [self.thumb activate];
 					 }
 					 completion:NULL];
 }
@@ -341,17 +342,20 @@
 
 - (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate {
 
+    self.selectedIndex = segmentIndex;
+    [self sendActionsForControlEvents:UIControlEventValueChanged];
+    
 	if(animate) {
-		if (!self.crossFadeLabelsOnDrag)
-			[self.thumb deactivate];
+        
+        [self.thumb deactivate];
 		
 		[UIView animateWithDuration:0.2 
 							  delay:0 
 							options:UIViewAnimationOptionCurveEaseOut 
 						 animations:^{
-							 self.thumb.frame = CGRectInset(thumbRects[segmentIndex], 2, 2);
+							 self.thumb.frame = thumbRects[segmentIndex];
 
-							 if (self.crossFadeLabelsOnDrag)
+							 if(self.crossFadeLabelsOnDrag)
 								 [self updateTitles];
 						 }
 						 completion:^(BOOL finished){
@@ -360,24 +364,31 @@
 	}
 	
 	else {
-		self.thumb.frame = CGRectInset(thumbRects[segmentIndex], 2, 2);
+		self.thumb.frame = thumbRects[segmentIndex];
 		[self activate];
 	}
 }
 
+#pragma mark -
+
+- (void)setBackgroundImage:(UIImage *)newImage {
+    
+    if(backgroundImage)
+        [backgroundImage release], backgroundImage = nil;
+    
+    if(newImage) {
+        backgroundImage = [newImage retain];
+        self.height = backgroundImage.size.height;
+    }
+}
+
 - (void)setSegmentPadding:(CGFloat)newPadding {
-    // deprecated, this method is provided for backward compatibility
+    // deprecated; this method is provided for backward compatibility
     // use titleEdgeInsets instead
     
     self.titleEdgeInsets = UIEdgeInsetsMake(0, newPadding, 0, newPadding);
 }
 
-- (void)setSelectedIndex:(NSUInteger)newIndex {
-	
-	selectedIndex = newIndex;
-	self.thumb.frame = CGRectInset(thumbRects[newIndex], 2, 2);
-	self.thumb.title = [titlesArray objectAtIndex:newIndex];
-}
 
 
 @end
