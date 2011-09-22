@@ -225,7 +225,7 @@
 	
 	selected = s;
 	
-	if(selected && !self.segmentedControl.crossFadeLabelsOnDrag)
+	if(selected && !self.segmentedControl.crossFadeLabelsOnDrag && !self.highlightedBackgroundImage)
 		self.alpha = 0.8;
 	else
 		self.alpha = 1;
