@@ -203,8 +203,12 @@
 	CGFloat pMaxX = CGRectGetMaxX(self.bounds) - buffer;
 	CGFloat pMinX = CGRectGetMinX(self.bounds) + buffer;
 	
-	if(newMaxX > pMaxX || newMinX < pMinX) {
+	if((newMaxX > pMaxX || newMinX < pMinX) && tracking) {
 		snapToIndex = floor(self.thumb.center.x/segmentWidth);
+        
+        if(newMaxX-pMaxX > 10 || pMinX-newMinX > 10)
+            moved = YES;
+        
 		[self snap:NO];
         
 		if (self.crossFadeLabelsOnDrag)
@@ -230,9 +234,6 @@
 	CGFloat pMinX = CGRectGetMinX(self.bounds);
 	
 	if(!moved && tracking && [titlesArray count] == 2)
-		[self toggle];
-	
-	else if(!moved && !tracking && [titlesArray count] == 2)
 		[self toggle];
 	
 	else if(!activated && cPos.x > pMinX && cPos.x < pMaxX) {
@@ -283,8 +284,6 @@
 		[self moveThumbToIndex:index animate:YES];
 	else
 		self.thumb.frame = thumbRects[index];
-	
-	snapToIndex = 0;
 }
 
 - (void)updateTitles {
