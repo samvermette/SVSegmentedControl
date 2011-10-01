@@ -36,6 +36,7 @@ SVSegmentedControl can be customized with the following properties:
 
 <pre>
 @property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
+@property (nonatomic, readwrite) BOOL animateToInitialSelection; // default is NO
 @property (nonatomic, retain) UIImage *backgroundImage; // default is nil
 @property (nonatomic, retain) UIFont *font; // default is [UIFont boldSystemFontOfSize:15]
 @property (nonatomic, retain) UIColor *textColor; // default is [UIColor grayColor];
@@ -90,4 +91,4 @@ segmentedControl.selectedSegmentChangedHandler = ^(id sender) {
 
 h2. Credits
 
-SVSegmentedControl is brought to you by "Sam Vermette":http://samvermette.com ("@samvermette":http://twitter.com/samvermette) and "contributors to the project":https://github.com/samvermette/SVSegmentedControl/contributors. If you have feature suggestions or bug reports, feel free to help out by sending pull requests or by "creating new issues":https://github.com/samvermette/SVSegmentedControl/issues/new. If you're using SVSegmentedControl in your project, proper attribution would be nice.
+SVSegmentedControl is brought to you by "Sam Vermette":http://samvermette.com and "contributors to the project":https://github.com/samvermette/SVSegmentedControl/contributors. If you have feature suggestions or bug reports, feel free to help out by sending pull requests or by "creating new issues":https://github.com/samvermette/SVSegmentedControl/issues/new. If you're using SVSegmentedControl in your project, proper attribution would be nice.
