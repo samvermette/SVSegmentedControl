@@ -1,31 +1,48 @@
 //
-//  SVSegmentedThumb.m
-//  SVSegmentedControl
+// SVSegmentedThumb.m
+// SVSegmentedControl
 //
-//  Created by Sam Vermette on 25.05.11.
-//  Copyright 2011 Sam Vermette. All rights reserved.
+// Created by Sam Vermette on 25.05.11.
+// Copyright 2011 Sam Vermette. All rights reserved.
+//
+// https://github.com/samvermette/SVSegmentedControl
 //
 
 #import "SVSegmentedThumb.h"
 #import <QuartzCore/QuartzCore.h>
-
 #import "SVSegmentedControl.h"
+
+@interface SVSegmentedThumb ()
+
+@property (nonatomic, readwrite) BOOL selected;
+@property (nonatomic, assign) SVSegmentedControl *segmentedControl;
+@property (nonatomic, retain) UIFont *font;
+
+@property (nonatomic, readonly) UILabel *label;
+@property (nonatomic, readonly) UILabel *secondLabel;
+
+- (void)activate;
+- (void)deactivate;
+
+@end
+
 
 @implementation SVSegmentedThumb
 
-@synthesize segmentedControl, backgroundImage, highlightedBackgroundImage, castsShadow, title, secondTitle, titleAlpha, secondTitleAlpha, font, tintColor, textColor, shadowColor, shadowOffset;
+@synthesize segmentedControl, backgroundImage, highlightedBackgroundImage, castsShadow, font, tintColor, textColor, shadowColor, shadowOffset, selected;
+@synthesize label, secondLabel;
 
 - (void)dealloc {
     
     self.backgroundImage = nil;
     self.highlightedBackgroundImage = nil;
     
-	self.title = nil;
-	self.secondTitle = nil;
 	self.tintColor = nil;
 	self.textColor = nil;
 	self.shadowColor = nil;
-	self.font = nil;
+    
+    [label release];
+    [secondLabel release];
 	
     [super dealloc];
 }
@@ -43,20 +60,6 @@
 		self.layer.shadowColor = [UIColor blackColor].CGColor;
 		self.layer.shadowOpacity = 1;
 		self.layer.shouldRasterize = YES;
-		
-		label = [[UILabel alloc] initWithFrame:self.bounds];
-		label.textAlignment = UITextAlignmentCenter;
-		label.font = self.font;
-		label.backgroundColor = [UIColor clearColor];
-		[self addSubview:label];
-		[label release];
-		
-		secondLabel = [[UILabel alloc] initWithFrame:self.bounds];
-		secondLabel.textAlignment = UITextAlignmentCenter;
-		secondLabel.font = self.font;
-		secondLabel.backgroundColor = [UIColor clearColor];
-		[self addSubview:secondLabel];
-		[secondLabel release];
 
 		self.textColor = [UIColor whiteColor];
 		self.shadowColor = [UIColor blackColor];
@@ -67,13 +70,39 @@
     return self;
 }
 
+- (UILabel*)label {
+    
+    if(label == nil) {
+        label = [[UILabel alloc] initWithFrame:self.bounds];
+		label.textAlignment = UITextAlignmentCenter;
+		label.font = self.font;
+		label.backgroundColor = [UIColor clearColor];
+		[self addSubview:label];
+    }
+    
+    return label;
+}
+
+- (UILabel*)secondLabel {
+    
+    if(secondLabel == nil) {
+		secondLabel = [[UILabel alloc] initWithFrame:self.bounds];
+		secondLabel.textAlignment = UITextAlignmentCenter;
+		secondLabel.font = self.font;
+		secondLabel.backgroundColor = [UIColor clearColor];
+		[self addSubview:secondLabel];
+    }
+    
+    return secondLabel;
+}
+
 
 - (void)drawRect:(CGRect)rect {
         
-    if(self.backgroundImage && !selected)
+    if(self.backgroundImage && !self.selected)
         [self.backgroundImage drawInRect:rect];
     
-    else if(self.highlightedBackgroundImage && selected)
+    else if(self.highlightedBackgroundImage && self.selected)
         [self.highlightedBackgroundImage drawInRect:rect];
     
     else {
@@ -94,7 +123,7 @@
             0.40, 1
         };
         
-        if(selected) {
+        if(self.selected) {
             strokeComponents[0]-=0.1;
             strokeComponents[2]-=0.1;
         }
@@ -115,7 +144,7 @@
             0.35, 1
         };
         
-        if(selected) {
+        if(self.selected) {
             fillComponents[0]-=0.1;
             fillComponents[2]-=0.1;
         }
@@ -136,75 +165,32 @@
 #pragma mark -
 #pragma mark Setters
 
-- (void)setTitle:(NSString *)newString {
-	[title release];
-
-	if (newString) {
-		title = [newString retain];
-		label.text = newString;
-	}
-}
-
-- (void)setSecondTitle:(NSString *)newString {
-	[secondTitle release];
-
-	if (newString)
-	{
-		secondTitle = [newString retain];
-		secondLabel.text = newString;
-	}
-}
-
-- (void)setFont:(UIFont *)newFont {
-	[font release];
-
-	if (newFont)
-	{
-		font = [newFont retain];
-		label.font = secondLabel.font = newFont;
-	}
-}
 
 - (void)setTintColor:(UIColor *)newColor {
-	[tintColor release];
+	[tintColor release], tintColor = nil;
 	
-	if (newColor)
+	if(newColor)
 		tintColor = [newColor retain];
 
 	[self setNeedsDisplay];
 }
 
-- (void)setTextColor:(UIColor *)newColor {
-	[textColor release];
+- (void)setFont:(UIFont *)newFont {
+    self.label.font = self.secondLabel.font = newFont;
+}
 
-	if (newColor)
-	{
-		textColor = [newColor retain];
-		label.textColor = secondLabel.textColor = newColor;
-	}
+- (void)setTextColor:(UIColor *)newColor {
+	self.label.textColor = self.secondLabel.textColor = newColor;
 }
 
 - (void)setShadowColor:(UIColor *)newColor {
-	[shadowColor release];
-
-	if (newColor)
-	{
-		shadowColor = [newColor retain];
-		label.shadowColor = secondLabel.shadowColor = newColor;
-	}
+	self.label.shadowColor = self.secondLabel.shadowColor = newColor;
 }
 
 - (void)setShadowOffset:(CGSize)newOffset {
-	label.shadowOffset = secondLabel.shadowOffset = newOffset;
+	self.label.shadowOffset = self.secondLabel.shadowOffset = newOffset;
 }
 
-- (void)setTitleAlpha:(CGFloat)newTitleAlpha {
-	label.alpha = newTitleAlpha;
-}
-
-- (void)setSecondTitleAlpha:(CGFloat)newSecondTitleAlpha {
-	secondLabel.alpha = newSecondTitleAlpha;
-}
 
 #pragma mark -
 
@@ -212,7 +198,7 @@
 	[super setFrame:newFrame];
     
     newFrame.size.height = self.superview.frame.size.height-5;
-	label.frame = secondLabel.frame = CGRectMake(0, 0+self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom, newFrame.size.width, newFrame.size.height);
+	self.label.frame = self.secondLabel.frame = CGRectMake(0, 0+self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom, newFrame.size.width, newFrame.size.height);
 }
 
 
@@ -233,19 +219,18 @@
 	[self setNeedsDisplay];
 }
 
-
 - (void)activate {
 	[self setSelected:NO];
     
     if(!self.segmentedControl.crossFadeLabelsOnDrag)
-        label.alpha = 1;
+        self.label.alpha = 1;
 }
 
 - (void)deactivate {
 	[self setSelected:YES];
     
     if(!self.segmentedControl.crossFadeLabelsOnDrag)
-        label.alpha = 0;
+        self.label.alpha = 0;
 }
 
 

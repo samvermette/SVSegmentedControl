@@ -1,16 +1,31 @@
 //
-//  SWSegmentedControl.m
-//  SWSegmentedControl
+// SWSegmentedControl.m
+// SWSegmentedControl
 //
-//  Created by Sam Vermette on 26.10.10.
-//  Copyright 2010 Sam Vermette. All rights reserved.
+// Created by Sam Vermette on 26.10.10.
+// Copyright 2010 Sam Vermette. All rights reserved.
 //
+// https://github.com/samvermette/SVSegmentedControl
 
 #import <QuartzCore/QuartzCore.h>
 #import "SVSegmentedControl.h"
-#import "SVSegmentedThumb.h"
 
 #define SVSegmentedControlBG [[UIImage imageNamed:@"SVSegmentedControl.bundle/inner-shadow"] stretchableImageWithLeftCapWidth:4 topCapHeight:5]
+
+
+@interface SVSegmentedThumb ()
+
+@property (nonatomic, assign) SVSegmentedControl *segmentedControl;
+@property (nonatomic, retain) UIFont *font;
+
+@property (nonatomic, readonly) UILabel *label;
+@property (nonatomic, readonly) UILabel *secondLabel;
+
+- (void)activate;
+- (void)deactivate;
+
+@end
+
 
 
 @interface SVSegmentedControl()
@@ -20,22 +35,36 @@
 - (void)updateTitles;
 - (void)toggle;
 
+@property (nonatomic, retain) NSMutableArray *titlesArray;
+@property (nonatomic, retain) NSMutableArray *thumbRects;
+
+@property (nonatomic, readwrite) NSUInteger snapToIndex;
+@property (nonatomic, readwrite) BOOL trackingThumb;
+@property (nonatomic, readwrite) BOOL moved;
+@property (nonatomic, readwrite) BOOL activated;
+
+@property (nonatomic, readwrite) CGFloat halfSize;
+@property (nonatomic, readwrite) CGFloat dragOffset;
+@property (nonatomic, readwrite) CGFloat segmentWidth;
+@property (nonatomic, readwrite) CGFloat thumbHeight;
+
 @end
 
 
 @implementation SVSegmentedControl
 
-@synthesize delegate, selectedSegmentChangedHandler, selectedIndex, thumb;
+@synthesize delegate, selectedSegmentChangedHandler, selectedIndex;
 @synthesize backgroundImage, font, textColor, shadowColor, shadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag;
+@synthesize titlesArray, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight;
 
 #pragma mark -
 #pragma mark Life Cycle
 
 - (void)dealloc {
 	
-	[titlesArray release];
-	
+	self.titlesArray = nil;
     self.selectedSegmentChangedHandler = nil;
+    self.thumbRects = nil;
     
     // avoid deprecated warnings
     [self setValue:nil forKey:@"delegate"];
@@ -44,6 +73,7 @@
 	self.textColor = nil;
 	self.shadowColor = nil;
     self.backgroundImage = nil;
+    [thumb release];
 	
     [super dealloc];
 }
@@ -52,7 +82,8 @@
 - (id)initWithSectionTitles:(NSArray*)array {
     
 	if (self = [super initWithFrame:CGRectZero]) {
-        titlesArray = [array mutableCopy];
+        self.titlesArray = [NSMutableArray arrayWithArray:array];
+        self.thumbRects = [NSMutableArray arrayWithCapacity:[array count]];
         
         self.backgroundColor = [UIColor clearColor];
         self.clipsToBounds = YES;
@@ -68,55 +99,52 @@
         self.height = 32.0;
         
         self.selectedIndex = 0;
-        
-        thumb = [[SVSegmentedThumb alloc] initWithFrame:CGRectZero];
+        self.thumb.segmentedControl = self;
     }
+    
 	return self;
 }
 
+- (SVSegmentedThumb *)thumb {
+    
+    if(thumb == nil)
+        thumb = [[SVSegmentedThumb alloc] initWithFrame:CGRectZero];
+    
+    return thumb;
+}
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
 	
-	if(!newSuperview || newSuperview == nil)
+	if(newSuperview == nil)
 		return;
 
-	int c = [titlesArray count];
+	int c = [self.titlesArray count];
 	int i = 0;
 	
-	segmentWidth = 0;
+	self.segmentWidth = 0;
 	
-	for(NSString *titleString in titlesArray) {
-		
+	for(NSString *titleString in self.titlesArray) {
 		CGFloat stringWidth = [titleString sizeWithFont:self.font].width+(self.titleEdgeInsets.left+self.titleEdgeInsets.right+4);
-		
-		if(stringWidth > segmentWidth)
-			segmentWidth = stringWidth;
-        
-		i++;
+        self.segmentWidth = MAX(stringWidth, self.segmentWidth);
 	}
 	
-	segmentWidth = ceil((segmentWidth*2)/2); // make it an even number so we can position with center
-	
-	self.bounds = CGRectMake(0, 0, segmentWidth*c, self.height);
-	
-	i = 0;
+	self.segmentWidth = ceil((self.segmentWidth*2)/2); // make it an even number so we can position with center
+	self.bounds = CGRectMake(0, 0, self.segmentWidth*c, self.height);
+    self.thumbHeight = self.thumb.backgroundImage ? self.thumb.backgroundImage.size.height : self.height-5;
     
-    thumbHeight = self.thumb.backgroundImage ? self.thumb.backgroundImage.size.height : self.height-5;
+    i = 0;
     
-	for(NSString *titleString in titlesArray) {
-		thumbRects[i] = CGRectMake(segmentWidth*i+2, 2, segmentWidth-4, thumbHeight);
+	for(NSString *titleString in self.titlesArray) {
+        [self.thumbRects addObject:[NSValue valueWithCGRect:CGRectMake(self.segmentWidth*i+2, 2, self.segmentWidth-4, self.thumbHeight)]];
 		i++;
 	} 
 	
-	self.thumb.frame = thumbRects[0];
-	self.thumb.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:thumb.bounds cornerRadius:2].CGPath;
-	self.thumb.title = [titlesArray objectAtIndex:0];
-    self.thumb.segmentedControl = self;
-	
+	self.thumb.frame = [[self.thumbRects objectAtIndex:0] CGRectValue];
+	self.thumb.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.thumb.bounds cornerRadius:2].CGPath;
+	self.thumb.label.text = [self.titlesArray objectAtIndex:0];
 	self.thumb.font = self.font;
 	
 	[self insertSubview:self.thumb atIndex:0];
-	[thumb release];
 	
     [self moveThumbToIndex:selectedIndex animate:NO];
 }
@@ -165,8 +193,8 @@
 	
 	int i = 0;
 	
-	for(NSString *titleString in titlesArray) {
-		[titleString drawInRect:CGRectMake((segmentWidth*i), posY, segmentWidth, self.font.pointSize) withFont:self.font lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
+	for(NSString *titleString in self.titlesArray) {
+		[titleString drawInRect:CGRectMake((self.segmentWidth*i), posY, self.segmentWidth, self.font.pointSize) withFont:self.font lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
 		i++;
 	}
 }
@@ -178,14 +206,14 @@
     [super beginTrackingWithTouch:touch withEvent:event];
     
     CGPoint cPos = [touch locationInView:self.thumb];
-	activated = NO;
+	self.activated = NO;
 	
-	snapToIndex = floor(self.thumb.center.x/segmentWidth);
+	self.snapToIndex = floor(self.thumb.center.x/self.segmentWidth);
 	
 	if(CGRectContainsPoint(self.thumb.bounds, cPos)) {
-		tracking = YES;
+		self.trackingThumb = YES;
         [self.thumb deactivate];
-		dragOffset = (self.thumb.frame.size.width/2)-cPos.x;
+		self.dragOffset = (self.thumb.frame.size.width/2)-cPos.x;
 	}
     
     return YES;
@@ -195,7 +223,7 @@
     [super continueTrackingWithTouch:touch withEvent:event];
     
     CGPoint cPos = [touch locationInView:self];
-	CGFloat newPos = cPos.x+dragOffset;
+	CGFloat newPos = cPos.x+self.dragOffset;
 	CGFloat newMaxX = newPos+(CGRectGetWidth(self.thumb.frame)/2);
 	CGFloat newMinX = newPos-(CGRectGetWidth(self.thumb.frame)/2);
 	
@@ -203,11 +231,11 @@
 	CGFloat pMaxX = CGRectGetMaxX(self.bounds) - buffer;
 	CGFloat pMinX = CGRectGetMinX(self.bounds) + buffer;
 	
-	if((newMaxX > pMaxX || newMinX < pMinX) && tracking) {
-		snapToIndex = floor(self.thumb.center.x/segmentWidth);
+	if((newMaxX > pMaxX || newMinX < pMinX) && self.trackingThumb) {
+		self.snapToIndex = floor(self.thumb.center.x/self.segmentWidth);
         
         if(newMaxX-pMaxX > 10 || pMinX-newMinX > 10)
-            moved = YES;
+            self.moved = YES;
         
 		[self snap:NO];
         
@@ -215,9 +243,9 @@
 			[self updateTitles];
 	}
 	
-	else if(tracking) {
-		self.thumb.center = CGPointMake(cPos.x+dragOffset, self.thumb.center.y);
-		moved = YES;
+	else if(self.trackingThumb) {
+		self.thumb.center = CGPointMake(cPos.x+self.dragOffset, self.thumb.center.y);
+		self.moved = YES;
         
 		if (self.crossFadeLabelsOnDrag)
 			[self updateTitles];
@@ -233,11 +261,11 @@
 	CGFloat pMaxX = CGRectGetMaxX(self.bounds);
 	CGFloat pMinX = CGRectGetMinX(self.bounds);
 	
-	if(!moved && tracking && [titlesArray count] == 2)
+	if(!self.moved && self.trackingThumb && [self.titlesArray count] == 2)
 		[self toggle];
 	
-	else if(!activated && cPos.x > pMinX && cPos.x < pMaxX) {
-		snapToIndex = floor(cPos.x/segmentWidth);
+	else if(!self.activated && cPos.x > pMinX && cPos.x < pMaxX) {
+		self.snapToIndex = floor(cPos.x/self.segmentWidth);
 		[self snap:YES];
 	} 
 	
@@ -250,7 +278,7 @@
         if(posX > pMaxX)
             posX = pMaxX-1;
         
-        snapToIndex = floor(posX/segmentWidth);
+        self.snapToIndex = floor(posX/self.segmentWidth);
         [self snap:YES];
     }
 }
@@ -258,7 +286,7 @@
 - (void)cancelTrackingWithEvent:(UIEvent *)event {
     [super cancelTrackingWithEvent:event];
     
-    if(tracking)
+    if(self.trackingThumb)
 		[self snap:NO];
 }
 
@@ -269,53 +297,53 @@
 	[self.thumb deactivate];
     
     if(self.crossFadeLabelsOnDrag)
-        self.thumb.secondTitleAlpha = 0;
+        self.thumb.secondLabel.alpha = 0;
 
 	int index;
 	
-	if(snapToIndex != -1)
-		index = snapToIndex;
+	if(self.snapToIndex != -1)
+		index = self.snapToIndex;
 	else
-		index = floor(self.thumb.center.x/segmentWidth);
+		index = floor(self.thumb.center.x/self.segmentWidth);
 	
-	self.thumb.title = [titlesArray objectAtIndex:index];
+	self.thumb.label.text = [self.titlesArray objectAtIndex:index];
 
 	if(animated)
 		[self moveThumbToIndex:index animate:YES];
 	else
-		self.thumb.frame = thumbRects[index];
+		self.thumb.frame = [[self.thumbRects objectAtIndex:index] CGRectValue];
 }
 
 - (void)updateTitles {
-	int hoverIndex = floor(self.thumb.center.x/segmentWidth);
+	int hoverIndex = floor(self.thumb.center.x/self.segmentWidth);
 	
-	BOOL secondTitleOnLeft = ((self.thumb.center.x / segmentWidth) - hoverIndex) < 0.5;
+	BOOL secondTitleOnLeft = ((self.thumb.center.x / self.segmentWidth) - hoverIndex) < 0.5;
 	
 	if (secondTitleOnLeft && hoverIndex > 0) {
-		self.thumb.titleAlpha = 0.5 + ((self.thumb.center.x / segmentWidth) - hoverIndex);
-		self.thumb.secondTitle = [titlesArray objectAtIndex:hoverIndex - 1];
-		self.thumb.secondTitleAlpha = 0.5 - ((self.thumb.center.x / segmentWidth) - hoverIndex);
+		self.thumb.label.alpha = 0.5 + ((self.thumb.center.x / self.segmentWidth) - hoverIndex);
+		self.thumb.secondLabel.text = [self.titlesArray objectAtIndex:hoverIndex - 1];
+		self.thumb.secondLabel.alpha = 0.5 - ((self.thumb.center.x / self.segmentWidth) - hoverIndex);
 	}
 	
-    else if (hoverIndex + 1 < titlesArray.count) {
-		self.thumb.titleAlpha = 0.5 + (1 - ((self.thumb.center.x / segmentWidth) - hoverIndex));
-		self.thumb.secondTitle = [titlesArray objectAtIndex:hoverIndex + 1];
-		self.thumb.secondTitleAlpha = ((self.thumb.center.x / segmentWidth) - hoverIndex) - 0.5;
+    else if (hoverIndex + 1 < self.titlesArray.count) {
+		self.thumb.label.alpha = 0.5 + (1 - ((self.thumb.center.x / self.segmentWidth) - hoverIndex));
+		self.thumb.secondLabel.text = [self.titlesArray objectAtIndex:hoverIndex + 1];
+		self.thumb.secondLabel.alpha = ((self.thumb.center.x / self.segmentWidth) - hoverIndex) - 0.5;
 	}
 	
     else {
-		self.thumb.secondTitle = nil;
-		self.thumb.titleAlpha = 1.0;
+		self.thumb.secondLabel.text = nil;
+		self.thumb.label.alpha = 1.0;
 	}
 
-	self.thumb.title = [titlesArray objectAtIndex:hoverIndex];
+	self.thumb.label.text = [self.titlesArray objectAtIndex:hoverIndex];
 }
 
 - (void)activate {
 	
-	tracking = moved = NO;
+	self.trackingThumb = self.moved = NO;
 	
-	self.thumb.title = [titlesArray objectAtIndex:self.selectedIndex];
+	self.thumb.label.text = [self.titlesArray objectAtIndex:self.selectedIndex];
     	
 	if(self.selectedSegmentChangedHandler)
 		self.selectedSegmentChangedHandler(self);
@@ -331,7 +359,7 @@
 						  delay:0 
 						options:UIViewAnimationOptionAllowUserInteraction 
 					 animations:^{
-						 activated = YES;
+						 self.activated = YES;
 						 [self.thumb activate];
 					 }
 					 completion:NULL];
@@ -340,10 +368,10 @@
 
 - (void)toggle {
 	
-	if(snapToIndex == 0)
-		snapToIndex = 1;
+	if(self.snapToIndex == 0)
+		self.snapToIndex = 1;
 	else
-		snapToIndex = 0;
+		self.snapToIndex = 0;
 	
 	[self snap:YES];
 }
@@ -361,7 +389,7 @@
 							  delay:0 
 							options:UIViewAnimationOptionCurveEaseOut 
 						 animations:^{
-							 self.thumb.frame = thumbRects[segmentIndex];
+							 self.thumb.frame = [[self.thumbRects objectAtIndex:segmentIndex] CGRectValue];
 
 							 if(self.crossFadeLabelsOnDrag)
 								 [self updateTitles];
@@ -372,7 +400,7 @@
 	}
 	
 	else {
-		self.thumb.frame = thumbRects[segmentIndex];
+		self.thumb.frame = [[self.thumbRects objectAtIndex:segmentIndex] CGRectValue];
 		[self activate];
 	}
 }

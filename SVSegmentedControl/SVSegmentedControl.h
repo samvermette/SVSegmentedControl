@@ -1,9 +1,11 @@
 //
-//  SWSegmentedControl.h
-//  SWSegmentedControl
+// SWSegmentedControl.h
+// SWSegmentedControl
 //
-//  Created by Sam Vermette on 26.10.10.
-//  Copyright 2010 Sam Vermette. All rights reserved.
+// Created by Sam Vermette on 26.10.10.
+// Copyright 2010 Sam Vermette. All rights reserved.
+//
+// https://github.com/samvermette/SVSegmentedControl
 //
 
 #import <UIKit/UIKit.h>
@@ -12,21 +14,12 @@
 
 @protocol SVSegmentedControlDelegate;
 
-@interface SVSegmentedControl : UIControl {
-	SVSegmentedThumb *thumb;
-	CGRect thumbRects[5];
-	NSUInteger snapToIndex;
-	
-	BOOL tracking, moved, activated;
-	float dragOffset, halfSize;
-	NSMutableArray *titlesArray;
-	CGFloat segmentWidth, thumbHeight;
-}
+@interface SVSegmentedControl : UIControl
 
 @property (nonatomic, assign) id<SVSegmentedControlDelegate> delegate DEPRECATED_ATTRIBUTE; // deprecated: use addTarget:action:forControlEvents: instead
 @property (nonatomic, copy) void (^selectedSegmentChangedHandler)(id sender); // you can also use addTarget:action:forControlEvents:
 
-@property (nonatomic, readonly) SVSegmentedThumb *thumb;
+@property (nonatomic, retain, readonly) SVSegmentedThumb *thumb;
 @property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
 
 @property (nonatomic, retain) UIImage *backgroundImage; // default is nil
