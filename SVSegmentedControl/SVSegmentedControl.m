@@ -53,7 +53,7 @@
 
 @implementation SVSegmentedControl
 
-@synthesize delegate, selectedSegmentChangedHandler, selectedIndex;
+@synthesize delegate, selectedSegmentChangedHandler, selectedIndex, animateToInitialSelection;
 @synthesize backgroundImage, font, textColor, shadowColor, shadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag;
 @synthesize titlesArray, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight;
 
@@ -88,6 +88,7 @@
         self.backgroundColor = [UIColor clearColor];
         self.clipsToBounds = YES;
         self.userInteractionEnabled = YES;
+        self.animateToInitialSelection = NO;
         self.clipsToBounds = NO;
         
         self.font = [UIFont boldSystemFontOfSize:15];
@@ -145,8 +146,13 @@
 	self.thumb.font = self.font;
 	
 	[self insertSubview:self.thumb atIndex:0];
+    
+    BOOL animateInitial = self.animateToInitialSelection;
+    
+    if(self.selectedIndex == 0)
+        animateInitial = NO;
 	
-    [self moveThumbToIndex:selectedIndex animate:NO];
+    [self moveThumbToIndex:selectedIndex animate:animateInitial];
 }
 
 

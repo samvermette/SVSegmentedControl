@@ -21,6 +21,7 @@
 
 @property (nonatomic, retain, readonly) SVSegmentedThumb *thumb;
 @property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
+@property (nonatomic, readwrite) BOOL animateToInitialSelection; // default is NO
 
 @property (nonatomic, retain) UIImage *backgroundImage; // default is nil
 @property (nonatomic, retain) UIFont *font; // default is [UIFont boldSystemFontOfSize:15]
