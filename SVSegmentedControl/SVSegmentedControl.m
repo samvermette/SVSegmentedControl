@@ -16,7 +16,7 @@
 @interface SVSegmentedThumb ()
 
 @property (nonatomic, assign) SVSegmentedControl *segmentedControl;
-@property (nonatomic, retain) UIFont *font;
+@property (nonatomic, assign) UIFont *font;
 
 @property (nonatomic, readonly) UILabel *label;
 @property (nonatomic, readonly) UILabel *secondLabel;

@@ -16,7 +16,7 @@
 
 @property (nonatomic, readwrite) BOOL selected;
 @property (nonatomic, assign) SVSegmentedControl *segmentedControl;
-@property (nonatomic, retain) UIFont *font;
+@property (nonatomic, assign) UIFont *font;
 
 @property (nonatomic, readonly) UILabel *label;
 @property (nonatomic, readonly) UILabel *secondLabel;
@@ -36,10 +36,6 @@
     
     self.backgroundImage = nil;
     self.highlightedBackgroundImage = nil;
-    
-	self.tintColor = nil;
-	self.textColor = nil;
-	self.shadowColor = nil;
     
     [label release];
     [secondLabel release];
@@ -167,7 +163,9 @@
 
 
 - (void)setTintColor:(UIColor *)newColor {
-	[tintColor release], tintColor = nil;
+    
+    if(tintColor)
+        [tintColor release], tintColor = nil;
 	
 	if(newColor)
 		tintColor = [newColor retain];
@@ -197,7 +195,7 @@
 - (void)setFrame:(CGRect)newFrame {
 	[super setFrame:newFrame];
     
-    newFrame.size.height = self.superview.frame.size.height-5;
+    newFrame.size.height = self.segmentedControl.height-5;
 	self.label.frame = self.secondLabel.frame = CGRectMake(0, 0+self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom, newFrame.size.width, newFrame.size.height);
 }
 
