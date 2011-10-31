@@ -53,7 +53,7 @@
 
 @implementation SVSegmentedControl
 
-@synthesize delegate, selectedSegmentChangedHandler, selectedIndex, animateToInitialSelection;
+@synthesize delegate, selectedSegmentChangedHandler, thumbEdgeInset, selectedIndex, animateToInitialSelection;
 @synthesize backgroundImage, font, textColor, shadowColor, shadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag;
 @synthesize titlesArray, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight;
 
@@ -97,6 +97,7 @@
         self.shadowOffset = CGSizeMake(0, -1);
         
         self.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 10);
+        self.thumbEdgeInset = UIEdgeInsetsMake(2, 2, 3, 2);
         self.height = 32.0;
         
         self.selectedIndex = 0;
@@ -125,18 +126,18 @@
 	self.segmentWidth = 0;
 	
 	for(NSString *titleString in self.titlesArray) {
-		CGFloat stringWidth = [titleString sizeWithFont:self.font].width+(self.titleEdgeInsets.left+self.titleEdgeInsets.right+4);
+		CGFloat stringWidth = [titleString sizeWithFont:self.font].width+(self.titleEdgeInsets.left+self.titleEdgeInsets.right+self.thumbEdgeInset.left+self.thumbEdgeInset.right);
         self.segmentWidth = MAX(stringWidth, self.segmentWidth);
 	}
 	
-	self.segmentWidth = ceil((self.segmentWidth*2)/2); // make it an even number so we can position with center
+	self.segmentWidth = ceil(self.segmentWidth/2.0)*2; // make it an even number so we can position with center
 	self.bounds = CGRectMake(0, 0, self.segmentWidth*c, self.height);
-    self.thumbHeight = self.thumb.backgroundImage ? self.thumb.backgroundImage.size.height : self.height-5;
+    self.thumbHeight = self.thumb.backgroundImage ? self.thumb.backgroundImage.size.height : self.height-(self.thumbEdgeInset.top+self.thumbEdgeInset.bottom);
     
     i = 0;
     
 	for(NSString *titleString in self.titlesArray) {
-        [self.thumbRects addObject:[NSValue valueWithCGRect:CGRectMake(self.segmentWidth*i+2, 2, self.segmentWidth-4, self.thumbHeight)]];
+        [self.thumbRects addObject:[NSValue valueWithCGRect:CGRectMake(self.segmentWidth*i+self.thumbEdgeInset.left, self.thumbEdgeInset.top, self.segmentWidth-(self.thumbEdgeInset.left*2), self.thumbHeight)]];
 		i++;
 	} 
 	
@@ -200,7 +201,9 @@
 	int i = 0;
 	
 	for(NSString *titleString in self.titlesArray) {
-		[titleString drawInRect:CGRectMake((self.segmentWidth*i), posY, self.segmentWidth, self.font.pointSize) withFont:self.font lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
+        CGRect labelRect = CGRectMake((self.segmentWidth*i), posY, self.segmentWidth, self.font.pointSize);
+        //CGContextFillRect(context, labelRect);
+		[titleString drawInRect:labelRect withFont:self.font lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
 		i++;
 	}
 }

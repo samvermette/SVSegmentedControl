@@ -92,6 +92,10 @@
     return secondLabel;
 }
 
+- (UIFont *)font {
+    return self.label.font;
+}
+
 
 - (void)drawRect:(CGRect)rect {
         
@@ -194,9 +198,14 @@
 
 - (void)setFrame:(CGRect)newFrame {
 	[super setFrame:newFrame];
+        
+    CGFloat posY = ceil((self.segmentedControl.height-self.font.pointSize+self.font.descender)/2)+self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom-self.segmentedControl.thumbEdgeInset.top+2;
+	int pointSize = self.font.pointSize;
+	
+	if(pointSize%2 != 0)
+		posY--;
     
-    newFrame.size.height = self.segmentedControl.height-5;
-	self.label.frame = self.secondLabel.frame = CGRectMake(0, 0+self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom, newFrame.size.width, newFrame.size.height);
+	self.label.frame = self.secondLabel.frame = CGRectMake(0, posY, newFrame.size.width, self.font.pointSize);
 }
 
 

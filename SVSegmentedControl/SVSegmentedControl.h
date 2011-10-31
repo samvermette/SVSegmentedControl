@@ -20,6 +20,7 @@
 @property (nonatomic, copy) void (^selectedSegmentChangedHandler)(id sender); // you can also use addTarget:action:forControlEvents:
 
 @property (nonatomic, retain, readonly) SVSegmentedThumb *thumb;
+@property (nonatomic, readwrite) UIEdgeInsets thumbEdgeInset; // default is UIEdgeInsetsMake(2, 2, 3, 2)
 @property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
 @property (nonatomic, readwrite) BOOL animateToInitialSelection; // default is NO
 

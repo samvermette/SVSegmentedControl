@@ -36,6 +36,7 @@ SVSegmentedControl can be customized with the following properties:
 
 <pre>
 @property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
+@property (nonatomic, readwrite) UIEdgeInsets thumbEdgeInset; // default is UIEdgeInsetsMake(2, 2, 3, 2)
 @property (nonatomic, readwrite) BOOL animateToInitialSelection; // default is NO
 @property (nonatomic, retain) UIImage *backgroundImage; // default is nil
 @property (nonatomic, retain) UIFont *font; // default is [UIFont boldSystemFontOfSize:15]
