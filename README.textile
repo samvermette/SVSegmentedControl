@@ -57,6 +57,7 @@ Its thumb (@SVSegmentedThumb@) can be customized as well:
 @property (nonatomic, retain) UIColor *textColor; // default is [UIColor whiteColor]
 @property (nonatomic, retain) UIColor *shadowColor; // default is [UIColor blackColor]
 @property (nonatomic, readwrite) CGSize shadowOffset; // default is CGSizeMake(0, -1)
+@property (nonatomic, readwrite) BOOL castsShadow; // default is YES (NO when backgroundImage is set)
 </pre>
 
 *Note*: to customize the thumb's appearance, you'll have to set the properties through SVSegmentedControl's @thumb@ property. For instance, setting the thumb's @tintColor@ is done with:

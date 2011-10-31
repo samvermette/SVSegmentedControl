@@ -21,6 +21,6 @@
 @property (nonatomic, assign) UIColor *textColor; // default is [UIColor whiteColor]
 @property (nonatomic, assign) UIColor *shadowColor; // default is [UIColor blackColor]
 @property (nonatomic, readwrite) CGSize shadowOffset; // default is CGSizeMake(0, -1)
-@property (nonatomic, readwrite) BOOL castsShadow; // default is YES
+@property (nonatomic, readwrite) BOOL castsShadow; // default is YES (NO when backgroundImage is set)
 
 @end

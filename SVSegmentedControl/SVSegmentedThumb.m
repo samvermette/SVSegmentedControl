@@ -165,6 +165,18 @@
 #pragma mark -
 #pragma mark Setters
 
+- (void)setBackgroundImage:(UIImage *)newImage {
+    
+    if(backgroundImage)
+        [backgroundImage release], backgroundImage = nil;
+    
+    if(newImage) {
+        backgroundImage = [newImage retain];
+        self.castsShadow = NO;
+    } else {
+        self.castsShadow = YES;
+    }
+}
 
 - (void)setTintColor:(UIColor *)newColor {
     
