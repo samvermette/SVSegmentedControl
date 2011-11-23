@@ -3,7 +3,7 @@ h1. SVSegmentedControl
 SVSegmentedControl is a customizable @UIControl@ class that mimics UISegmentedControl but that looks like an UISwitch.
 
 
-!http://samvermette.com/files/svsegmentedcontrol3.png!
+!http://f.cl.ly/items/213N0a1k2U2O0F3y053z/svsegmentedcontrol3.png!
 
 h2. Installation
 
@@ -91,9 +91,9 @@ segmentedControl.selectedSegmentChangedHandler = ^(id sender) {
 };
 </pre>
 
-h2. Automatic Referencing counting (ARC) support
+h2. Automatic Reference Counting (ARC) support
 
-SVSegmentedControl doesn't support ARC. You can disable ARC on a per-file basis by adding the @-fno-objc-arc@ compiler flag for those files (see "this StackOverflow thread":http://stackoverflow.com/questions/6646052/how-can-i-disable-arc-for-a-single-file-in-a-project for reference). Anyone who loves ARC enough to add it to SVSegmentedControl is welcome to open a pull request and I'll be happy to create a new ARC branch.
+Maintaining an official ARC branch has proven to be too much work, often leading to confusion since the ARC branch is always a few commits behind. If you'd like to use SVSegmentedControl in your ARC-enabled project, you'll have to "add the @-fno-objc-arc@ compiler flag":http://stackoverflow.com/questions/6646052/how-can-i-disable-arc-for-a-single-file-in-a-project to all of SVSegmentedControl's files.
 
 h2. Credits
 
