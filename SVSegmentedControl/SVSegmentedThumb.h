@@ -17,7 +17,7 @@
 @property (nonatomic, retain) UIImage *backgroundImage; // default is nil;
 @property (nonatomic, retain) UIImage *highlightedBackgroundImage; // default is nil;
 
-@property (nonatomic, assign) UIColor *tintColor; // default is [UIColor grayColor]
+@property (nonatomic, retain) UIColor *tintColor; // default is [UIColor grayColor]
 @property (nonatomic, assign) UIColor *textColor; // default is [UIColor whiteColor]
 @property (nonatomic, assign) UIColor *shadowColor; // default is [UIColor blackColor]
 @property (nonatomic, readwrite) CGSize shadowOffset; // default is CGSizeMake(0, -1)

@@ -284,7 +284,7 @@
         if(posX < pMinX)
             posX = pMinX;
         
-        if(posX > pMaxX)
+        if(posX >= pMaxX)
             posX = pMaxX-1;
         
         self.snapToIndex = floor(posX/self.segmentWidth);
