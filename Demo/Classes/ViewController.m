@@ -75,8 +75,8 @@
 	
 	yellowRC.thumb.tintColor = [UIColor colorWithRed:0.999 green:0.889 blue:0.312 alpha:1.000];
 	yellowRC.thumb.textColor = [UIColor blackColor];
-	yellowRC.thumb.shadowColor = [UIColor colorWithWhite:1 alpha:0.5];
-	yellowRC.thumb.shadowOffset = CGSizeMake(0, 1);
+	yellowRC.thumb.textShadowColor = [UIColor colorWithWhite:1 alpha:0.5];
+	yellowRC.thumb.textShadowOffset = CGSizeMake(0, 1);
 	
 	[self.view addSubview:yellowRC];
 	[yellowRC release];

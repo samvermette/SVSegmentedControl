@@ -19,8 +19,13 @@
 
 @property (nonatomic, retain) UIColor *tintColor; // default is [UIColor grayColor]
 @property (nonatomic, assign) UIColor *textColor; // default is [UIColor whiteColor]
-@property (nonatomic, assign) UIColor *shadowColor; // default is [UIColor blackColor]
-@property (nonatomic, readwrite) CGSize shadowOffset; // default is CGSizeMake(0, -1)
-@property (nonatomic, readwrite) BOOL castsShadow; // default is YES (NO when backgroundImage is set)
+@property (nonatomic, assign) UIColor *textShadowColor; // default is [UIColor blackColor]
+@property (nonatomic, readwrite) CGSize textShadowOffset; // default is CGSizeMake(0, -1)
+@property (nonatomic, readwrite) BOOL shouldCastShadow; // default is YES (NO when backgroundImage is set)
+
+// deprecated properties
+@property (nonatomic, assign) UIColor *shadowColor DEPRECATED_ATTRIBUTE; // use textShadowColor instead
+@property (nonatomic, readwrite) CGSize shadowOffset DEPRECATED_ATTRIBUTE; // use textShadowOffset instead
+@property (nonatomic, readwrite) BOOL castsShadow DEPRECATED_ATTRIBUTE; // use shouldCastShadow instead
 
 @end

@@ -29,8 +29,11 @@
 
 @implementation SVSegmentedThumb
 
-@synthesize segmentedControl, backgroundImage, highlightedBackgroundImage, castsShadow, font, tintColor, textColor, shadowColor, shadowOffset, selected;
+@synthesize segmentedControl, backgroundImage, highlightedBackgroundImage, font, tintColor, textColor, textShadowColor, textShadowOffset, shouldCastShadow, selected;
 @synthesize label, secondLabel;
+
+// deprecated properties
+@synthesize shadowColor, shadowOffset, castsShadow;
 
 - (void)dealloc {
     
@@ -53,8 +56,8 @@
 		self.backgroundColor = [UIColor clearColor];
 
 		self.textColor = [UIColor whiteColor];
-		self.shadowColor = [UIColor blackColor];
-		self.shadowOffset = CGSizeMake(0, -1);
+		self.textShadowColor = [UIColor blackColor];
+		self.textShadowOffset = CGSizeMake(0, -1);
 		self.tintColor = [UIColor grayColor];
     }
 	
@@ -169,9 +172,9 @@
     
     if(newImage) {
         backgroundImage = [newImage retain];
-        self.castsShadow = NO;
+        self.shouldCastShadow = NO;
     } else {
-        self.castsShadow = YES;
+        self.shouldCastShadow = YES;
     }
 }
 
@@ -194,12 +197,16 @@
 	self.label.textColor = self.secondLabel.textColor = newColor;
 }
 
-- (void)setShadowColor:(UIColor *)newColor {
+- (void)setTextShadowColor:(UIColor *)newColor {
 	self.label.shadowColor = self.secondLabel.shadowColor = newColor;
 }
 
-- (void)setShadowOffset:(CGSize)newOffset {
+- (void)setTextShadowOffset:(CGSize)newOffset {
 	self.label.shadowOffset = self.secondLabel.shadowOffset = newOffset;
+}
+
+- (void)setShouldCastShadow:(BOOL)b {
+    self.layer.shadowOpacity = b ? 1 : 0;
 }
 
 
@@ -222,11 +229,6 @@
     self.layer.shadowOpacity = 1;
     self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:self.segmentedControl.cornerRadius-2].CGPath;
     self.layer.shouldRasterize = YES;
-}
-
-
-- (void)setCastsShadow:(BOOL)b {
-    self.layer.shadowOpacity = b ? 1 : 0;
 }
 
 
@@ -256,5 +258,18 @@
         self.label.alpha = 0;
 }
 
+#pragma mark - Support for deprecated methods
+
+- (void)setShadowOffset:(CGSize)newOffset {
+    self.textShadowOffset = newOffset;
+}
+
+- (void)setShadowColor:(UIColor *)newColor {
+    self.textShadowColor = newColor;
+}
+
+- (void)setCastsShadow:(BOOL)b {
+    self.shouldCastShadow = b;
+}
 
 @end
