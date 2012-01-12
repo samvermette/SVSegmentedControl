@@ -156,6 +156,8 @@
     [self moveThumbToIndex:selectedIndex animate:animateInitial];
 }
 
+#pragma mark - Drawing code
+
 
 - (void)drawRect:(CGRect)rect {
 
@@ -166,30 +168,42 @@
     
     else {
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+        float cornerRadius = 4;
 
-        CGContextSaveGState(context);
-        
-        CGPathRef roundedRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:4].CGPath;
+        CGPathRef roundedRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:cornerRadius].CGPath;
         CGContextAddPath(context, roundedRect);
         CGContextClip(context);
-            
-        // BACKGROUND GRADIENT
         
-        CGFloat components[4] = {    
-            0, 0.55,
-            0, 0.4
-        };
-        
+        CGFloat components[4] = {0, 0.55,  0, 0.4};
         CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);	
         CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
         CGGradientRelease(gradient);
-        CGColorSpaceRelease(colorSpace);
         
-        [[[UIImage imageNamed:@"SVSegmentedControl.bundle/inner-shadow"] stretchableImageWithLeftCapWidth:4 topCapHeight:5] drawInRect:rect];
+        UIBezierPath *bottomGloss = [UIBezierPath bezierPath];
+        [bottomGloss moveToPoint:CGPointMake(0, rect.size.height-cornerRadius-0.5)];
+        [bottomGloss addArcWithCenter:CGPointMake(cornerRadius, rect.size.height-cornerRadius-0.5) radius:cornerRadius startAngle:M_PI endAngle:M_PI/2 clockwise:NO];
+        [bottomGloss addLineToPoint:CGPointMake(rect.size.width-cornerRadius, rect.size.height-0.5)];
+        [bottomGloss addArcWithCenter:CGPointMake(rect.size.width-cornerRadius, rect.size.height-cornerRadius-0.5) radius:cornerRadius startAngle:M_PI/2 endAngle:0 clockwise:NO];
+        CGContextAddPath(context, bottomGloss.CGPath);
+        CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.1].CGColor);
+        CGContextStrokePath(context);
+        
+        UIBezierPath *topShadow = [UIBezierPath bezierPath];
+        [topShadow moveToPoint:CGPointMake(-0.3, rect.size.height-cornerRadius-0.5)];
+        [topShadow addLineToPoint:CGPointMake(0, cornerRadius+0.5)];
+        [topShadow addArcWithCenter:CGPointMake(cornerRadius, cornerRadius+0.5) radius:cornerRadius startAngle:M_PI endAngle:3*M_PI/2 clockwise:YES];
+        [topShadow addLineToPoint:CGPointMake(rect.size.width-cornerRadius, 0.5)];
+        [topShadow addArcWithCenter:CGPointMake(rect.size.width-cornerRadius, cornerRadius+0.5) radius:cornerRadius startAngle:3*M_PI/2 endAngle:0 clockwise:YES];
+        [topShadow addLineToPoint:CGPointMake(rect.size.width+0.3, rect.size.height-cornerRadius-0.5)];
+        CGContextAddPath(context, topShadow.CGPath);
+        CGContextSetShadowWithColor(UIGraphicsGetCurrentContext(), CGSizeMake(0, 1), 0, [UIColor colorWithWhite:0 alpha:0.2].CGColor);
+        CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0 alpha:0.9].CGColor);
+        CGContextStrokePath(context);
+        
+        CGColorSpaceRelease(colorSpace);
     }
     
 	CGContextSetShadowWithColor(context, self.shadowOffset, 0, self.shadowColor.CGColor);
-    
 	[self.textColor set];
 	
 	CGFloat posY = ceil((CGRectGetHeight(rect)-self.font.pointSize+self.font.descender)/2)+self.titleEdgeInsets.top-self.titleEdgeInsets.bottom;
