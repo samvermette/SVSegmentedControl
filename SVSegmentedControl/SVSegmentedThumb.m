@@ -135,7 +135,7 @@
         
         // FILL GRADIENT
         
-        CGPathRef fillRect = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(rect, 1, 1) cornerRadius:cornerRadius-1].CGPath;
+        CGPathRef fillRect = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(rect, 1, 1) cornerRadius:cornerRadius-2].CGPath;
         CGContextAddPath(context, fillRect);
         CGContextClip(context);
         

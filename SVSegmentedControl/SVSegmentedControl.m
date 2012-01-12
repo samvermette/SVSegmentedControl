@@ -173,8 +173,17 @@
     
     else {
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
-
-        CGPathRef roundedRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:self.cornerRadius].CGPath;
+        
+        UIBezierPath *bottomGloss = [UIBezierPath bezierPath];
+        [bottomGloss moveToPoint:CGPointMake(-0.5, rect.size.height-self.cornerRadius-0.5)];
+        [bottomGloss addArcWithCenter:CGPointMake(self.cornerRadius-0.5, rect.size.height-self.cornerRadius-0.5) radius:self.cornerRadius startAngle:M_PI endAngle:M_PI/2 clockwise:NO];
+        [bottomGloss addLineToPoint:CGPointMake(rect.size.width-self.cornerRadius, rect.size.height-0.5)];
+        [bottomGloss addArcWithCenter:CGPointMake(rect.size.width-self.cornerRadius+0.5, rect.size.height-self.cornerRadius-0.5) radius:self.cornerRadius startAngle:M_PI/2 endAngle:0 clockwise:NO];
+        CGContextAddPath(context, bottomGloss.CGPath);
+        CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.1].CGColor);
+        CGContextStrokePath(context);
+        
+        CGPathRef roundedRect = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, rect.size.width, rect.size.height-1) cornerRadius:self.cornerRadius].CGPath;
         CGContextAddPath(context, roundedRect);
         CGContextClip(context);
         
@@ -183,24 +192,10 @@
         CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
         CGGradientRelease(gradient);
         
-        UIBezierPath *bottomGloss = [UIBezierPath bezierPath];
-        [bottomGloss moveToPoint:CGPointMake(0, rect.size.height-self.cornerRadius-0.5)];
-        [bottomGloss addArcWithCenter:CGPointMake(self.cornerRadius, rect.size.height-self.cornerRadius-0.5) radius:self.cornerRadius startAngle:M_PI endAngle:M_PI/2 clockwise:NO];
-        [bottomGloss addLineToPoint:CGPointMake(rect.size.width-self.cornerRadius, rect.size.height-0.5)];
-        [bottomGloss addArcWithCenter:CGPointMake(rect.size.width-self.cornerRadius, rect.size.height-self.cornerRadius-0.5) radius:self.cornerRadius startAngle:M_PI/2 endAngle:0 clockwise:NO];
-        CGContextAddPath(context, bottomGloss.CGPath);
-        CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.1].CGColor);
-        CGContextStrokePath(context);
-        
-        UIBezierPath *topShadow = [UIBezierPath bezierPath];
-        [topShadow moveToPoint:CGPointMake(-0.3, rect.size.height-self.cornerRadius-0.5)];
-        [topShadow addLineToPoint:CGPointMake(0, self.cornerRadius+0.5)];
-        [topShadow addArcWithCenter:CGPointMake(self.cornerRadius, self.cornerRadius+0.5) radius:self.cornerRadius startAngle:M_PI endAngle:3*M_PI/2 clockwise:YES];
-        [topShadow addLineToPoint:CGPointMake(rect.size.width-self.cornerRadius, 0.5)];
-        [topShadow addArcWithCenter:CGPointMake(rect.size.width-self.cornerRadius, self.cornerRadius+0.5) radius:self.cornerRadius startAngle:3*M_PI/2 endAngle:0 clockwise:YES];
-        [topShadow addLineToPoint:CGPointMake(rect.size.width+0.3, rect.size.height-self.cornerRadius-0.5)];
+        UIBezierPath *topShadow = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0.5, rect.size.width, rect.size.height-1.5) cornerRadius:self.cornerRadius];
+
         CGContextAddPath(context, topShadow.CGPath);
-        CGContextSetShadowWithColor(UIGraphicsGetCurrentContext(), CGSizeMake(0, 1), 0, [UIColor colorWithWhite:0 alpha:0.2].CGColor);
+        CGContextSetShadowWithColor(UIGraphicsGetCurrentContext(), CGSizeMake(0, 1), 1, [UIColor colorWithWhite:0 alpha:0.2].CGColor);
         CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0 alpha:0.9].CGColor);
         CGContextStrokePath(context);
         
