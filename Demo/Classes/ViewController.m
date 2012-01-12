@@ -19,9 +19,8 @@
 	// 1st CONTROL
 	
 	SVSegmentedControl *navSC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Section 1", @"Section 2", nil]];
-    navSC.selectedSegmentChangedHandler = ^(id sender) {
-        SVSegmentedControl *segmentedControl = (SVSegmentedControl *)sender;
-        NSLog(@"segmentedControl did select index %i (via block handler)", segmentedControl.selectedIndex);
+    navSC.changeHandler = ^(NSUInteger newIndex) {
+        NSLog(@"segmentedControl did select index %i (via block handler)", newIndex);
     };
     
 	[self.view addSubview:navSC];

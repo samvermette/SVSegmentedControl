@@ -53,7 +53,7 @@
 
 @implementation SVSegmentedControl
 
-@synthesize selectedSegmentChangedHandler, selectedIndex, animateToInitialSelection;
+@synthesize selectedSegmentChangedHandler, changeHandler, selectedIndex, animateToInitialSelection;
 @synthesize cornerRadius, backgroundImage, font, textColor, textShadowColor, textShadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag;
 @synthesize titlesArray, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight;
 
@@ -65,13 +65,14 @@
 
 - (void)dealloc {
 	
-	self.titlesArray = nil;
-    self.selectedSegmentChangedHandler = nil;
+	self.titlesArray = nil;    
+    self.changeHandler = nil;
     self.thumbRects = nil;
     
     // avoid deprecated warnings
     [self setValue:nil forKey:@"delegate"];
-
+    [self setValue:nil forKey:@"selectedSegmentChangedHandler"];
+    
 	self.font = nil;
 	self.textColor = nil;
 	self.textShadowColor = nil;
@@ -333,6 +334,9 @@
 		index = floor(self.thumb.center.x/self.segmentWidth);
 	
 	self.thumb.label.text = [self.titlesArray objectAtIndex:index];
+    
+    if(self.changeHandler && self.snapToIndex != self.selectedIndex)
+		self.changeHandler(self.snapToIndex);
 
 	if(animated)
 		[self moveThumbToIndex:index animate:YES];
@@ -370,9 +374,11 @@
 	self.trackingThumb = self.moved = NO;
 	
 	self.thumb.label.text = [self.titlesArray objectAtIndex:self.selectedIndex];
+    
+    void (^oldChangeHandler)(id sender) = [self valueForKey:@"selectedSegmentChangedHandler"];
     	
-	if(self.selectedSegmentChangedHandler)
-		self.selectedSegmentChangedHandler(self);
+	if(oldChangeHandler)
+		oldChangeHandler(self);
     
     if([self valueForKey:@"delegate"]) {
         id controlDelegate = [self valueForKey:@"delegate"];

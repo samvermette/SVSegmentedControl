@@ -18,7 +18,9 @@ In its simplest form, this is how you create an SVSegmentedControl instance:
 
 <pre>
 segmentedControl = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Section 1", @"Section 2", nil]];
-[segmentedControl addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
+segmentedControl.changeHandler = ^(NSUInteger newIndex) {
+    // respond to index change
+};
 
 [self.view addSubview:segmentedControl];
 [segmentedControl release];
@@ -75,9 +77,8 @@ h2. Responding to value changes
 You can respond to value changes using a block handler:
 
 <pre>
-segmentedControl.selectedSegmentChangedHandler = ^(id sender) {
-	SVSegmentedControl *segmentedControl = (SVSegmentedControl *)sender;
-	NSLog(@"segmentedControl did select index %i", segmentedControl.selectedIndex);
+segmentedControl.changeHandler = ^(NSUInteger newIndex) {
+    // respond to index change
 };
 </pre>
 

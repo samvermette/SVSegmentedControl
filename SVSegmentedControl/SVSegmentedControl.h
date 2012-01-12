@@ -16,7 +16,7 @@
 
 @interface SVSegmentedControl : UIControl
 
-@property (nonatomic, copy) void (^selectedSegmentChangedHandler)(id sender); // you can also use addTarget:action:forControlEvents:
+@property (nonatomic, copy) void (^changeHandler)(NSUInteger newIndex); // you can also use addTarget:action:forControlEvents:
 
 @property (nonatomic, retain, readonly) SVSegmentedThumb *thumb;
 @property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
@@ -35,6 +35,7 @@
 @property (nonatomic, readwrite) CGSize textShadowOffset;  // default is CGSizeMake(0, -1)
 
 // deprecated properties
+@property (nonatomic, copy) void (^selectedSegmentChangedHandler)(id sender) DEPRECATED_ATTRIBUTE; // use changeHandler instead
 @property (nonatomic, retain) UIColor *shadowColor DEPRECATED_ATTRIBUTE;  // use textShadowColor instead
 @property (nonatomic, readwrite) CGSize shadowOffset DEPRECATED_ATTRIBUTE;  // use textShadowOffset instead
 @property (nonatomic, assign) id<SVSegmentedControlDelegate> delegate DEPRECATED_ATTRIBUTE; // use addTarget:action:forControlEvents: instead
