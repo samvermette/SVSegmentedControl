@@ -51,11 +51,6 @@
     if (self) {
 		self.userInteractionEnabled = NO;
 		self.backgroundColor = [UIColor clearColor];
-		self.layer.shadowOffset = CGSizeMake(0, 0);
-		self.layer.shadowRadius = 1;
-		self.layer.shadowColor = [UIColor blackColor].CGColor;
-		self.layer.shadowOpacity = 1;
-		self.layer.shouldRasterize = YES;
 
 		self.textColor = [UIColor whiteColor];
 		self.shadowColor = [UIColor blackColor];
@@ -107,12 +102,14 @@
     
     else {
         
+        CGFloat cornerRadius = self.segmentedControl.cornerRadius;
+        
         CGContextRef context = UIGraphicsGetCurrentContext();
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
         
         // STROKE GRADIENT
         
-        CGPathRef strokeRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:2].CGPath;
+        CGPathRef strokeRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:cornerRadius-2].CGPath;
         CGContextAddPath(context, strokeRect);
         CGContextClip(context);
         
@@ -135,7 +132,7 @@
         
         // FILL GRADIENT
         
-        CGPathRef fillRect = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(rect, 1, 1) cornerRadius:1].CGPath;
+        CGPathRef fillRect = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(rect, 1, 1) cornerRadius:cornerRadius-1].CGPath;
         CGContextAddPath(context, fillRect);
         CGContextClip(context);
         
@@ -148,7 +145,7 @@
             fillComponents[0]-=0.1;
             fillComponents[2]-=0.1;
         }
-        
+
         CGGradientRef fillGradient = CGGradientCreateWithColorComponents(colorSpace, fillComponents, NULL, 2);	
         CGContextDrawLinearGradient(context, fillGradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)), 0);
         CGGradientRelease(fillGradient);
@@ -218,6 +215,13 @@
 		posY--;
     
 	self.label.frame = self.secondLabel.frame = CGRectMake(0, posY, newFrame.size.width, self.font.pointSize);
+    
+    self.layer.shadowOffset = CGSizeMake(0, 0);
+    self.layer.shadowRadius = 1;
+    self.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.layer.shadowOpacity = 1;
+    self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:self.segmentedControl.cornerRadius-2].CGPath;
+    self.layer.shouldRasterize = YES;
 }
 
 
