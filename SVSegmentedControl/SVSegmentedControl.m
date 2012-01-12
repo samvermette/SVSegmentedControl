@@ -53,9 +53,12 @@
 
 @implementation SVSegmentedControl
 
-@synthesize delegate, selectedSegmentChangedHandler, thumbEdgeInset, selectedIndex, animateToInitialSelection;
-@synthesize backgroundImage, font, textColor, shadowColor, shadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag;
+@synthesize selectedSegmentChangedHandler, selectedIndex, animateToInitialSelection;
+@synthesize backgroundImage, font, textColor, textShadowColor, textShadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag;
 @synthesize titlesArray, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight;
+
+// deprecated
+@synthesize delegate, thumbEdgeInset, shadowColor, shadowOffset;
 
 #pragma mark -
 #pragma mark Life Cycle
@@ -71,7 +74,7 @@
 
 	self.font = nil;
 	self.textColor = nil;
-	self.shadowColor = nil;
+	self.textShadowColor = nil;
     self.backgroundImage = nil;
     [thumb release];
 	
@@ -93,8 +96,8 @@
         
         self.font = [UIFont boldSystemFontOfSize:15];
         self.textColor = [UIColor grayColor];
-        self.shadowColor = [UIColor blackColor];
-        self.shadowOffset = CGSizeMake(0, -1);
+        self.textShadowColor = [UIColor blackColor];
+        self.textShadowOffset = CGSizeMake(0, -1);
         
         self.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 10);
         self.thumbEdgeInset = UIEdgeInsetsMake(2, 2, 3, 2);
@@ -203,7 +206,7 @@
         CGColorSpaceRelease(colorSpace);
     }
     
-	CGContextSetShadowWithColor(context, self.shadowOffset, 0, self.shadowColor.CGColor);
+	CGContextSetShadowWithColor(context, self.textShadowOffset, 0, self.textShadowColor.CGColor);
 	[self.textColor set];
 	
 	CGFloat posY = ceil((CGRectGetHeight(rect)-self.font.pointSize+self.font.descender)/2)+self.titleEdgeInsets.top-self.titleEdgeInsets.bottom;
@@ -441,13 +444,18 @@
     }
 }
 
+#pragma mark - Support for deprecated methods
+
 - (void)setSegmentPadding:(CGFloat)newPadding {
-    // deprecated; this method is provided for backward compatibility
-    // use titleEdgeInsets instead
-    
     self.titleEdgeInsets = UIEdgeInsetsMake(0, newPadding, 0, newPadding);
 }
 
+- (void)setShadowOffset:(CGSize)newOffset {
+    self.textShadowOffset = newOffset;
+}
 
+- (void)setShadowColor:(UIColor *)newColor {
+    self.textShadowColor = newColor;
+}
 
 @end
