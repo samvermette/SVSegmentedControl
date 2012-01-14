@@ -54,11 +54,11 @@
     if (self) {
 		self.userInteractionEnabled = NO;
 		self.backgroundColor = [UIColor clearColor];
-
 		self.textColor = [UIColor whiteColor];
 		self.textShadowColor = [UIColor blackColor];
 		self.textShadowOffset = CGSizeMake(0, -1);
 		self.tintColor = [UIColor grayColor];
+        self.shouldCastShadow = YES;
     }
 	
     return self;
@@ -226,7 +226,6 @@
     self.layer.shadowOffset = CGSizeMake(0, 0);
     self.layer.shadowRadius = 1;
     self.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.layer.shadowOpacity = 1;
     self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:self.segmentedControl.cornerRadius-2].CGPath;
     self.layer.shouldRasterize = YES;
 }
