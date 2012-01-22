@@ -52,6 +52,7 @@
 	grayRC.font = [UIFont boldSystemFontOfSize:19];
 	grayRC.titleEdgeInsets = UIEdgeInsetsMake(0, 14, 0, 14);
 	grayRC.height = 46;
+	gratRC.width = 135;
 	
 	grayRC.thumb.tintColor = [UIColor colorWithRed:0 green:0.5 blue:0.1 alpha:1];
 	
