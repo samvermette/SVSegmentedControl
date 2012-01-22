@@ -25,6 +25,7 @@
 @property (nonatomic, readwrite) BOOL crossFadeLabelsOnDrag; // default is NO
 
 @property (nonatomic, readwrite) CGFloat height; // default is 32.0
+@property (nonatomic, readwrite) CGFloat width; // default is segment string title width
 @property (nonatomic, readwrite) UIEdgeInsets thumbEdgeInset; // default is UIEdgeInsetsMake(2, 2, 3, 2)
 @property (nonatomic, readwrite) UIEdgeInsets titleEdgeInsets; // default is UIEdgeInsetsMake(0, 10, 0, 10)
 @property (nonatomic, readwrite) CGFloat cornerRadius; // default is 4.0
