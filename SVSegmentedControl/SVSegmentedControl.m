@@ -131,12 +131,11 @@
 	self.segmentWidth = 0;
 	
 	for(NSString *titleString in self.titlesArray) {
-	    CGFloat stringWidth = [titleString sizeWithFont:self.font].width+(self.titleEdgeInsets.left+self.titleEdgeInsets.right+self.thumbEdgeInset.left+self.thumbEdgeInset.right);
-            if(self.width)
-                self.segmentWidth = self.width;
-            else
-                self.segmentWidth = MAX(stringWidth, self.segmentWidth);
-
+        CGFloat stringWidth = [titleString sizeWithFont:self.font].width+(self.titleEdgeInsets.left+self.titleEdgeInsets.right+self.thumbEdgeInset.left+self.thumbEdgeInset.right);
+        if(self.width)
+            self.segmentWidth = self.width;
+        else
+            self.segmentWidth = MAX(stringWidth, self.segmentWidth);
 	}
 	
 	self.segmentWidth = ceil(self.segmentWidth/2.0)*2; // make it an even number so we can position with center
