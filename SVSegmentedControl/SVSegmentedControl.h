@@ -20,9 +20,11 @@
 
 @property (nonatomic, retain, readonly) SVSegmentedThumb *thumb;
 @property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
-@property (nonatomic, retain) UIImage *backgroundImage; // default is nil
 @property (nonatomic, readwrite) BOOL animateToInitialSelection; // default is NO
 @property (nonatomic, readwrite) BOOL crossFadeLabelsOnDrag; // default is NO
+
+@property (nonatomic, retain) UIColor *tintColor; // default is [UIColor grayColor]
+@property (nonatomic, retain) UIImage *backgroundImage; // default is nil
 
 @property (nonatomic, readwrite) CGFloat height; // default is 32.0
 @property (nonatomic, readwrite) UIEdgeInsets thumbEdgeInset; // default is UIEdgeInsetsMake(2, 2, 3, 2)

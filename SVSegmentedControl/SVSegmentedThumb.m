@@ -112,16 +112,13 @@
         
         // STROKE GRADIENT
         
-        CGPathRef strokeRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:cornerRadius-2].CGPath;
+        CGPathRef strokeRect = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:cornerRadius-1.5].CGPath;
         CGContextAddPath(context, strokeRect);
         CGContextClip(context);
         
         CGContextSaveGState(context);
         
-        CGFloat strokeComponents[4] = {    
-            0.55, 1,
-            0.40, 1
-        };
+        CGFloat strokeComponents[4] = {0.55, 1,    0.40, 1};
         
         if(self.selected) {
             strokeComponents[0]-=0.1;
@@ -135,14 +132,11 @@
         
         // FILL GRADIENT
         
-        CGPathRef fillRect = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(rect, 1, 1) cornerRadius:cornerRadius-2].CGPath;
+        CGPathRef fillRect = [UIBezierPath bezierPathWithRoundedRect:CGRectInset(rect, 1, 1) cornerRadius:cornerRadius-2.5].CGPath;
         CGContextAddPath(context, fillRect);
         CGContextClip(context);
         
-        CGFloat fillComponents[4] = {    
-            0.5, 1,
-            0.35, 1
-        };
+        CGFloat fillComponents[4] = {0.5, 1,   0.35, 1};
         
         if(self.selected) {
             fillComponents[0]-=0.1;
@@ -226,7 +220,7 @@
     self.layer.shadowOffset = CGSizeMake(0, 0);
     self.layer.shadowRadius = 1;
     self.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:self.segmentedControl.cornerRadius-2].CGPath;
+    self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:self.segmentedControl.cornerRadius-1].CGPath;
     self.layer.shouldRasterize = YES;
 }
 

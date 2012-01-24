@@ -54,7 +54,7 @@
 @implementation SVSegmentedControl
 
 @synthesize selectedSegmentChangedHandler, changeHandler, selectedIndex, animateToInitialSelection;
-@synthesize cornerRadius, backgroundImage, font, textColor, textShadowColor, textShadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag;
+@synthesize cornerRadius, tintColor, backgroundImage, font, textColor, textShadowColor, textShadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag;
 @synthesize titlesArray, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight;
 
 // deprecated
@@ -90,6 +90,7 @@
         self.thumbRects = [NSMutableArray arrayWithCapacity:[array count]];
         
         self.backgroundColor = [UIColor clearColor];
+        self.tintColor = [UIColor grayColor];
         self.clipsToBounds = YES;
         self.userInteractionEnabled = YES;
         self.animateToInitialSelection = NO;
@@ -174,28 +175,28 @@
     else {
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
         
-        UIBezierPath *bottomGloss = [UIBezierPath bezierPath];
-        [bottomGloss moveToPoint:CGPointMake(-0.5, rect.size.height-self.cornerRadius-0.5)];
-        [bottomGloss addArcWithCenter:CGPointMake(self.cornerRadius-0.5, rect.size.height-self.cornerRadius-0.5) radius:self.cornerRadius startAngle:M_PI endAngle:M_PI/2 clockwise:NO];
-        [bottomGloss addLineToPoint:CGPointMake(rect.size.width-self.cornerRadius, rect.size.height-0.5)];
-        [bottomGloss addArcWithCenter:CGPointMake(rect.size.width-self.cornerRadius+0.5, rect.size.height-self.cornerRadius-0.5) radius:self.cornerRadius startAngle:M_PI/2 endAngle:0 clockwise:NO];
-        CGContextAddPath(context, bottomGloss.CGPath);
-        CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.1].CGColor);
-        CGContextStrokePath(context);
+        // bottom gloss
+        CGContextSetFillColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.1].CGColor);
+        CGPathRef bottomGlossRect = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, rect.size.width, rect.size.height) cornerRadius:self.cornerRadius].CGPath;
+        CGContextAddPath(context, bottomGlossRect);
+        CGContextFillPath(context);
         
         CGPathRef roundedRect = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, rect.size.width, rect.size.height-1) cornerRadius:self.cornerRadius].CGPath;
         CGContextAddPath(context, roundedRect);
         CGContextClip(context);
         
-        CGFloat components[4] = {0, 0.55,  0, 0.4};
+        // background tint
+        CGFloat components[4] = {0.10, 1,  0.14, 1};
         CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);	
         CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
         CGGradientRelease(gradient);
         
-        UIBezierPath *topShadow = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0.5, rect.size.width, rect.size.height-1.5) cornerRadius:self.cornerRadius];
-
-        CGContextAddPath(context, topShadow.CGPath);
-        CGContextSetShadowWithColor(UIGraphicsGetCurrentContext(), CGSizeMake(0, 1), 1, [UIColor colorWithWhite:0 alpha:0.2].CGColor);
+        [self.tintColor set];
+        UIRectFillUsingBlendMode(rect, kCGBlendModeOverlay);
+        
+        // inner shadow
+        CGContextAddPath(context, roundedRect);
+        CGContextSetShadowWithColor(UIGraphicsGetCurrentContext(), CGSizeMake(0, 1), 1, [UIColor colorWithWhite:0 alpha:0.6].CGColor);
         CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0 alpha:0.9].CGColor);
         CGContextStrokePath(context);
         
