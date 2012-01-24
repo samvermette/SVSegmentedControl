@@ -68,6 +68,7 @@
 	self.titlesArray = nil;    
     self.changeHandler = nil;
     self.thumbRects = nil;
+    self.tintColor = nil;
     
     // avoid deprecated warnings
     [self setValue:nil forKey:@"delegate"];
