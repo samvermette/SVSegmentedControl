@@ -187,7 +187,7 @@
         CGContextClip(context);
         
         // background tint
-        CGFloat components[4] = {0.10, 1,  0.14, 1};
+        CGFloat components[4] = {0.10, 1,  0.12, 1};
         CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);	
         CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
         CGGradientRelease(gradient);
@@ -332,7 +332,7 @@
 	
 	self.thumb.label.text = [self.titlesArray objectAtIndex:index];
     
-    if(self.changeHandler && self.snapToIndex != self.selectedIndex)
+    if(self.changeHandler && self.snapToIndex != self.selectedIndex && !self.isTracking)
 		self.changeHandler(self.snapToIndex);
 
 	if(animated)
