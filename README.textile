@@ -1,3 +1,5 @@
+__Note: SVSegmentedControl now uses Automatic Reference Counting (ARC). Find the last MRC commit on the "master-mrc":https://github.com/samvermette/SVSegmentedControl/tree/master-mrc branch.__
+
 h1. SVSegmentedControl
 
 SVSegmentedControl is a customizable @UIControl@ class that mimics UISegmentedControl but that looks like an UISwitch.

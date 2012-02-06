@@ -24,7 +24,6 @@
     };
     
 	[self.view addSubview:navSC];
-	[navSC release];
 	
 	navSC.center = CGPointMake(160, 70);
 	
@@ -39,7 +38,6 @@
 	redSC.selectedIndex = 1;
 	
 	[self.view addSubview:redSC];
-	[redSC release];
 	
 	redSC.center = CGPointMake(160, 170);
 	
@@ -56,7 +54,6 @@
 	grayRC.thumb.tintColor = [UIColor colorWithRed:0 green:0.5 blue:0.1 alpha:1];
 	
 	[self.view addSubview:grayRC];
-	[grayRC release];
 	
 	grayRC.center = CGPointMake(160, 270);
 	
@@ -78,7 +75,6 @@
 	yellowRC.thumb.textShadowOffset = CGSizeMake(0, 1);
 	
 	[self.view addSubview:yellowRC];
-	[yellowRC release];
 	
 	yellowRC.center = CGPointMake(160, 370);
 	
@@ -118,8 +114,5 @@
 }
 
 
-- (void)dealloc {
-    [super dealloc];
-}
 
 @end

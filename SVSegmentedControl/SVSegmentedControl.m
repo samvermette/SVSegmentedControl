@@ -35,8 +35,8 @@
 - (void)updateTitles;
 - (void)toggle;
 
-@property (nonatomic, retain) NSMutableArray *titlesArray;
-@property (nonatomic, retain) NSMutableArray *thumbRects;
+@property (nonatomic, strong) NSMutableArray *titlesArray;
+@property (nonatomic, strong) NSMutableArray *thumbRects;
 
 @property (nonatomic, readwrite) NSUInteger snapToIndex;
 @property (nonatomic, readwrite) BOOL trackingThumb;
@@ -62,27 +62,6 @@
 
 #pragma mark -
 #pragma mark Life Cycle
-
-- (void)dealloc {
-	
-	self.titlesArray = nil;    
-    self.changeHandler = nil;
-    self.thumbRects = nil;
-    self.tintColor = nil;
-    
-    // avoid deprecated warnings
-    [self setValue:nil forKey:@"delegate"];
-    [self setValue:nil forKey:@"selectedSegmentChangedHandler"];
-    
-	self.font = nil;
-	self.textColor = nil;
-	self.textShadowColor = nil;
-    self.backgroundImage = nil;
-    [thumb release];
-	
-    [super dealloc];
-}
-
 
 - (id)initWithSectionTitles:(NSArray*)array {
     
@@ -439,10 +418,10 @@
 - (void)setBackgroundImage:(UIImage *)newImage {
     
     if(backgroundImage)
-        [backgroundImage release], backgroundImage = nil;
+        backgroundImage = nil;
     
     if(newImage) {
-        backgroundImage = [newImage retain];
+        backgroundImage = newImage;
         self.height = backgroundImage.size.height;
     }
 }

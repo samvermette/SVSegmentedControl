@@ -15,11 +15,11 @@
 @interface SVSegmentedThumb ()
 
 @property (nonatomic, readwrite) BOOL selected;
-@property (nonatomic, assign) SVSegmentedControl *segmentedControl;
-@property (nonatomic, assign) UIFont *font;
+@property (nonatomic, unsafe_unretained) SVSegmentedControl *segmentedControl;
+@property (nonatomic, unsafe_unretained) UIFont *font;
 
-@property (nonatomic, readonly) UILabel *label;
-@property (nonatomic, readonly) UILabel *secondLabel;
+@property (strong, nonatomic, readonly) UILabel *label;
+@property (strong, nonatomic, readonly) UILabel *secondLabel;
 
 - (void)activate;
 - (void)deactivate;
@@ -35,16 +35,6 @@
 // deprecated properties
 @synthesize shadowColor, shadowOffset, castsShadow;
 
-- (void)dealloc {
-    
-    self.backgroundImage = nil;
-    self.highlightedBackgroundImage = nil;
-    
-    [label release];
-    [secondLabel release];
-	
-    [super dealloc];
-}
 
 
 - (id)initWithFrame:(CGRect)frame {
@@ -162,10 +152,10 @@
 - (void)setBackgroundImage:(UIImage *)newImage {
     
     if(backgroundImage)
-        [backgroundImage release], backgroundImage = nil;
+        backgroundImage = nil;
     
     if(newImage) {
-        backgroundImage = [newImage retain];
+        backgroundImage = newImage;
         self.shouldCastShadow = NO;
     } else {
         self.shouldCastShadow = YES;
@@ -175,10 +165,10 @@
 - (void)setTintColor:(UIColor *)newColor {
     
     if(tintColor)
-        [tintColor release], tintColor = nil;
+        tintColor = nil;
 	
 	if(newColor)
-		tintColor = [newColor retain];
+		tintColor = newColor;
 
 	[self setNeedsDisplay];
 }

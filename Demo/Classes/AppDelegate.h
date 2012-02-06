@@ -15,8 +15,8 @@
     ViewController *viewController;
 }
 
-@property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet ViewController *viewController;
+@property (nonatomic, strong) IBOutlet UIWindow *window;
+@property (nonatomic, strong) IBOutlet ViewController *viewController;
 
 @end
 
