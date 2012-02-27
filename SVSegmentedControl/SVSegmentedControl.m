@@ -403,7 +403,9 @@
 								 [self updateTitles];
 						 }
 						 completion:^(BOOL finished){
-							 [self activate];
+                             if (finished) {
+                                 [self activate];
+                             }
 						 }];
 	}
 	
