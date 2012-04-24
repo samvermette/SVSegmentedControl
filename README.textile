@@ -1,4 +1,4 @@
-__Note: SVSegmentedControl now uses Automatic Reference Counting (ARC). Find the last MRC commit on the "master-mrc":https://github.com/samvermette/SVSegmentedControl/tree/master-mrc branch.__
+__Note: SVSegmentedControl now uses Automatic Reference Counting (ARC). Find the last MRC commit on the "last-mrc":https://github.com/samvermette/SVSegmentedControl/tree/last-mrc branch.__
 
 h1. SVSegmentedControl
 
@@ -99,10 +99,6 @@ Providing an action method ending with a semicolon, the sender object is therefo
 	NSLog(@"segmentedControl did select index %i", segmentedControl.selectedIndex);
 }
 </pre>
-
-h2. Automatic Reference Counting (ARC) support
-
-Maintaining an official ARC branch has proven to be too much work, often leading to confusion since the ARC branch is always a few commits behind. If you'd like to use SVSegmentedControl in your ARC-enabled project, you'll have to "add the @-fno-objc-arc@ compiler flag":http://stackoverflow.com/questions/6646052/how-can-i-disable-arc-for-a-single-file-in-a-project to all of SVSegmentedControl's files.
 
 h2. Credits
 
