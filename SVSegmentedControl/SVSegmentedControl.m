@@ -34,9 +34,11 @@
 - (void)snap:(BOOL)animated;
 - (void)updateTitles;
 - (void)toggle;
+- (void)setupAccessibility;
 
 @property (nonatomic, strong) NSMutableArray *titlesArray;
 @property (nonatomic, strong) NSMutableArray *thumbRects;
+@property (nonatomic, strong) NSMutableArray *accessibilityElements;
 
 @property (nonatomic, readwrite) NSUInteger snapToIndex;
 @property (nonatomic, readwrite) BOOL trackingThumb;
@@ -53,7 +55,7 @@
 
 @implementation SVSegmentedControl
 
-@synthesize selectedSegmentChangedHandler, changeHandler, selectedIndex, animateToInitialSelection;
+@synthesize selectedSegmentChangedHandler, changeHandler, selectedIndex, animateToInitialSelection, accessibilityElements;
 @synthesize cornerRadius, tintColor, backgroundImage, font, textColor, textShadowColor, textShadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag;
 @synthesize titlesArray, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight;
 
@@ -68,6 +70,7 @@
 	if (self = [super initWithFrame:CGRectZero]) {
         self.titlesArray = [NSMutableArray arrayWithArray:array];
         self.thumbRects = [NSMutableArray arrayWithCapacity:[array count]];
+        self.accessibilityElements = [NSMutableArray arrayWithCapacity:self.titlesArray.count];
         
         self.backgroundColor = [UIColor clearColor];
         self.tintColor = [UIColor grayColor];
@@ -200,6 +203,59 @@
 		[titleString drawInRect:labelRect withFont:self.font lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
 		i++;
 	}
+}
+
+#pragma mark - Accessibility
+
+- (void)setBounds:(CGRect)bounds {
+    [super setBounds:bounds];
+    
+    [self setupAccessibility];
+}
+
+- (void)setCenter:(CGPoint)center {
+    [super setCenter:center];
+    
+    [self setupAccessibility];
+}
+
+- (void)setupAccessibility {
+    [self.accessibilityElements removeAllObjects];
+    
+    NSUInteger i = 0;
+    for (NSString *title in self.titlesArray) {
+        UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
+        element.isAccessibilityElement = YES;
+        element.accessibilityLabel = [NSString stringWithFormat:NSLocalizedString(@"%@ tab",), title];
+        element.accessibilityHint = [NSString stringWithFormat:NSLocalizedString(@"Tab %d of %d",), i + 1, self.titlesArray.count];
+        
+        [self.accessibilityElements addObject:element];
+        i++;
+    }
+}
+
+- (NSInteger)accessibilityElementCount {
+    return self.accessibilityElements.count;
+}
+
+- (id)accessibilityElementAtIndex:(NSInteger)index {
+    UIAccessibilityElement *element = [self.accessibilityElements objectAtIndex:index];
+    
+    CGFloat posY = ceil((CGRectGetHeight(self.bounds)-self.font.pointSize+self.font.descender)/2)+self.titleEdgeInsets.top-self.titleEdgeInsets.bottom;
+    element.accessibilityFrame = [self.window convertRect:CGRectMake((self.segmentWidth*index), posY, self.segmentWidth, self.font.pointSize) fromView:self];
+    
+    element.accessibilityTraits = UIAccessibilityTraitNone;
+    if (index == self.selectedIndex)
+        element.accessibilityTraits = element.accessibilityTraits | UIAccessibilityTraitSelected;
+    else if (!self.enabled)
+        element.accessibilityTraits = element.accessibilityTraits | UIAccessibilityTraitNotEnabled;
+    
+    return element;
+}
+
+- (NSInteger)indexOfAccessibilityElement:(id)element {
+    NSString *title = [[[element accessibilityLabel] componentsSeparatedByString:@" "] objectAtIndex:0];
+    return [self.titlesArray indexOfObject:title];
 }
 
 #pragma mark -
