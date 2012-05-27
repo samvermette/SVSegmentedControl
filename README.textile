@@ -1,11 +1,10 @@
-__Note: SVSegmentedControl now uses Automatic Reference Counting (ARC). Find the last MRC commit on the "last-mrc":https://github.com/samvermette/SVSegmentedControl/tree/last-mrc branch.__
 
 h1. SVSegmentedControl
 
 SVSegmentedControl is a customizable @UIControl@ class that mimics UISegmentedControl but that looks like an UISwitch.
 
 
-!http://f.cl.ly/items/213N0a1k2U2O0F3y053z/svsegmentedcontrol3.png!
+!http://img819.imageshack.us/img819/4274/screenshot20120527at357.png!
 
 h2. Installation
 
@@ -28,6 +27,12 @@ segmentedControl.changeHandler = ^(NSUInteger newIndex) {
 [segmentedControl release];
 </pre>
 
+This is how you create it with *images*:
+
+<pre>
+segmentedControl = [[SVSegmentedControl alloc] initWithSectionImages:[NSArray arrayWithObjects:[UIImage imageNamed:@"image_name.png"],[UIImage imageNamed:@"image_name.png"],nil]];
+</pre>
+
 You're *highly encouraged* to position it using its @center@ property:
 
 <pre>
@@ -42,6 +47,8 @@ SVSegmentedControl can be customized with the following properties:
 @property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
 @property (nonatomic, readwrite) BOOL animateToInitialSelection; // default is NO
 @property (nonatomic, readwrite) BOOL crossFadeLabelsOnDrag; // default is NO
+
+@property (nonatomic, strong) NSMutableArray *selectedImagesArray; //default is regular images
 
 @property (nonatomic, retain) UIColor *tintColor; // default is [UIColor grayColor]
 @property (nonatomic, retain) UIImage *backgroundImage; // default is nil
@@ -102,4 +109,4 @@ Providing an action method ending with a semicolon, the sender object is therefo
 
 h2. Credits
 
-SVSegmentedControl is brought to you by "Sam Vermette":http://samvermette.com and "contributors to the project":https://github.com/samvermette/SVSegmentedControl/contributors. If you have feature suggestions or bug reports, feel free to help out by sending pull requests or by "creating new issues":https://github.com/samvermette/SVSegmentedControl/issues/new. If you're using SVSegmentedControl in your project, proper attribution would be nice.
+SVSegmentedControl is brought to you by "Niv Gutherz":http://novniv.com (Originally by Sam Vermette).

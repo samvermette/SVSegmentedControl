@@ -23,6 +23,8 @@
 @property (nonatomic, readwrite) BOOL animateToInitialSelection; // default is NO
 @property (nonatomic, readwrite) BOOL crossFadeLabelsOnDrag; // default is NO
 
+@property (nonatomic, strong) NSMutableArray *selectedImagesArray;
+
 @property (nonatomic, strong) UIColor *tintColor; // default is [UIColor grayColor]
 @property (nonatomic, strong) UIImage *backgroundImage; // default is nil
 
@@ -44,6 +46,9 @@
 @property (nonatomic, readwrite) CGFloat segmentPadding DEPRECATED_ATTRIBUTE; // use titleEdgeInsets instead
 
 - (SVSegmentedControl*)initWithSectionTitles:(NSArray*)titlesArray;
+
+- (id)initWithSectionImages:(NSArray *)images;
+
 - (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate;
 
 @end

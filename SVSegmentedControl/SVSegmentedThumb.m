@@ -21,20 +21,24 @@
 @property (strong, nonatomic, readonly) UILabel *label;
 @property (strong, nonatomic, readonly) UILabel *secondLabel;
 
+@property (strong, nonatomic, readonly) UIImageView *imageView;
+@property (strong, nonatomic, readonly) UIImageView *secondImageView;
+
 - (void)activate;
 - (void)deactivate;
 
 @end
 
 
-@implementation SVSegmentedThumb
+@implementation SVSegmentedThumb {
+}
+
 
 @synthesize segmentedControl, backgroundImage, highlightedBackgroundImage, font, tintColor, textColor, textShadowColor, textShadowOffset, shouldCastShadow, selected;
-@synthesize label, secondLabel;
+@synthesize label, secondLabel, secondImageView, imageView;
 
 // deprecated properties
 @synthesize shadowColor, shadowOffset, castsShadow;
-
 
 
 - (id)initWithFrame:(CGRect)frame {
@@ -52,6 +56,26 @@
     }
 	
     return self;
+}
+
+- (UIImageView *)imageView {
+
+    if (imageView == nil) {
+        imageView = [[UIImageView alloc] initWithFrame:self.bounds];
+        [self addSubview:imageView];
+    }
+
+    return imageView;
+}
+
+- (UIImageView *)secondImageView {
+
+    if (secondImageView == nil) {
+        secondImageView = [[UIImageView alloc] initWithFrame:self.bounds];
+        [self addSubview:secondImageView];
+    }
+
+    return secondImageView;
 }
 
 - (UILabel*)label {
@@ -199,8 +223,8 @@
 - (void)setFrame:(CGRect)newFrame {
 	[super setFrame:newFrame];
         
-    CGFloat posY = ceil((self.segmentedControl.height-self.font.pointSize+self.font.descender)/2)+self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom-self.segmentedControl.thumbEdgeInset.top+2;
-	int pointSize = self.font.pointSize;
+    CGFloat posY = (CGFloat) (ceil((self.segmentedControl.height-self.font.pointSize+self.font.descender)/2)+self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom-self.segmentedControl.thumbEdgeInset.top+2);
+	int pointSize = (int) self.font.pointSize;
 	
 	if(pointSize%2 != 0)
 		posY--;
@@ -230,15 +254,19 @@
 - (void)activate {
 	[self setSelected:NO];
     
-    if(!self.segmentedControl.crossFadeLabelsOnDrag)
+    if(!self.segmentedControl.crossFadeLabelsOnDrag) {
         self.label.alpha = 1;
+        self.imageView.alpha = 1;
+    }
 }
 
 - (void)deactivate {
 	[self setSelected:YES];
     
-    if(!self.segmentedControl.crossFadeLabelsOnDrag)
+    if(!self.segmentedControl.crossFadeLabelsOnDrag) {
         self.label.alpha = 0;
+        self.imageView.alpha = 0;
+    }
 }
 
 #pragma mark - Support for deprecated methods
