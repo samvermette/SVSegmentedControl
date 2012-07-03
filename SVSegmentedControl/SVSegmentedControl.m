@@ -231,7 +231,6 @@
         
         [self.accessibilityElements addObject:element];
         i++;
-        [element release];
     }
 }
 
