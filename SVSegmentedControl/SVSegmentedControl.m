@@ -56,7 +56,7 @@
 @implementation SVSegmentedControl
 
 @synthesize selectedSegmentChangedHandler, changeHandler, selectedIndex, animateToInitialSelection, accessibilityElements;
-@synthesize cornerRadius, tintColor, backgroundImage, font, textColor, textShadowColor, textShadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag;
+@synthesize cornerRadius, tintColor, backgroundImage, font, textColor, textShadowColor, textShadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag, switchBehaviour;
 @synthesize titlesArray, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight;
 
 // deprecated
@@ -78,6 +78,7 @@
         self.userInteractionEnabled = YES;
         self.animateToInitialSelection = NO;
         self.clipsToBounds = NO;
+		self.switchBehaviour = YES;
         
         self.font = [UIFont boldSystemFontOfSize:15];
         self.textColor = [UIColor grayColor];
@@ -320,9 +321,11 @@
 	CGFloat pMaxX = CGRectGetMaxX(self.bounds);
 	CGFloat pMinX = CGRectGetMinX(self.bounds);
 	
-	if(!self.moved && self.trackingThumb && [self.titlesArray count] == 2)
-		[self toggle];
 	
+	// If you don't want a UISwitch-like behaviour then set switchBehaviour to NO.
+	
+	if(!self.moved && self.trackingThumb && [self.titlesArray count] == 2 && self.switchBehaviour)
+		[self toggle];
 	else if(!self.activated && cPos.x > pMinX && cPos.x < pMaxX) {
 		self.snapToIndex = floor(cPos.x/self.segmentWidth);
 		[self snap:YES];

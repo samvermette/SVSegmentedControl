@@ -44,7 +44,8 @@
 	
 	// 3rd CONTROL
 	
-	SVSegmentedControl *grayRC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Section 1", @"Section 2", nil]];
+	SVSegmentedControl *grayRC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"1 - No switch", @"2 - No switch", nil]];
+	grayRC.switchBehaviour = NO;
     [grayRC addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
 
 	grayRC.font = [UIFont boldSystemFontOfSize:19];
