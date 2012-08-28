@@ -22,6 +22,7 @@
 @property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
 @property (nonatomic, readwrite) BOOL animateToInitialSelection; // default is NO
 @property (nonatomic, readwrite) BOOL crossFadeLabelsOnDrag; // default is NO
+@property (nonatomic, readwrite) BOOL switchBehaviour; // default is YES
 
 @property (nonatomic, strong) UIColor *tintColor; // default is [UIColor grayColor]
 @property (nonatomic, strong) UIImage *backgroundImage; // default is nil
