@@ -15,6 +15,7 @@
 		22783B59138CB04D00EE887C /* SVSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 22783B57138CB04D00EE887C /* SVSegmentedControl.m */; };
 		22783BEF138CB70400EE887C /* SVSegmentedThumb.m in Sources */ = {isa = PBXBuildFile; fileRef = 22783BEE138CB70400EE887C /* SVSegmentedThumb.m */; };
 		22783C7C138CC01E00EE887C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22783C7B138CC01E00EE887C /* QuartzCore.framework */; };
+		22A748901630AD4E004893A8 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 22A7488F1630AD4E004893A8 /* Default-568h@2x.png */; };
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
 		2899E5220DE3E06400AC0155 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2899E5210DE3E06400AC0155 /* ViewController.xib */; };
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
@@ -33,6 +34,7 @@
 		22783BED138CB70400EE887C /* SVSegmentedThumb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVSegmentedThumb.h; sourceTree = "<group>"; };
 		22783BEE138CB70400EE887C /* SVSegmentedThumb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVSegmentedThumb.m; sourceTree = "<group>"; };
 		22783C7B138CC01E00EE887C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		22A7488F1630AD4E004893A8 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		2899E5210DE3E06400AC0155 /* ViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ViewController.xib; path = ../ViewController.xib; sourceTree = "<group>"; };
 		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				22A7488F1630AD4E004893A8 /* Default-568h@2x.png */,
 				224B1755145F25D600BD2DDB /* README.textile */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				22783B55138CB04D00EE887C /* SVSegmentedControl */,
@@ -159,7 +162,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0450;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "SVSegmentedControl" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -188,6 +191,7 @@
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				2899E5220DE3E06400AC0155 /* ViewController.xib in Resources */,
 				224B1756145F25D600BD2DDB /* README.textile in Resources */,
+				22A748901630AD4E004893A8 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
