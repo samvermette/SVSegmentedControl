@@ -200,7 +200,11 @@
 	for(NSString *titleString in self.titlesArray) {
         CGRect labelRect = CGRectMake((self.segmentWidth*i), posY, self.segmentWidth, self.font.pointSize);
         //CGContextFillRect(context, labelRect);
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
 		[titleString drawInRect:labelRect withFont:self.font lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
+#else
+		[titleString drawInRect:labelRect withFont:self.font lineBreakMode:NSLineBreakByClipping alignment:kCTTextAlignmentCenter];
+#endif
 		i++;
 	}
 }
