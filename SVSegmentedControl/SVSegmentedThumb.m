@@ -61,7 +61,7 @@
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
 		label.textAlignment = UITextAlignmentCenter;
 #else
-        label.textAlignment = kCTTextAlignmentCenter;
+        label.textAlignment = NSTextAlignmentCenter;
 #endif
 		label.font = self.font;
 		label.backgroundColor = [UIColor clearColor];
@@ -78,7 +78,7 @@
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
 		secondLabel.textAlignment = UITextAlignmentCenter;
 #else
-        secondLabel.textAlignment = kCTTextAlignmentCenter;
+        secondLabel.textAlignment = NSTextAlignmentCenter;
 #endif
 		secondLabel.font = self.font;
 		secondLabel.backgroundColor = [UIColor clearColor];
