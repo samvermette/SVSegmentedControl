@@ -124,7 +124,8 @@
         CGContextAddPath(context, bottomGlossRect);
         CGContextFillPath(context);
         
-        CGPathRef roundedRect = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, rect.size.width, rect.size.height-1) cornerRadius:self.cornerRadius].CGPath;
+        CGRect insetRect = CGRectMake(0, 0, rect.size.width, rect.size.height-1);
+        CGPathRef roundedRect = [UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius].CGPath;
         CGContextAddPath(context, roundedRect);
         CGContextClip(context);
         
@@ -137,13 +138,15 @@
         [self.tintColor set];
         UIRectFillUsingBlendMode(rect, kCGBlendModeOverlay);
         
-        // inner shadow
-        CGContextAddPath(context, roundedRect);
-        CGContextSetShadowWithColor(UIGraphicsGetCurrentContext(), CGSizeMake(0, 1), 1, [UIColor colorWithWhite:0 alpha:0.6].CGColor);
-        CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0 alpha:0.9].CGColor);
-        CGContextStrokePath(context);
         
-        CGColorSpaceRelease(colorSpace);
+        UIColor *innerShadowColor = [UIColor colorWithWhite:0 alpha:0.8];
+        NSArray *paths = [NSArray arrayWithObject:[UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius]];
+        UIImage *mask = [self maskWithPaths:paths bounds:CGRectInset(insetRect, -10, -10)];
+        UIImage *invertedImage = [self invertedImageWithMask:mask color:innerShadowColor];
+        
+        CGContextSetShadowWithColor(context, CGSizeMake(0, 1), 2, innerShadowColor.CGColor);
+        [invertedImage drawAtPoint:CGPointMake(-10, -10)];
+
     }
     
 	CGContextSetShadowWithColor(context, self.textShadowOffset, 0, self.textShadowColor.CGColor);
@@ -508,6 +511,74 @@
 
 - (void)setShadowColor:(UIColor *)newColor {
     self.textShadowColor = newColor;
+}
+
+#pragma mark - Inner Glow Methods
+
+// http://stackoverflow.com/a/8482103/87158
+
+- (UIImage *)maskWithPaths:(NSArray *)paths bounds:(CGRect)bounds
+{
+    // Get the scale for good results on Retina screens.
+    CGFloat scale = [UIScreen mainScreen].scale;
+    CGSize scaledSize = CGSizeMake(bounds.size.width * scale, bounds.size.height * scale);
+    
+    // Create the bitmap with just an alpha channel.
+    // When created, it has value 0 at every pixel.
+    CGContextRef gc = CGBitmapContextCreate(NULL, scaledSize.width, scaledSize.height, 8, scaledSize.width, NULL, kCGImageAlphaOnly);
+    
+    // Adjust the current transform matrix for the screen scale.
+    CGContextScaleCTM(gc, scale, scale);
+    // Adjust the CTM in case the bounds origin isn't zero.
+    CGContextTranslateCTM(gc, -bounds.origin.x, -bounds.origin.y);
+    
+    // whiteColor has all components 1, including alpha.
+    CGContextSetFillColorWithColor(gc, [UIColor whiteColor].CGColor);
+    
+    // Fill each path into the mask.
+    for (UIBezierPath *path in paths) {
+        CGContextBeginPath(gc);
+        CGContextAddPath(gc, path.CGPath);
+        CGContextFillPath(gc);
+    }
+    
+    // Turn the bitmap context into a UIImage.
+    CGImageRef cgImage = CGBitmapContextCreateImage(gc);
+    CGContextRelease(gc);
+    UIImage *image = [UIImage imageWithCGImage:cgImage scale:scale orientation:UIImageOrientationDownMirrored];
+    CGImageRelease(cgImage);
+    return image;
+}
+
+- (UIImage *)invertedImageWithMask:(UIImage *)mask color:(UIColor *)color
+{
+    CGRect rect = { CGPointZero, mask.size };
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, mask.scale); {
+        // Fill the entire image with color.
+        [color setFill];
+        UIRectFill(rect);
+        // Now erase the masked part.
+        CGContextClipToMask(UIGraphicsGetCurrentContext(), rect, mask.CGImage);
+        CGContextClearRect(UIGraphicsGetCurrentContext(), rect);
+    }
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
+}
+
+- (void)drawInnerGlowWithPaths:(NSArray *)paths bounds:(CGRect)bounds color:(UIColor *)color offset:(CGSize)offset blur:(CGFloat)blur
+{
+    UIImage *mask = [self maskWithPaths:paths bounds:bounds];
+    UIImage *invertedImage = [self invertedImageWithMask:mask color:color];
+    CGContextRef gc = UIGraphicsGetCurrentContext();
+    
+    // Save the graphics state so I can restore the clip and
+    // shadow attributes after drawing.
+    CGContextSaveGState(gc); {
+        CGContextClipToMask(gc, bounds, mask.CGImage);
+        CGContextSetShadowWithColor(gc, offset, blur, color.CGColor);
+        [invertedImage drawInRect:bounds];
+    } CGContextRestoreGState(gc);
 }
 
 @end
