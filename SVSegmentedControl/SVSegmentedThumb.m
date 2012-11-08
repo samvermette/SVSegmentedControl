@@ -52,7 +52,7 @@
 		self.textShadowColor = [UIColor blackColor];
 		self.textShadowOffset = CGSizeMake(0, -1);
 		self.tintColor = [UIColor grayColor];
-        self.shouldCastShadow = NO;
+        self.shouldCastShadow = YES;
     }
 	
     return self;
@@ -119,38 +119,40 @@
         CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
         CGPathRef strokePath= [UIBezierPath bezierPathWithRoundedRect:thumbRect cornerRadius:cornerRadius-1.5].CGPath;
         
-        CGContextAddRect(context, rect);
-        CGContextSaveGState(context);
-        CGContextAddPath(context, strokePath);
-        CGContextEOClip(context);
-        
-        if(!self.selected) { // dont let thumb drop shadow get outside of segmented control
-            if(self.isAtFirstIndex) {
-                CGRect maskRect = thumbRect;
-                maskRect.size.width+=5;
-                maskRect.size.height = rect.size.height+1;
-                CGContextAddPath(context, [UIBezierPath bezierPathWithRoundedRect:maskRect cornerRadius:cornerRadius].CGPath);
-                CGContextClip(context);
+        if(self.shouldCastShadow) {
+            CGContextAddRect(context, rect);
+            CGContextSaveGState(context);
+            CGContextAddPath(context, strokePath);
+            CGContextEOClip(context);
+            
+            if(!self.selected) { // dont let thumb drop shadow get outside of segmented control
+                if(self.isAtFirstIndex) {
+                    CGRect maskRect = thumbRect;
+                    maskRect.size.width+=5;
+                    maskRect.size.height = rect.size.height+1;
+                    CGContextAddPath(context, [UIBezierPath bezierPathWithRoundedRect:maskRect cornerRadius:cornerRadius].CGPath);
+                    CGContextClip(context);
+                }
+                else if(self.isAtLastIndex) {
+                    CGRect maskRect = thumbRect;
+                    maskRect.size.width+=5;
+                    maskRect.origin.x-=5;
+                    maskRect.size.height = rect.size.height+1;
+                    CGContextAddPath(context, [UIBezierPath bezierPathWithRoundedRect:maskRect cornerRadius:cornerRadius].CGPath);
+                    CGContextClip(context);
+                }
             }
-            else if(self.isAtLastIndex) {
-                CGRect maskRect = thumbRect;
-                maskRect.size.width+=5;
-                maskRect.origin.x-=5;
-                maskRect.size.height = rect.size.height+1;
-                CGContextAddPath(context, [UIBezierPath bezierPathWithRoundedRect:maskRect cornerRadius:cornerRadius].CGPath);
-                CGContextClip(context);
-            }
+            
+            CGContextSetShadowWithColor(context, CGSizeMake(0, 0), 3, [UIColor colorWithWhite:0 alpha:0.6].CGColor);
+            [[UIColor blackColor] set];
+            CGContextAddPath(context, strokePath);
+            CGContextFillPath(context);
+            
+            CGContextSetShadowWithColor(context, CGSizeZero, 0, NULL);
+            CGContextRestoreGState(context);
         }
-        
-        CGContextSetShadowWithColor(context, CGSizeMake(0, 0), 3, [UIColor colorWithWhite:0 alpha:0.6].CGColor);
-        [[UIColor blackColor] set];
-        CGContextAddPath(context, strokePath);
-        CGContextFillPath(context);
-        
-        CGContextSetShadowWithColor(context, CGSizeZero, 0, NULL);
-        
+                
         // FILL GRADIENT
-        CGContextRestoreGState(context);
         CGRect fillRect = thumbRect;
         CGPathRef fillPath = [UIBezierPath bezierPathWithRoundedRect:fillRect cornerRadius:cornerRadius-1.5].CGPath;
         CGContextAddPath(context, fillPath);
@@ -235,10 +237,6 @@
 
 - (void)setTextShadowOffset:(CGSize)newOffset {
 	self.label.shadowOffset = self.secondLabel.shadowOffset = newOffset;
-}
-
-- (void)setShouldCastShadow:(BOOL)b {
-    self.layer.shadowOpacity = b ? 1 : 0;
 }
 
 
