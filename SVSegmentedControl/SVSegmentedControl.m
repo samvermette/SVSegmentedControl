@@ -129,7 +129,7 @@
         CGContextClip(context);
         
         // background tint
-        CGFloat components[4] = {0.10, 1,  0.12, 1};
+        CGFloat components[4] = {0.10, CGColorGetAlpha(self.tintColor.CGColor),  0.12, CGColorGetAlpha(self.tintColor.CGColor)};
         CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);	
         CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
         CGGradientRelease(gradient);
