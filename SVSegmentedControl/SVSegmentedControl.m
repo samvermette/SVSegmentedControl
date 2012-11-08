@@ -104,46 +104,6 @@
     return thumb;
 }
 
-- (void)willMoveToSuperview:(UIView *)newSuperview {
-	
-	if(newSuperview == nil)
-		return;
-
-	int c = [self.titlesArray count];
-	int i = 0;
-	
-	self.segmentWidth = 0;
-	
-	for(NSString *titleString in self.titlesArray) {
-		CGFloat stringWidth = [titleString sizeWithFont:self.font].width+(self.titleEdgeInsets.left+self.titleEdgeInsets.right+self.thumbEdgeInset.left+self.thumbEdgeInset.right);
-        self.segmentWidth = MAX(stringWidth, self.segmentWidth);
-	}
-	
-	self.segmentWidth = ceil(self.segmentWidth/2.0)*2; // make it an even number so we can position with center
-	self.bounds = CGRectMake(0, 0, self.segmentWidth*c, self.height);
-    self.thumbHeight = self.thumb.backgroundImage ? self.thumb.backgroundImage.size.height : self.height-(self.thumbEdgeInset.top+self.thumbEdgeInset.bottom);
-    
-    i = 0;
-    
-	for(NSString *titleString in self.titlesArray) {
-        [self.thumbRects addObject:[NSValue valueWithCGRect:CGRectMake(self.segmentWidth*i+self.thumbEdgeInset.left, self.thumbEdgeInset.top, self.segmentWidth-(self.thumbEdgeInset.left*2), self.thumbHeight)]];
-		i++;
-	} 
-	
-	self.thumb.frame = [[self.thumbRects objectAtIndex:0] CGRectValue];
-	self.thumb.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.thumb.bounds cornerRadius:2].CGPath;
-	self.thumb.label.text = [self.titlesArray objectAtIndex:0];
-	self.thumb.font = self.font;
-	
-	[self insertSubview:self.thumb atIndex:0];
-    
-    BOOL animateInitial = self.animateToInitialSelection;
-    
-    if(self.selectedIndex == 0)
-        animateInitial = NO;
-	
-    [self moveThumbToIndex:selectedIndex animate:animateInitial];
-}
 
 #pragma mark - Drawing code
 
@@ -211,16 +171,64 @@
 
 #pragma mark - Accessibility
 
+- (void)setFrame:(CGRect)frame {
+    [super setFrame:frame];
+    [self setNeedsDisplay];
+}
+
 - (void)setBounds:(CGRect)bounds {
     [super setBounds:bounds];
-    
+    self.segmentWidth = round(bounds.size.width/self.titlesArray.count);
     [self setupAccessibility];
 }
 
 - (void)setCenter:(CGPoint)center {
     [super setCenter:center];
-    
     [self setupAccessibility];
+}
+
+- (void)willMoveToSuperview:(UIView *)newSuperview {
+    int c = [self.titlesArray count];
+	int i = 0;
+	
+    if(CGRectIsEmpty(self.frame)) {
+        self.segmentWidth = 0;
+        
+        for(NSString *titleString in self.titlesArray) {
+            CGFloat stringWidth = [titleString sizeWithFont:self.font].width+(self.titleEdgeInsets.left+self.titleEdgeInsets.right+self.thumbEdgeInset.left+self.thumbEdgeInset.right);
+            self.segmentWidth = MAX(stringWidth, self.segmentWidth);
+        }
+        
+        self.segmentWidth = ceil(self.segmentWidth/2.0)*2; // make it an even number so we can position with center
+        self.bounds = CGRectMake(0, 0, self.segmentWidth*c, self.height);
+    }
+    else {
+        self.segmentWidth = round(self.frame.size.width/self.titlesArray.count);
+        self.height = self.frame.size.height;
+    }
+    
+    self.thumbHeight = self.thumb.backgroundImage ? self.thumb.backgroundImage.size.height : self.height-(self.thumbEdgeInset.top+self.thumbEdgeInset.bottom);
+    
+    i = 0;
+    
+	for(NSString *titleString in self.titlesArray) {
+        [self.thumbRects addObject:[NSValue valueWithCGRect:CGRectMake(self.segmentWidth*i+self.thumbEdgeInset.left, self.thumbEdgeInset.top, self.segmentWidth-(self.thumbEdgeInset.left*2), self.thumbHeight)]];
+		i++;
+	}
+	
+	self.thumb.frame = [[self.thumbRects objectAtIndex:0] CGRectValue];
+	self.thumb.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.thumb.bounds cornerRadius:2].CGPath;
+	self.thumb.label.text = [self.titlesArray objectAtIndex:0];
+	self.thumb.font = self.font;
+	
+	[self insertSubview:self.thumb atIndex:0];
+    
+    BOOL animateInitial = self.animateToInitialSelection;
+    
+    if(self.selectedIndex == 0)
+        animateInitial = NO;
+	
+    [self moveThumbToIndex:selectedIndex animate:animateInitial];
 }
 
 - (void)setupAccessibility {
