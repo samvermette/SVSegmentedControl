@@ -133,6 +133,7 @@
         CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);	
         CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
         CGGradientRelease(gradient);
+        CGColorSpaceRelease(colorSpace);
         
         [self.tintColor set];
         UIRectFillUsingBlendMode(rect, kCGBlendModeOverlay);
@@ -142,7 +143,6 @@
         NSArray *paths = [NSArray arrayWithObject:[UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius]];
         UIImage *mask = [self maskWithPaths:paths bounds:CGRectInset(insetRect, -10, -10)];
         UIImage *invertedImage = [self invertedImageWithMask:mask color:innerShadowColor];
-        [invertedImage saveToDisk];
         
         CGContextSetShadowWithColor(context, CGSizeMake(0, 1), 2, innerShadowColor.CGColor);
         [invertedImage drawAtPoint:CGPointMake(-10, -10)];
