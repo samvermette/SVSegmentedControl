@@ -399,20 +399,21 @@
 }
 
 - (void)updateTitles {
-	int hoverIndex = floor(self.thumb.center.x/self.segmentWidth);
+    CGFloat realCenter = self.thumb.center.x-5; // 5 for drop shadow
+	int hoverIndex = floor(realCenter/self.segmentWidth);
 	
-	BOOL secondTitleOnLeft = ((self.thumb.center.x / self.segmentWidth) - hoverIndex) < 0.5;
+	BOOL secondTitleOnLeft = ((realCenter / self.segmentWidth) - hoverIndex) < 0.5;
 	
 	if (secondTitleOnLeft && hoverIndex > 0) {
-		self.thumb.label.alpha = 0.5 + ((self.thumb.center.x / self.segmentWidth) - hoverIndex);
+		self.thumb.label.alpha = 0.5 + ((realCenter / self.segmentWidth) - hoverIndex);
 		self.thumb.secondLabel.text = [self.titlesArray objectAtIndex:hoverIndex - 1];
-		self.thumb.secondLabel.alpha = 0.5 - ((self.thumb.center.x / self.segmentWidth) - hoverIndex);
+		self.thumb.secondLabel.alpha = 0.5 - ((realCenter / self.segmentWidth) - hoverIndex);
 	}
 	
     else if (hoverIndex + 1 < self.titlesArray.count) {
-		self.thumb.label.alpha = 0.5 + (1 - ((self.thumb.center.x / self.segmentWidth) - hoverIndex));
+		self.thumb.label.alpha = 0.5 + (1 - ((realCenter / self.segmentWidth) - hoverIndex));
 		self.thumb.secondLabel.text = [self.titlesArray objectAtIndex:hoverIndex + 1];
-		self.thumb.secondLabel.alpha = ((self.thumb.center.x / self.segmentWidth) - hoverIndex) - 0.5;
+		self.thumb.secondLabel.alpha = ((realCenter / self.segmentWidth) - hoverIndex) - 0.5;
 	}
 	
     else {
