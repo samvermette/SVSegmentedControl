@@ -77,7 +77,6 @@
         self.clipsToBounds = YES;
         self.userInteractionEnabled = YES;
         self.animateToInitialSelection = NO;
-        self.clipsToBounds = NO;
         
         self.font = [UIFont boldSystemFontOfSize:15];
         self.textColor = [UIColor grayColor];
@@ -143,6 +142,7 @@
         NSArray *paths = [NSArray arrayWithObject:[UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius]];
         UIImage *mask = [self maskWithPaths:paths bounds:CGRectInset(insetRect, -10, -10)];
         UIImage *invertedImage = [self invertedImageWithMask:mask color:innerShadowColor];
+        [invertedImage saveToDisk];
         
         CGContextSetShadowWithColor(context, CGSizeMake(0, 1), 2, innerShadowColor.CGColor);
         [invertedImage drawAtPoint:CGPointMake(-10, -10)];
@@ -215,7 +215,14 @@
     i = 0;
     
 	for(NSString *titleString in self.titlesArray) {
-        [self.thumbRects addObject:[NSValue valueWithCGRect:CGRectMake(self.segmentWidth*i+self.thumbEdgeInset.left, self.thumbEdgeInset.top, self.segmentWidth-(self.thumbEdgeInset.left*2), self.thumbHeight)]];
+        CGRect thumbRect = CGRectMake(self.segmentWidth*i, 0, self.segmentWidth, self.bounds.size.height);
+        thumbRect.size.width+=10;
+        thumbRect.size.height-=1; // for segmented bottom gloss
+        
+        if(i == 0 || i == self.titlesArray.count-1)
+            thumbRect.origin.x-=5;
+        
+        [self.thumbRects addObject:[NSValue valueWithCGRect:thumbRect]];
 		i++;
 	}
 	
@@ -301,9 +308,9 @@
 	CGFloat newMaxX = newPos+(CGRectGetWidth(self.thumb.frame)/2);
 	CGFloat newMinX = newPos-(CGRectGetWidth(self.thumb.frame)/2);
 	
-	CGFloat buffer = 2.0; // to prevent the thumb from moving slightly too far
-	CGFloat pMaxX = CGRectGetMaxX(self.bounds) - buffer;
-	CGFloat pMinX = CGRectGetMinX(self.bounds) + buffer;
+	CGFloat buffer = 0.0; // to prevent the thumb from moving slightly too far
+	CGFloat pMaxX = CGRectGetMaxX(self.bounds) - buffer+5;
+	CGFloat pMinX = CGRectGetMinX(self.bounds) + buffer-5;
 	
 	if((newMaxX > pMaxX || newMinX < pMinX) && self.trackingThumb) {
 		self.snapToIndex = floor(self.thumb.center.x/self.segmentWidth);
@@ -332,20 +339,20 @@
     [super endTrackingWithTouch:touch withEvent:event];
     
     CGPoint cPos = [touch locationInView:self];
+    CGFloat posX = cPos.x-5;
+
 	CGFloat pMaxX = CGRectGetMaxX(self.bounds);
-	CGFloat pMinX = CGRectGetMinX(self.bounds);
+	CGFloat pMinX = CGRectGetMinX(self.bounds); // 5 is for thumb shadow
 	
 	if(!self.moved && self.trackingThumb && [self.titlesArray count] == 2)
 		[self toggle];
 	
-	else if(!self.activated && cPos.x > pMinX && cPos.x < pMaxX) {
+	else if(!self.activated && posX > pMinX && posX < pMaxX) {
 		self.snapToIndex = floor(cPos.x/self.segmentWidth);
 		[self snap:YES];
 	} 
 	
-	else {
-        CGFloat posX = cPos.x;
-        
+	else {        
         if(posX < pMinX)
             posX = pMinX;
         
