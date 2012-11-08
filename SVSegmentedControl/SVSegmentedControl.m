@@ -36,7 +36,6 @@
 - (void)toggle;
 - (void)setupAccessibility;
 
-@property (nonatomic, strong) NSMutableArray *titlesArray;
 @property (nonatomic, strong) NSMutableArray *thumbRects;
 @property (nonatomic, strong) NSMutableArray *accessibilityElements;
 
@@ -57,7 +56,7 @@
 
 @synthesize selectedSegmentChangedHandler, changeHandler, selectedIndex, animateToInitialSelection, accessibilityElements;
 @synthesize cornerRadius, tintColor, backgroundImage, font, textColor, textShadowColor, textShadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag;
-@synthesize titlesArray, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight;
+@synthesize sectionTitles, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight;
 
 // deprecated
 @synthesize delegate, thumbEdgeInset, shadowColor, shadowOffset;
@@ -68,9 +67,9 @@
 - (id)initWithSectionTitles:(NSArray*)array {
     
 	if (self = [super initWithFrame:CGRectZero]) {
-        self.titlesArray = [NSMutableArray arrayWithArray:array];
+        self.sectionTitles = [NSMutableArray arrayWithArray:array];
         self.thumbRects = [NSMutableArray arrayWithCapacity:[array count]];
-        self.accessibilityElements = [NSMutableArray arrayWithCapacity:self.titlesArray.count];
+        self.accessibilityElements = [NSMutableArray arrayWithCapacity:self.sectionTitles.count];
         
         self.backgroundColor = [UIColor clearColor];
         self.tintColor = [UIColor grayColor];
@@ -160,7 +159,7 @@
 	
 	int i = 0;
 	
-	for(NSString *titleString in self.titlesArray) {
+	for(NSString *titleString in self.sectionTitles) {
         CGRect labelRect = CGRectMake((self.segmentWidth*i), posY, self.segmentWidth, self.font.pointSize);
         //CGContextFillRect(context, labelRect);
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
@@ -181,7 +180,7 @@
 
 - (void)setBounds:(CGRect)bounds {
     [super setBounds:bounds];
-    self.segmentWidth = round(bounds.size.width/self.titlesArray.count);
+    self.segmentWidth = round(bounds.size.width/self.sectionTitles.count);
     [self setupAccessibility];
 }
 
@@ -191,13 +190,13 @@
 }
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
-    int c = [self.titlesArray count];
+    int c = [self.sectionTitles count];
 	int i = 0;
 	
     if(CGRectIsEmpty(self.frame)) {
         self.segmentWidth = 0;
         
-        for(NSString *titleString in self.titlesArray) {
+        for(NSString *titleString in self.sectionTitles) {
             CGFloat stringWidth = [titleString sizeWithFont:self.font].width+(self.titleEdgeInsets.left+self.titleEdgeInsets.right+self.thumbEdgeInset.left+self.thumbEdgeInset.right);
             self.segmentWidth = MAX(stringWidth, self.segmentWidth);
         }
@@ -206,7 +205,7 @@
         self.bounds = CGRectMake(0, 0, self.segmentWidth*c, self.height);
     }
     else {
-        self.segmentWidth = round(self.frame.size.width/self.titlesArray.count);
+        self.segmentWidth = round(self.frame.size.width/self.sectionTitles.count);
         self.height = self.frame.size.height;
     }
     
@@ -214,12 +213,12 @@
     
     i = 0;
     
-	for(NSString *titleString in self.titlesArray) {
+	for(NSString *titleString in self.sectionTitles) {
         CGRect thumbRect = CGRectMake(self.segmentWidth*i, 0, self.segmentWidth, self.bounds.size.height);
         thumbRect.size.width+=10;
         thumbRect.size.height-=1; // for segmented bottom gloss
         
-        if(i == 0 || i == self.titlesArray.count-1)
+        if(i == 0 || i == self.sectionTitles.count-1)
             thumbRect.origin.x-=5;
         
         [self.thumbRects addObject:[NSValue valueWithCGRect:thumbRect]];
@@ -228,7 +227,7 @@
 	
 	self.thumb.frame = [[self.thumbRects objectAtIndex:0] CGRectValue];
 	self.thumb.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.thumb.bounds cornerRadius:2].CGPath;
-	self.thumb.label.text = [self.titlesArray objectAtIndex:0];
+	self.thumb.label.text = [self.sectionTitles objectAtIndex:0];
 	self.thumb.font = self.font;
 	
 	[self insertSubview:self.thumb atIndex:0];
@@ -245,11 +244,11 @@
     [self.accessibilityElements removeAllObjects];
     
     NSUInteger i = 0;
-    for (NSString *title in self.titlesArray) {
+    for (NSString *title in self.sectionTitles) {
         UIAccessibilityElement *element = [[UIAccessibilityElement alloc] initWithAccessibilityContainer:self];
         element.isAccessibilityElement = YES;
         element.accessibilityLabel = [NSString stringWithFormat:NSLocalizedString(@"%@ tab",), title];
-        element.accessibilityHint = [NSString stringWithFormat:NSLocalizedString(@"Tab %d of %d",), i + 1, self.titlesArray.count];
+        element.accessibilityHint = [NSString stringWithFormat:NSLocalizedString(@"Tab %d of %d",), i + 1, self.sectionTitles.count];
         
         [self.accessibilityElements addObject:element];
         i++;
@@ -277,7 +276,7 @@
 
 - (NSInteger)indexOfAccessibilityElement:(id)element {
     NSString *title = [[[element accessibilityLabel] componentsSeparatedByString:@" "] objectAtIndex:0];
-    return [self.titlesArray indexOfObject:title];
+    return [self.sectionTitles indexOfObject:title];
 }
 
 #pragma mark -
@@ -344,7 +343,7 @@
 	CGFloat pMaxX = CGRectGetMaxX(self.bounds);
 	CGFloat pMinX = CGRectGetMinX(self.bounds); // 5 is for thumb shadow
 	
-	if(!self.moved && self.trackingThumb && [self.titlesArray count] == 2)
+	if(!self.moved && self.trackingThumb && [self.sectionTitles count] == 2)
 		[self toggle];
 	
 	else if(!self.activated && posX > pMinX && posX < pMaxX) {
@@ -387,7 +386,7 @@
 	else
 		index = floor(self.thumb.center.x/self.segmentWidth);
 	
-	self.thumb.label.text = [self.titlesArray objectAtIndex:index];
+	self.thumb.label.text = [self.sectionTitles objectAtIndex:index];
     
     if(self.changeHandler && self.snapToIndex != self.selectedIndex && !self.isTracking)
 		self.changeHandler(self.snapToIndex);
@@ -406,13 +405,13 @@
 	
 	if (secondTitleOnLeft && hoverIndex > 0) {
 		self.thumb.label.alpha = 0.5 + ((realCenter / self.segmentWidth) - hoverIndex);
-		self.thumb.secondLabel.text = [self.titlesArray objectAtIndex:hoverIndex - 1];
+		self.thumb.secondLabel.text = [self.sectionTitles objectAtIndex:hoverIndex - 1];
 		self.thumb.secondLabel.alpha = 0.5 - ((realCenter / self.segmentWidth) - hoverIndex);
 	}
 	
-    else if (hoverIndex + 1 < self.titlesArray.count) {
+    else if (hoverIndex + 1 < self.sectionTitles.count) {
 		self.thumb.label.alpha = 0.5 + (1 - ((realCenter / self.segmentWidth) - hoverIndex));
-		self.thumb.secondLabel.text = [self.titlesArray objectAtIndex:hoverIndex + 1];
+		self.thumb.secondLabel.text = [self.sectionTitles objectAtIndex:hoverIndex + 1];
 		self.thumb.secondLabel.alpha = ((realCenter / self.segmentWidth) - hoverIndex) - 0.5;
 	}
 	
@@ -421,14 +420,14 @@
 		self.thumb.label.alpha = 1.0;
 	}
 
-	self.thumb.label.text = [self.titlesArray objectAtIndex:hoverIndex];
+	self.thumb.label.text = [self.sectionTitles objectAtIndex:hoverIndex];
 }
 
 - (void)activate {
 	
 	self.trackingThumb = self.moved = NO;
 	
-	self.thumb.label.text = [self.titlesArray objectAtIndex:self.selectedIndex];
+	self.thumb.label.text = [self.sectionTitles objectAtIndex:self.selectedIndex];
     
     void (^oldChangeHandler)(id sender) = [self valueForKey:@"selectedSegmentChangedHandler"];
     	

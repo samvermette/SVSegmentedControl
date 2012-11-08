@@ -17,6 +17,7 @@
 @interface SVSegmentedControl : UIControl
 
 @property (nonatomic, copy) void (^changeHandler)(NSUInteger newIndex); // you can also use addTarget:action:forControlEvents:
+@property (nonatomic, strong) NSMutableArray *sectionTitles;
 
 @property (nonatomic, strong, readonly) SVSegmentedThumb *thumb;
 @property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
