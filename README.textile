@@ -25,7 +25,6 @@ segmentedControl.changeHandler = ^(NSUInteger newIndex) {
 };
 
 [self.view addSubview:segmentedControl];
-[segmentedControl release];
 </pre>
 
 You're *highly encouraged* to position it using its @center@ property:
