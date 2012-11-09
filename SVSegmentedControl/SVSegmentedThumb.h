@@ -18,8 +18,8 @@
 @property (nonatomic, strong) UIImage *highlightedBackgroundImage; // default is nil;
 
 @property (nonatomic, strong) UIColor *tintColor; // default is [UIColor grayColor]
-@property (nonatomic, unsafe_unretained) UIColor *textColor; // default is [UIColor whiteColor]
-@property (nonatomic, unsafe_unretained) UIColor *textShadowColor; // default is [UIColor blackColor]
+@property (nonatomic, strong) UIColor *textColor; // default is [UIColor whiteColor]
+@property (nonatomic, strong) UIColor *textShadowColor; // default is [UIColor blackColor]
 @property (nonatomic, readwrite) CGSize textShadowOffset; // default is CGSizeMake(0, -1)
 @property (nonatomic, readwrite) BOOL shouldCastShadow; // default is YES (NO when backgroundImage is set)
 

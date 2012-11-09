@@ -101,9 +101,6 @@
         _imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         _imageView.layer.shadowOpacity = 1;
         _imageView.layer.shadowRadius = 0;
-        _imageView.backgroundColor = [UIColor redColor];
-        _imageView.layer.shouldRasterize = YES;
-        _imageView.layer.rasterizationScale = [UIScreen mainScreen].scale;
         [self addSubview:_imageView];
     }
     return _imageView;
@@ -114,9 +111,7 @@
         _secondImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         _secondImageView.layer.shadowOpacity = 1;
         _secondImageView.layer.shadowRadius = 0;
-        _secondImageView.layer.shouldRasterize = YES;
-        _secondImageView.layer.rasterizationScale = [UIScreen mainScreen].scale;
-        //[self addSubview:_secondImageView];
+        [self addSubview:_secondImageView];
     }
     return _secondImageView;
 }
@@ -316,11 +311,13 @@
 }
 
 - (void)setTextColor:(UIColor *)newColor {
+    textColor = newColor;
 	self.label.textColor = newColor;
     self.secondLabel.textColor = newColor;
 }
 
 - (void)setTextShadowColor:(UIColor *)newColor {
+    textShadowColor = newColor;
 	self.label.shadowColor = newColor;
     self.secondLabel.shadowColor = newColor;
     self.imageView.layer.shadowColor = newColor.CGColor;
@@ -328,6 +325,7 @@
 }
 
 - (void)setTextShadowOffset:(CGSize)newOffset {
+    textShadowOffset = newOffset;
 	self.label.shadowOffset = newOffset;
     self.secondLabel.shadowOffset = newOffset;
     self.imageView.layer.shadowOffset = newOffset;
@@ -358,7 +356,7 @@
 	else
 		self.alpha = 1;
 	
-	//[self setNeedsDisplay];
+	[self setNeedsDisplay];
 }
 
 - (void)activate {
@@ -367,7 +365,6 @@
     if(!self.segmentedControl.crossFadeLabelsOnDrag) {
         self.label.alpha = 1;
         self.imageView.alpha = 1;
-        NSLog(@"activating %@", self.imageView);
     }
 }
 
@@ -377,7 +374,6 @@
     if(!self.segmentedControl.crossFadeLabelsOnDrag) {
         self.label.alpha = 0;
         self.imageView.alpha = 0;
-        NSLog(@"deactivating %@", self.imageView);
     }
 }
 

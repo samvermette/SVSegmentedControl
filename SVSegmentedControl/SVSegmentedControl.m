@@ -164,7 +164,7 @@
 	
 	self.thumb.frame = [[self.thumbRects objectAtIndex:0] CGRectValue];
 	self.thumb.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.thumb.bounds cornerRadius:2].CGPath;
-	[self.thumb setTitle:[self.sectionTitles objectAtIndex:0] image:[self imageForSectionIndex:0]];
+	[self setThumbValuesForIndex:0];
 	self.thumb.font = self.font;
 	
 	[self insertSubview:self.thumb atIndex:0];
@@ -325,7 +325,7 @@
 	else
 		index = floor(self.thumb.center.x/self.segmentWidth);
 	
-    [self.thumb setTitle:[self.sectionTitles objectAtIndex:index] image:[self imageForSectionIndex:index]];
+    [self setThumbValuesForIndex:index];
     
     if(self.changeHandler && self.snapToIndex != self.selectedIndex && !self.isTracking)
 		self.changeHandler(self.snapToIndex);
@@ -345,13 +345,12 @@
 	if (secondTitleOnLeft && hoverIndex > 0) {
 		self.thumb.label.alpha = self.thumb.imageView.alpha = 0.5 + ((realCenter / self.segmentWidth) - hoverIndex);
 		self.thumb.secondLabel.alpha = self.thumb.secondImageView.alpha = 0.5 - ((realCenter / self.segmentWidth) - hoverIndex);
-        [self.thumb setSecondTitle:[self.sectionTitles objectAtIndex:hoverIndex-1] image:[self imageForSectionIndex:hoverIndex-1]];
+        [self setThumbSecondValuesForIndex:hoverIndex-1];
 	}
     else if (hoverIndex + 1 < self.sectionTitles.count) {
 		self.thumb.label.alpha = self.thumb.imageView.alpha = 0.5 + (1 - ((realCenter / self.segmentWidth) - hoverIndex));
 		self.thumb.secondLabel.alpha = self.thumb.secondImageView.alpha = ((realCenter / self.segmentWidth) - hoverIndex) - 0.5;
-        [self.thumb setSecondTitle:[self.sectionTitles objectAtIndex:hoverIndex+1] image:[self imageForSectionIndex:hoverIndex+1]];
-
+        [self setThumbSecondValuesForIndex:hoverIndex+1];
 	}
     else {
         [self.thumb setSecondTitle:nil image:nil];
@@ -359,14 +358,14 @@
         self.thumb.imageView.alpha = 1.0;
 	}
     
-    [self.thumb setTitle:[self.sectionTitles objectAtIndex:hoverIndex] image:[self imageForSectionIndex:hoverIndex]];
+    [self setThumbValuesForIndex:hoverIndex];
 }
 
 - (void)activate {
 	
 	self.trackingThumb = self.moved = NO;
 	
-    [self.thumb setTitle:[self.sectionTitles objectAtIndex:self.selectedIndex] image:[self imageForSectionIndex:self.selectedIndex]];
+    [self setThumbValuesForIndex:self.selectedIndex];
     
     void (^oldChangeHandler)(id sender) = [self valueForKey:@"selectedSegmentChangedHandler"];
     	
@@ -449,6 +448,16 @@
     if(self.sectionImages.count > index)
         return [self.sectionImages objectAtIndex:index];
     return nil;
+}
+
+- (void)setThumbValuesForIndex:(NSUInteger)index {
+    [self.thumb setTitle:[self.sectionTitles objectAtIndex:index]
+                   image:[self sectionImage:[self imageForSectionIndex:index] withTintColor:self.thumb.textColor]];
+}
+
+- (void)setThumbSecondValuesForIndex:(NSUInteger)index {
+    [self.thumb setSecondTitle:[self.sectionTitles objectAtIndex:index]
+                         image:[self sectionImage:[self imageForSectionIndex:index] withTintColor:self.thumb.textColor]];
 }
 
 #pragma mark - Drawing
@@ -534,21 +543,12 @@
 }
 
 
-#pragma mark - Support for deprecated methods
-
-- (void)setSegmentPadding:(CGFloat)newPadding {
-    self.titleEdgeInsets = UIEdgeInsetsMake(0, newPadding, 0, newPadding);
-}
-
-- (void)setShadowOffset:(CGSize)newOffset {
-    self.textShadowOffset = newOffset;
-}
-
-- (void)setShadowColor:(UIColor *)newColor {
-    self.textShadowColor = newColor;
-}
+#pragma mark - Image Methods Methods
 
 - (UIImage *)sectionImage:(UIImage*)image withTintColor:(UIColor*)color {
+    if(!image)
+        return nil;
+    
     CGRect rect = { CGPointZero, image.size };
     UIGraphicsBeginImageContextWithOptions(rect.size, NO, image.scale); {
         [color set];
@@ -563,7 +563,6 @@
     return tintedImage;
 }
 
-#pragma mark - Inner Glow Methods
 
 // http://stackoverflow.com/a/8482103/87158
 
@@ -629,6 +628,20 @@
         CGContextSetShadowWithColor(gc, offset, blur, color.CGColor);
         [invertedImage drawInRect:bounds];
     } CGContextRestoreGState(gc);
+}
+
+#pragma mark - Support for deprecated methods
+
+- (void)setSegmentPadding:(CGFloat)newPadding {
+    self.titleEdgeInsets = UIEdgeInsetsMake(0, newPadding, 0, newPadding);
+}
+
+- (void)setShadowOffset:(CGSize)newOffset {
+    self.textShadowOffset = newOffset;
+}
+
+- (void)setShadowColor:(UIColor *)newColor {
+    self.textShadowColor = newColor;
 }
 
 @end
