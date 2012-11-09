@@ -56,12 +56,9 @@
 
 @implementation SVSegmentedControl
 
-@synthesize selectedSegmentChangedHandler, changeHandler, selectedIndex, animateToInitialSelection, accessibilityElements;
-@synthesize cornerRadius, tintColor, backgroundImage, font, textColor, textShadowColor, textShadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag;
+@synthesize changeHandler, selectedIndex, animateToInitialSelection, accessibilityElements;
+@synthesize cornerRadius, tintColor, backgroundImage, font, textColor, textShadowColor, textShadowOffset, titleEdgeInsets, height, crossFadeLabelsOnDrag;
 @synthesize sectionTitles, sectionImages, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight;
-
-// deprecated
-@synthesize delegate, thumbEdgeInset, shadowColor, shadowOffset;
 
 #pragma mark -
 #pragma mark Life Cycle
@@ -366,18 +363,6 @@
 	self.trackingThumb = self.moved = NO;
 	
     [self setThumbValuesForIndex:self.selectedIndex];
-    
-    void (^oldChangeHandler)(id sender) = [self valueForKey:@"selectedSegmentChangedHandler"];
-    	
-	if(oldChangeHandler)
-		oldChangeHandler(self);
-    
-    if([self valueForKey:@"delegate"]) {
-        id controlDelegate = [self valueForKey:@"delegate"];
-        
-        if([controlDelegate respondsToSelector:@selector(segmentedControl:didSelectIndex:)])
-            [controlDelegate segmentedControl:self didSelectIndex:selectedIndex];
-    }
 
 	[UIView animateWithDuration:0.1 
 						  delay:0 
@@ -628,20 +613,6 @@
         CGContextSetShadowWithColor(gc, offset, blur, color.CGColor);
         [invertedImage drawInRect:bounds];
     } CGContextRestoreGState(gc);
-}
-
-#pragma mark - Support for deprecated methods
-
-- (void)setSegmentPadding:(CGFloat)newPadding {
-    self.titleEdgeInsets = UIEdgeInsetsMake(0, newPadding, 0, newPadding);
-}
-
-- (void)setShadowOffset:(CGSize)newOffset {
-    self.textShadowOffset = newOffset;
-}
-
-- (void)setShadowColor:(UIColor *)newColor {
-    self.textShadowColor = newColor;
 }
 
 @end

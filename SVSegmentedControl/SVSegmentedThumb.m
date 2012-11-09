@@ -39,10 +39,6 @@
 @synthesize imageView = _imageView;
 @synthesize secondImageView = _secondImageView;
 
-// deprecated properties
-@synthesize shadowColor, shadowOffset, castsShadow;
-
-
 
 - (id)initWithFrame:(CGRect)frame {
     
@@ -383,20 +379,6 @@
 
 - (BOOL)isAtLastIndex {
     return (CGRectGetMaxX(self.frame) > CGRectGetMaxX(self.segmentedControl.bounds));
-}
-
-#pragma mark - Support for deprecated methods
-
-- (void)setShadowOffset:(CGSize)newOffset {
-    self.textShadowOffset = newOffset;
-}
-
-- (void)setShadowColor:(UIColor *)newColor {
-    self.textShadowColor = newColor;
-}
-
-- (void)setCastsShadow:(BOOL)b {
-    self.shouldCastShadow = b;
 }
 
 @end

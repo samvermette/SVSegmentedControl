@@ -38,13 +38,6 @@
 @property (nonatomic, strong) UIColor *textShadowColor;  // default is [UIColor blackColor]
 @property (nonatomic, readwrite) CGSize textShadowOffset;  // default is CGSizeMake(0, -1)
 
-// deprecated properties
-@property (nonatomic, copy) void (^selectedSegmentChangedHandler)(id sender) DEPRECATED_ATTRIBUTE; // use changeHandler instead
-@property (nonatomic, strong) UIColor *shadowColor DEPRECATED_ATTRIBUTE;  // use textShadowColor instead
-@property (nonatomic, readwrite) CGSize shadowOffset DEPRECATED_ATTRIBUTE;  // use textShadowOffset instead
-@property (nonatomic, unsafe_unretained) id<SVSegmentedControlDelegate> delegate DEPRECATED_ATTRIBUTE; // use addTarget:action:forControlEvents: instead
-@property (nonatomic, readwrite) CGFloat segmentPadding DEPRECATED_ATTRIBUTE; // use titleEdgeInsets instead
-
 - (SVSegmentedControl*)initWithSectionTitles:(NSArray*)titlesArray;
 - (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate;
 
