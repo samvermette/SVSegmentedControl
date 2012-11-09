@@ -19,6 +19,7 @@
 	// 1st CONTROL
 	
 	SVSegmentedControl *navSC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Section 1", @"Section 2", nil]];
+    navSC.sectionImages = @[[UIImage imageNamed:@"segmented-planner"], [UIImage imageNamed:@"segmented-planner"]];
     navSC.changeHandler = ^(NSUInteger newIndex) {
         NSLog(@"segmentedControl did select index %i (via block handler)", newIndex);
     };

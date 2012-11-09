@@ -10,16 +10,18 @@
 #import <QuartzCore/QuartzCore.h>
 #import "SVSegmentedControl.h"
 
-#define SVSegmentedControlBG [[UIImage imageNamed:@"SVSegmentedControl.bundle/inner-shadow"] stretchableImageWithLeftCapWidth:4 topCapHeight:5]
-
 
 @interface SVSegmentedThumb ()
 
-@property (nonatomic, assign) SVSegmentedControl *segmentedControl;
 @property (nonatomic, assign) UIFont *font;
 
 @property (nonatomic, readonly) UILabel *label;
 @property (nonatomic, readonly) UILabel *secondLabel;
+@property (nonatomic, readonly) UIImageView *imageView;
+@property (nonatomic, readonly) UIImageView *secondImageView;
+
+- (void)setTitle:(NSString*)title image:(UIImage*)image;
+- (void)setSecondTitle:(NSString*)title image:(UIImage*)image;
 
 - (void)activate;
 - (void)deactivate;
@@ -56,7 +58,7 @@
 
 @synthesize selectedSegmentChangedHandler, changeHandler, selectedIndex, animateToInitialSelection, accessibilityElements;
 @synthesize cornerRadius, tintColor, backgroundImage, font, textColor, textShadowColor, textShadowOffset, segmentPadding, titleEdgeInsets, height, crossFadeLabelsOnDrag;
-@synthesize sectionTitles, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight;
+@synthesize sectionTitles, sectionImages, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight;
 
 // deprecated
 @synthesize delegate, thumbEdgeInset, shadowColor, shadowOffset;
@@ -67,7 +69,7 @@
 - (id)initWithSectionTitles:(NSArray*)array {
     
 	if (self = [super initWithFrame:CGRectZero]) {
-        self.sectionTitles = [NSMutableArray arrayWithArray:array];
+        self.sectionTitles = array;
         self.thumbRects = [NSMutableArray arrayWithCapacity:[array count]];
         self.accessibilityElements = [NSMutableArray arrayWithCapacity:self.sectionTitles.count];
         
@@ -88,7 +90,6 @@
         self.cornerRadius = 4.0;
         
         self.selectedIndex = 0;
-        self.thumb.segmentedControl = self;
     }
     
 	return self;
@@ -100,75 +101,6 @@
         thumb = [[SVSegmentedThumb alloc] initWithFrame:CGRectZero];
     
     return thumb;
-}
-
-
-#pragma mark - Drawing code
-
-
-- (void)drawRect:(CGRect)rect {
-
-    CGContextRef context = UIGraphicsGetCurrentContext();
-
-    if(self.backgroundImage)
-        [self.backgroundImage drawInRect:rect];
-    
-    else {
-        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
-        
-        // bottom gloss
-        CGContextSetFillColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.1].CGColor);
-        CGPathRef bottomGlossRect = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, rect.size.width, rect.size.height) cornerRadius:self.cornerRadius].CGPath;
-        CGContextAddPath(context, bottomGlossRect);
-        CGContextFillPath(context);
-        
-        CGRect insetRect = CGRectMake(0, 0, rect.size.width, rect.size.height-1);
-        CGPathRef roundedRect = [UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius].CGPath;
-        CGContextAddPath(context, roundedRect);
-        CGContextClip(context);
-        
-        // background tint
-        CGFloat components[4] = {0.10, CGColorGetAlpha(self.tintColor.CGColor),  0.12, CGColorGetAlpha(self.tintColor.CGColor)};
-        CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);	
-        CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
-        CGGradientRelease(gradient);
-        CGColorSpaceRelease(colorSpace);
-        
-        [self.tintColor set];
-        UIRectFillUsingBlendMode(rect, kCGBlendModeOverlay);
-        
-        
-        UIColor *innerShadowColor = [UIColor colorWithWhite:0 alpha:0.8];
-        NSArray *paths = [NSArray arrayWithObject:[UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius]];
-        UIImage *mask = [self maskWithPaths:paths bounds:CGRectInset(insetRect, -10, -10)];
-        UIImage *invertedImage = [self invertedImageWithMask:mask color:innerShadowColor];
-        
-        CGContextSetShadowWithColor(context, CGSizeMake(0, 1), 2, innerShadowColor.CGColor);
-        [invertedImage drawAtPoint:CGPointMake(-10, -10)];
-
-    }
-    
-	CGContextSetShadowWithColor(context, self.textShadowOffset, 0, self.textShadowColor.CGColor);
-	[self.textColor set];
-	
-	CGFloat posY = ceil((CGRectGetHeight(rect)-self.font.pointSize+self.font.descender)/2)+self.titleEdgeInsets.top-self.titleEdgeInsets.bottom;
-	int pointSize = self.font.pointSize;
-	
-	if(pointSize%2 != 0)
-		posY--;
-	
-	int i = 0;
-	
-	for(NSString *titleString in self.sectionTitles) {
-        CGRect labelRect = CGRectMake((self.segmentWidth*i), posY, self.segmentWidth, self.font.pointSize);
-        //CGContextFillRect(context, labelRect);
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-		[titleString drawInRect:labelRect withFont:self.font lineBreakMode:UILineBreakModeClip alignment:UITextAlignmentCenter];
-#else
-		[titleString drawInRect:labelRect withFont:self.font lineBreakMode:NSLineBreakByClipping alignment:NSTextAlignmentCenter];
-#endif
-		i++;
-	}
 }
 
 #pragma mark - Accessibility
@@ -198,7 +130,12 @@
         
         for(NSString *titleString in self.sectionTitles) {
             CGFloat stringWidth = [titleString sizeWithFont:self.font].width+(self.titleEdgeInsets.left+self.titleEdgeInsets.right+self.thumbEdgeInset.left+self.thumbEdgeInset.right);
+            
+            if(self.sectionImages.count > i)
+                stringWidth+=[[self.sectionImages objectAtIndex:i] size].width+5;
+                
             self.segmentWidth = MAX(stringWidth, self.segmentWidth);
+            i++;
         }
         
         self.segmentWidth = ceil(self.segmentWidth/2.0)*2; // make it an even number so we can position with center
@@ -227,7 +164,7 @@
 	
 	self.thumb.frame = [[self.thumbRects objectAtIndex:0] CGRectValue];
 	self.thumb.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.thumb.bounds cornerRadius:2].CGPath;
-	self.thumb.label.text = [self.sectionTitles objectAtIndex:0];
+	[self.thumb setTitle:[self.sectionTitles objectAtIndex:0] image:[self imageForSectionIndex:0]];
 	self.thumb.font = self.font;
 	
 	[self insertSubview:self.thumb atIndex:0];
@@ -376,8 +313,10 @@
 
 	[self.thumb deactivate];
     
-    if(self.crossFadeLabelsOnDrag)
+    if(self.crossFadeLabelsOnDrag) {
         self.thumb.secondLabel.alpha = 0;
+        self.thumb.secondImageView.alpha = 0;
+    }
 
 	int index;
 	
@@ -386,7 +325,7 @@
 	else
 		index = floor(self.thumb.center.x/self.segmentWidth);
 	
-	self.thumb.label.text = [self.sectionTitles objectAtIndex:index];
+    [self.thumb setTitle:[self.sectionTitles objectAtIndex:index] image:[self imageForSectionIndex:index]];
     
     if(self.changeHandler && self.snapToIndex != self.selectedIndex && !self.isTracking)
 		self.changeHandler(self.snapToIndex);
@@ -404,30 +343,30 @@
 	BOOL secondTitleOnLeft = ((realCenter / self.segmentWidth) - hoverIndex) < 0.5;
 	
 	if (secondTitleOnLeft && hoverIndex > 0) {
-		self.thumb.label.alpha = 0.5 + ((realCenter / self.segmentWidth) - hoverIndex);
-		self.thumb.secondLabel.text = [self.sectionTitles objectAtIndex:hoverIndex - 1];
-		self.thumb.secondLabel.alpha = 0.5 - ((realCenter / self.segmentWidth) - hoverIndex);
+		self.thumb.label.alpha = self.thumb.imageView.alpha = 0.5 + ((realCenter / self.segmentWidth) - hoverIndex);
+		self.thumb.secondLabel.alpha = self.thumb.secondImageView.alpha = 0.5 - ((realCenter / self.segmentWidth) - hoverIndex);
+        [self.thumb setSecondTitle:[self.sectionTitles objectAtIndex:hoverIndex-1] image:[self imageForSectionIndex:hoverIndex-1]];
 	}
-	
     else if (hoverIndex + 1 < self.sectionTitles.count) {
-		self.thumb.label.alpha = 0.5 + (1 - ((realCenter / self.segmentWidth) - hoverIndex));
-		self.thumb.secondLabel.text = [self.sectionTitles objectAtIndex:hoverIndex + 1];
-		self.thumb.secondLabel.alpha = ((realCenter / self.segmentWidth) - hoverIndex) - 0.5;
-	}
-	
-    else {
-		self.thumb.secondLabel.text = nil;
-		self.thumb.label.alpha = 1.0;
-	}
+		self.thumb.label.alpha = self.thumb.imageView.alpha = 0.5 + (1 - ((realCenter / self.segmentWidth) - hoverIndex));
+		self.thumb.secondLabel.alpha = self.thumb.secondImageView.alpha = ((realCenter / self.segmentWidth) - hoverIndex) - 0.5;
+        [self.thumb setSecondTitle:[self.sectionTitles objectAtIndex:hoverIndex+1] image:[self imageForSectionIndex:hoverIndex+1]];
 
-	self.thumb.label.text = [self.sectionTitles objectAtIndex:hoverIndex];
+	}
+    else {
+        [self.thumb setSecondTitle:nil image:nil];
+		self.thumb.label.alpha = 1.0;
+        self.thumb.imageView.alpha = 1.0;
+	}
+    
+    [self.thumb setTitle:[self.sectionTitles objectAtIndex:hoverIndex] image:[self imageForSectionIndex:hoverIndex]];
 }
 
 - (void)activate {
 	
 	self.trackingThumb = self.moved = NO;
 	
-	self.thumb.label.text = [self.sectionTitles objectAtIndex:self.selectedIndex];
+    [self.thumb setTitle:[self.sectionTitles objectAtIndex:self.selectedIndex] image:[self imageForSectionIndex:self.selectedIndex]];
     
     void (^oldChangeHandler)(id sender) = [self valueForKey:@"selectedSegmentChangedHandler"];
     	
@@ -506,6 +445,95 @@
     }
 }
 
+- (UIImage*)imageForSectionIndex:(NSUInteger)index {
+    if(self.sectionImages.count > index)
+        return [self.sectionImages objectAtIndex:index];
+    return nil;
+}
+
+#pragma mark - Drawing
+
+
+- (void)drawRect:(CGRect)rect {
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    if(self.backgroundImage)
+        [self.backgroundImage drawInRect:rect];
+    
+    else {
+        CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceGray();
+        
+        // bottom gloss
+        CGContextSetFillColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.1].CGColor);
+        CGPathRef bottomGlossRect = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(0, 0, rect.size.width, rect.size.height) cornerRadius:self.cornerRadius].CGPath;
+        CGContextAddPath(context, bottomGlossRect);
+        CGContextFillPath(context);
+        
+        CGRect insetRect = CGRectMake(0, 0, rect.size.width, rect.size.height-1);
+        CGPathRef roundedRect = [UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius].CGPath;
+        CGContextAddPath(context, roundedRect);
+        CGContextClip(context);
+        
+        // background tint
+        CGFloat components[4] = {0.10, CGColorGetAlpha(self.tintColor.CGColor),  0.12, CGColorGetAlpha(self.tintColor.CGColor)};
+        CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);
+        CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
+        CGGradientRelease(gradient);
+        CGColorSpaceRelease(colorSpace);
+        
+        [self.tintColor set];
+        UIRectFillUsingBlendMode(rect, kCGBlendModeOverlay);
+        
+        
+        UIColor *innerShadowColor = [UIColor colorWithWhite:0 alpha:0.8];
+        NSArray *paths = [NSArray arrayWithObject:[UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius]];
+        UIImage *mask = [self maskWithPaths:paths bounds:CGRectInset(insetRect, -10, -10)];
+        UIImage *invertedImage = [self invertedImageWithMask:mask color:innerShadowColor];
+        
+        CGContextSetShadowWithColor(context, CGSizeMake(0, 1), 2, innerShadowColor.CGColor);
+        [invertedImage drawAtPoint:CGPointMake(-10, -10)];
+        
+    }
+    
+	CGContextSetShadowWithColor(context, self.textShadowOffset, 0, self.textShadowColor.CGColor);
+	[self.textColor set];
+	
+	CGFloat posY = ceil((CGRectGetHeight(rect)-self.font.pointSize+self.font.descender)/2)+self.titleEdgeInsets.top-self.titleEdgeInsets.bottom;
+	int pointSize = self.font.pointSize;
+	
+	if(pointSize%2 != 0)
+		posY--;
+	
+	int i = 0;
+	
+	for(NSString *titleString in self.sectionTitles) {
+        CGFloat titleWidth = [titleString sizeWithFont:self.font].width;
+        CGFloat imageWidth = 0;
+        UIImage *image = nil;
+        
+        if(self.sectionImages.count > i) {
+            image = [self.sectionImages objectAtIndex:i];
+            imageWidth = image.size.width+5;
+        }
+        
+        titleWidth+=imageWidth;
+        CGFloat sectionOffset = round((self.segmentWidth-titleWidth)/2);
+        CGFloat titlePosX = (self.segmentWidth*i)+sectionOffset;
+        
+        if(image)
+            [[self sectionImage:image withTintColor:self.textColor] drawAtPoint:CGPointMake(titlePosX, round((rect.size.height-image.size.height)/2))];
+        
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
+		[titleString drawAtPoint:CGPointMake(titlePosX+imageWidth, posY) forWidth:self.segmentWidth withFont:self.font lineBreakMode:UILineBreakModeTailTruncation];
+#else
+        [titleString drawAtPoint:CGPointMake(titlePosX+imageWidth, posY) forWidth:self.segmentWidth withFont:self.font lineBreakMode:NSLineBreakByClipping];
+#endif
+		i++;
+	}
+}
+
+
 #pragma mark - Support for deprecated methods
 
 - (void)setSegmentPadding:(CGFloat)newPadding {
@@ -518,6 +546,21 @@
 
 - (void)setShadowColor:(UIColor *)newColor {
     self.textShadowColor = newColor;
+}
+
+- (UIImage *)sectionImage:(UIImage*)image withTintColor:(UIColor*)color {
+    CGRect rect = { CGPointZero, image.size };
+    UIGraphicsBeginImageContextWithOptions(rect.size, NO, image.scale); {
+        [color set];
+        CGContextRef context = UIGraphicsGetCurrentContext();
+        CGContextTranslateCTM(context, 0, rect.size.height);
+        CGContextScaleCTM(context, 1.0, -1.0);
+        CGContextClipToMask(context, rect, [image CGImage]);
+        CGContextFillRect(context, rect);
+    }
+    UIImage *tintedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return tintedImage;
 }
 
 #pragma mark - Inner Glow Methods

@@ -15,11 +15,13 @@
 @interface SVSegmentedThumb ()
 
 @property (nonatomic, readwrite) BOOL selected;
-@property (nonatomic, unsafe_unretained) SVSegmentedControl *segmentedControl;
-@property (nonatomic, unsafe_unretained) UIFont *font;
+@property (nonatomic, readonly) SVSegmentedControl *segmentedControl;
+@property (nonatomic, readonly) UIFont *font;
 
 @property (strong, nonatomic, readonly) UILabel *label;
 @property (strong, nonatomic, readonly) UILabel *secondLabel;
+@property (strong, nonatomic, readonly) UIImageView *imageView;
+@property (strong, nonatomic, readonly) UIImageView *secondImageView;
 
 @property (nonatomic, readonly) BOOL isAtLastIndex;
 @property (nonatomic, readonly) BOOL isAtFirstIndex;
@@ -34,6 +36,8 @@
 
 @synthesize segmentedControl, backgroundImage, highlightedBackgroundImage, font, tintColor, textColor, textShadowColor, textShadowOffset, shouldCastShadow, selected;
 @synthesize label, secondLabel;
+@synthesize imageView = _imageView;
+@synthesize secondImageView = _secondImageView;
 
 // deprecated properties
 @synthesize shadowColor, shadowOffset, castsShadow;
@@ -63,9 +67,9 @@
     if(label == nil) {
         label = [[UILabel alloc] initWithFrame:self.bounds];
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-		label.textAlignment = UITextAlignmentCenter;
+		label.textAlignment = UITextAlignmentLeft;
 #else
-        label.textAlignment = NSTextAlignmentCenter;
+        label.textAlignment = NSTextAlignmentLeft;
 #endif
 		label.font = self.font;
 		label.backgroundColor = [UIColor clearColor];
@@ -80,9 +84,9 @@
     if(secondLabel == nil) {
 		secondLabel = [[UILabel alloc] initWithFrame:self.bounds];
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-		secondLabel.textAlignment = UITextAlignmentCenter;
+		secondLabel.textAlignment = UITextAlignmentLeft;
 #else
-        secondLabel.textAlignment = NSTextAlignmentCenter;
+        secondLabel.textAlignment = NSTextAlignmentLeft;
 #endif
 		secondLabel.font = self.font;
 		secondLabel.backgroundColor = [UIColor clearColor];
@@ -90,6 +94,35 @@
     }
     
     return secondLabel;
+}
+
+- (UIImageView *)imageView {
+    if(!_imageView) {
+        _imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+        _imageView.layer.shadowOpacity = 1;
+        _imageView.layer.shadowRadius = 0;
+        _imageView.backgroundColor = [UIColor redColor];
+        _imageView.layer.shouldRasterize = YES;
+        _imageView.layer.rasterizationScale = [UIScreen mainScreen].scale;
+        [self addSubview:_imageView];
+    }
+    return _imageView;
+}
+
+- (UIImageView *)secondImageView {
+    if(!_secondImageView) {
+        _secondImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+        _secondImageView.layer.shadowOpacity = 1;
+        _secondImageView.layer.shadowRadius = 0;
+        _secondImageView.layer.shouldRasterize = YES;
+        _secondImageView.layer.rasterizationScale = [UIScreen mainScreen].scale;
+        //[self addSubview:_secondImageView];
+    }
+    return _secondImageView;
+}
+
+- (SVSegmentedControl *)segmentedControl {
+    return (SVSegmentedControl*)self.superview;
 }
 
 - (UIFont *)font {
@@ -199,6 +232,60 @@
 #pragma mark -
 #pragma mark Setters
 
+- (void)setTitle:(NSString*)title image:(UIImage*)image {
+    [UIView setAnimationsEnabled:NO];
+    
+    self.label.text = title;
+    self.imageView.image = image;
+    
+    CGFloat titleWidth = [title sizeWithFont:self.font].width;
+    CGFloat imageWidth = 0;
+    
+    if(image) {
+        imageWidth = image.size.width+5;
+        titleWidth+=imageWidth;
+    }
+    
+    CGFloat titlePosX = round((self.bounds.size.width-titleWidth)/2);
+    
+    if(image)
+        self.imageView.frame = CGRectMake(titlePosX,
+                                          round((self.bounds.size.height-image.size.height)/2),
+                                          image.size.width,
+                                          image.size.height);
+    
+    self.label.frame = CGRectMake(titlePosX+imageWidth, 0, titleWidth, self.bounds.size.height);
+    
+    [UIView setAnimationsEnabled:YES];
+}
+
+- (void)setSecondTitle:(NSString*)title image:(UIImage*)image {
+    [UIView setAnimationsEnabled:NO];
+    
+    self.secondLabel.text = title;
+    self.secondImageView.image = image;
+    
+    CGFloat titleWidth = [title sizeWithFont:self.font].width;
+    CGFloat imageWidth = 0;
+    
+    if(image) {
+        imageWidth = image.size.width+5;
+        titleWidth+=imageWidth;
+    }
+    
+    CGFloat titlePosX = round((self.bounds.size.width-titleWidth)/2);
+    
+    if(image)
+        self.secondImageView.frame = CGRectMake(titlePosX,
+                                          round((self.bounds.size.height-image.size.height)/2),
+                                          image.size.width,
+                                          image.size.height);
+    
+    self.secondLabel.frame = CGRectMake(titlePosX+imageWidth, 0, titleWidth, self.bounds.size.height);
+    
+    [UIView setAnimationsEnabled:YES];
+}
+
 - (void)setBackgroundImage:(UIImage *)newImage {
     
     if(backgroundImage)
@@ -224,19 +311,27 @@
 }
 
 - (void)setFont:(UIFont *)newFont {
-    self.label.font = self.secondLabel.font = newFont;
+    self.label.font = newFont;
+    self.secondLabel.font = newFont;
 }
 
 - (void)setTextColor:(UIColor *)newColor {
-	self.label.textColor = self.secondLabel.textColor = newColor;
+	self.label.textColor = newColor;
+    self.secondLabel.textColor = newColor;
 }
 
 - (void)setTextShadowColor:(UIColor *)newColor {
-	self.label.shadowColor = self.secondLabel.shadowColor = newColor;
+	self.label.shadowColor = newColor;
+    self.secondLabel.shadowColor = newColor;
+    self.imageView.layer.shadowColor = newColor.CGColor;
+    self.secondImageView.layer.shadowColor = newColor.CGColor;
 }
 
 - (void)setTextShadowOffset:(CGSize)newOffset {
-	self.label.shadowOffset = self.secondLabel.shadowOffset = newOffset;
+	self.label.shadowOffset = newOffset;
+    self.secondLabel.shadowOffset = newOffset;
+    self.imageView.layer.shadowOffset = newOffset;
+    self.secondImageView.layer.shadowOffset = newOffset;
 }
 
 
@@ -263,21 +358,27 @@
 	else
 		self.alpha = 1;
 	
-	[self setNeedsDisplay];
+	//[self setNeedsDisplay];
 }
 
 - (void)activate {
 	[self setSelected:NO];
     
-    if(!self.segmentedControl.crossFadeLabelsOnDrag)
+    if(!self.segmentedControl.crossFadeLabelsOnDrag) {
         self.label.alpha = 1;
+        self.imageView.alpha = 1;
+        NSLog(@"activating %@", self.imageView);
+    }
 }
 
 - (void)deactivate {
 	[self setSelected:YES];
     
-    if(!self.segmentedControl.crossFadeLabelsOnDrag)
+    if(!self.segmentedControl.crossFadeLabelsOnDrag) {
         self.label.alpha = 0;
+        self.imageView.alpha = 0;
+        NSLog(@"deactivating %@", self.imageView);
+    }
 }
 
 - (BOOL)isAtFirstIndex {
