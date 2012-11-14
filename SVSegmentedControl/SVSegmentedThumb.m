@@ -241,7 +241,7 @@
     
     if(image)
         self.imageView.frame = CGRectMake(titlePosX,
-                                          round((self.bounds.size.height-image.size.height)/2),
+                                          round((self.segmentedControl.bounds.size.height-image.size.height)/2),
                                           image.size.width,
                                           image.size.height);
     
@@ -268,7 +268,7 @@
     
     if(image)
         self.secondImageView.frame = CGRectMake(titlePosX,
-                                          round((self.bounds.size.height-image.size.height)/2),
+                                          round((self.segmentedControl.bounds.size.height-image.size.height)/2),
                                           image.size.width,
                                           image.size.height);
     
