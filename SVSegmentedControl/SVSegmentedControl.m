@@ -59,6 +59,7 @@
 @synthesize changeHandler, selectedIndex, animateToInitialSelection, accessibilityElements;
 @synthesize cornerRadius, tintColor, backgroundImage, font, textColor, textShadowColor, textShadowOffset, titleEdgeInsets, height, crossFadeLabelsOnDrag;
 @synthesize sectionTitles, sectionImages, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight, thumbEdgeInset;
+@synthesize mustSlideToChange, minimumOverlapToChange;
 
 #pragma mark -
 #pragma mark Life Cycle
@@ -75,7 +76,10 @@
         self.clipsToBounds = YES;
         self.userInteractionEnabled = YES;
         self.animateToInitialSelection = NO;
-        
+
+        self.mustSlideToChange = NO;
+        self.minimumOverlapToChange = 0.66;
+                
         self.font = [UIFont boldSystemFontOfSize:15];
         self.textColor = [UIColor grayColor];
         self.textShadowColor = [UIColor blackColor];
@@ -277,15 +281,26 @@
 	CGFloat pMaxX = CGRectGetMaxX(self.bounds);
 	CGFloat pMinX = CGRectGetMinX(self.bounds); // 5 is for thumb shadow
 	
-	if(!self.moved && self.trackingThumb && [self.sectionTitles count] == 2)
-		[self toggle];
-	
-	else if(!self.activated && posX > pMinX && posX < pMaxX) {
-		self.snapToIndex = floor(cPos.x/self.segmentWidth);
-		[self snap:YES];
-	} 
-	
-	else {        
+    if(!self.mustSlideToChange && !self.moved && self.trackingThumb && [self.sectionTitles count] == 2)
+        [self toggle];
+    else if(!self.activated && posX > pMinX && posX < pMaxX) {
+        int potentialSnapToIndex = floor(cPos.x/self.segmentWidth);
+        
+        if (self.mustSlideToChange) {
+            CGRect potentialSegmentRect = CGRectMake(self.segmentWidth * potentialSnapToIndex, 0, self.segmentWidth, self.bounds.size.height);
+            CGRect intersection = CGRectIntersection(potentialSegmentRect, self.thumb.frame);
+            CGFloat overlap = intersection.size.width / self.segmentWidth;
+            
+            // Only snap to this segment if we are far enough within it
+            if (overlap > self.minimumOverlapToChange)
+                self.snapToIndex = potentialSnapToIndex;
+        }
+        else {
+            self.snapToIndex = potentialSnapToIndex;
+        }
+        [self snap:YES];
+    } 
+    else {        
         if(posX < pMinX)
             posX = pMinX;
         
