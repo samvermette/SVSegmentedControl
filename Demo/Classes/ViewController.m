@@ -52,7 +52,8 @@
 	grayRC.height = 46;
 	
 	grayRC.thumb.tintColor = [UIColor colorWithRed:0 green:0.5 blue:0.1 alpha:1];
-	
+	grayRC.mustSlideToChange = YES;
+    
 	[self.view addSubview:grayRC];
 	
 	grayRC.center = CGPointMake(160, 270);
