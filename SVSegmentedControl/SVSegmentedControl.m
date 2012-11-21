@@ -119,6 +119,9 @@
 }
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
+    
+    if (newSuperview == nil) return; // control is being _removed_ from super view
+    
     int c = [self.sectionTitles count];
 	int i = 0;
 	
