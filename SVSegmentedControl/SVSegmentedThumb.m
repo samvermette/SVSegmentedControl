@@ -245,7 +245,7 @@
                                           image.size.width,
                                           image.size.height);
     
-    self.label.frame = CGRectMake(titlePosX+imageWidth, 0, titleWidth, self.bounds.size.height);
+    self.label.frame = CGRectMake(titlePosX+imageWidth, self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom, titleWidth, self.bounds.size.height);
     
     [UIView setAnimationsEnabled:YES];
 }
@@ -272,7 +272,7 @@
                                           image.size.width,
                                           image.size.height);
     
-    self.secondLabel.frame = CGRectMake(titlePosX+imageWidth, 0, titleWidth, self.bounds.size.height);
+    self.secondLabel.frame = CGRectMake(titlePosX+imageWidth, self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom, titleWidth, self.bounds.size.height);
     
     [UIView setAnimationsEnabled:YES];
 }
