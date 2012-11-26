@@ -25,10 +25,9 @@
 @property (nonatomic, readwrite) BOOL animateToInitialSelection; // default is NO
 @property (nonatomic, readwrite) BOOL crossFadeLabelsOnDrag; // default is NO
 
-// To make the control difficult to accidentally change, force the user to slide it
-@property (nonatomic, readwrite) BOOL mustSlideToChange; // default is NO
-// Only snap to a new segment if the thumb overlaps it by this fraction
-@property (nonatomic, readwrite) CGFloat minimumOverlapToChange; // default is 0.66
+@property (nonatomic, readwrite) BOOL mustSlideToChange; // default is NO - To make the control difficult to accidentally change, force the user to slide it
+@property (nonatomic, readwrite) CGFloat minimumOverlapToChange; // default is 0.66 - Only snap to a new segment if the thumb overlaps it by this fraction
+@property (nonatomic, readwrite) UIEdgeInsets touchTargetMargins; // default is UIEdgeInsetsMake(0, 0, 0, 0) - Enlarge touch target of control
 
 @property (nonatomic, strong) UIColor *tintColor; // default is [UIColor grayColor]
 @property (nonatomic, strong) UIImage *backgroundImage; // default is nil

@@ -59,7 +59,7 @@
 @synthesize changeHandler, selectedIndex, animateToInitialSelection, accessibilityElements;
 @synthesize cornerRadius, tintColor, backgroundImage, font, textColor, textShadowColor, textShadowOffset, titleEdgeInsets, height, crossFadeLabelsOnDrag;
 @synthesize sectionTitles, sectionImages, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight, thumbEdgeInset;
-@synthesize mustSlideToChange, minimumOverlapToChange;
+@synthesize mustSlideToChange, minimumOverlapToChange, touchTargetMargins;
 
 #pragma mark -
 #pragma mark Life Cycle
@@ -220,8 +220,14 @@
     return [self.sectionTitles indexOfObject:title];
 }
 
-#pragma mark -
-#pragma mark Tracking
+#pragma mark - Tracking
+
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    CGRect bounds = self.bounds;
+    return CGRectContainsPoint(CGRectMake(bounds.origin.x - self.touchTargetMargins.left, bounds.origin.y - self.touchTargetMargins.top,
+                                          bounds.size.width + self.touchTargetMargins.left + self.touchTargetMargins.right,
+                                          bounds.size.height + self.touchTargetMargins.bottom + self.touchTargetMargins.top), point);
+}
 
 - (BOOL)beginTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event {
     [super beginTrackingWithTouch:touch withEvent:event];
@@ -229,9 +235,9 @@
     CGPoint cPos = [touch locationInView:self.thumb];
 	self.activated = NO;
 	
-	self.snapToIndex = floor(self.thumb.center.x/self.segmentWidth);
+	self.snapToIndex = MIN(floor(self.thumb.center.x/self.segmentWidth), self.sectionTitles.count-1);
 	
-	if(CGRectContainsPoint(self.thumb.bounds, cPos)) {
+	if([self.thumb pointInside:cPos withEvent:event]) {
 		self.trackingThumb = YES;
         [self.thumb deactivate];
 		self.dragOffset = (self.thumb.frame.size.width/2)-cPos.x;
@@ -253,7 +259,7 @@
 	CGFloat pMinX = CGRectGetMinX(self.bounds) + buffer-5;
 	
 	if((newMaxX > pMaxX || newMinX < pMinX) && self.trackingThumb) {
-		self.snapToIndex = floor(self.thumb.center.x/self.segmentWidth);
+		self.snapToIndex = MIN(floor(self.thumb.center.x/self.segmentWidth), self.sectionTitles.count-1);
         
         if(newMaxX-pMaxX > 10 || pMinX-newMinX > 10)
             self.moved = YES;
@@ -287,7 +293,7 @@
     if(!self.mustSlideToChange && !self.moved && self.trackingThumb && [self.sectionTitles count] == 2)
         [self toggle];
     else if(!self.activated && posX > pMinX && posX < pMaxX) {
-        int potentialSnapToIndex = floor(cPos.x/self.segmentWidth);
+        int potentialSnapToIndex = MIN(floor(cPos.x/self.segmentWidth), self.sectionTitles.count-1);
         
         if (self.mustSlideToChange) {
             CGRect potentialSegmentRect = CGRectMake(self.segmentWidth * potentialSnapToIndex, 0, self.segmentWidth, self.bounds.size.height);
@@ -310,7 +316,7 @@
         if(posX >= pMaxX)
             posX = pMaxX-1;
         
-        self.snapToIndex = floor(posX/self.segmentWidth);
+        self.snapToIndex = MIN(floor(posX/self.segmentWidth), self.sectionTitles.count-1);
         [self snap:YES];
     }
 }
@@ -338,7 +344,7 @@
 	if(self.snapToIndex != -1)
 		index = self.snapToIndex;
 	else
-		index = floor(self.thumb.center.x/self.segmentWidth);
+		index = MIN(floor(self.thumb.center.x/self.segmentWidth), self.sectionTitles.count-1);
 	
     [self setThumbValuesForIndex:index];
     

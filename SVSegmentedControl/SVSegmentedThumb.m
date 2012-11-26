@@ -58,6 +58,13 @@
     return self;
 }
 
+- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    CGRect bounds = self.bounds;
+    return CGRectContainsPoint(CGRectMake(bounds.origin.x - self.segmentedControl.touchTargetMargins.left, bounds.origin.y - self.segmentedControl.touchTargetMargins.top,
+                                          bounds.size.width + self.segmentedControl.touchTargetMargins.left + self.segmentedControl.touchTargetMargins.right,
+                                          bounds.size.height + self.segmentedControl.touchTargetMargins.bottom + self.segmentedControl.touchTargetMargins.top), point);
+}
+
 - (UILabel*)label {
     
     if(label == nil) {
