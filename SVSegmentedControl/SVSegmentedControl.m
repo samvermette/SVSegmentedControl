@@ -34,7 +34,7 @@
 
 - (void)activate;
 - (void)snap:(BOOL)animated;
-- (void)updateTitles;
+- (void)crossFadeThumbContent;
 - (void)toggle;
 - (void)setupAccessibility;
 
@@ -267,7 +267,7 @@
 		[self snap:NO];
         
 		if (self.crossFadeLabelsOnDrag)
-			[self updateTitles];
+			[self crossFadeThumbContent];
 	}
 	
 	else if(self.trackingThumb) {
@@ -275,7 +275,7 @@
 		self.moved = YES;
         
 		if (self.crossFadeLabelsOnDrag)
-			[self updateTitles];
+			[self crossFadeThumbContent];
 	}
     
     return YES;
@@ -357,26 +357,24 @@
 		self.thumb.frame = [[self.thumbRects objectAtIndex:index] CGRectValue];
 }
 
-- (void)updateTitles {
-    CGFloat realCenter = self.thumb.center.x-5; // 5 for drop shadow
-	int hoverIndex = floor(realCenter/self.segmentWidth);
-	
-	BOOL secondTitleOnLeft = ((realCenter / self.segmentWidth) - hoverIndex) < 0.5;
-	
+- (void)crossFadeThumbContent {
+    float segmentOverlap = (self.thumb.center.x / self.segmentWidth); // how far along are we dragging through the current segment
+    int hoverIndex = floor(segmentOverlap); // the segment the touch is current hovering
+    BOOL secondTitleOnLeft = (segmentOverlap - hoverIndex) < 0.5;
+    
 	if (secondTitleOnLeft && hoverIndex > 0) {
-		self.thumb.label.alpha = self.thumb.imageView.alpha = 0.5 + ((realCenter / self.segmentWidth) - hoverIndex);
-		self.thumb.secondLabel.alpha = self.thumb.secondImageView.alpha = 0.5 - ((realCenter / self.segmentWidth) - hoverIndex);
+		self.thumb.label.alpha = self.thumb.imageView.alpha = 0.5 + (segmentOverlap - hoverIndex);
+		self.thumb.secondLabel.alpha = self.thumb.secondImageView.alpha = 0.5 - (segmentOverlap - hoverIndex);
         [self setThumbSecondValuesForIndex:hoverIndex-1];
 	}
     else if (hoverIndex + 1 < self.sectionTitles.count) {
-		self.thumb.label.alpha = self.thumb.imageView.alpha = 0.5 + (1 - ((realCenter / self.segmentWidth) - hoverIndex));
-		self.thumb.secondLabel.alpha = self.thumb.secondImageView.alpha = ((realCenter / self.segmentWidth) - hoverIndex) - 0.5;
+		self.thumb.label.alpha = self.thumb.imageView.alpha = 0.5 + (1 - (segmentOverlap - hoverIndex));
+		self.thumb.secondLabel.alpha = self.thumb.secondImageView.alpha = (segmentOverlap - hoverIndex) - 0.5;
         [self setThumbSecondValuesForIndex:hoverIndex+1];
 	}
     else {
-        [self.thumb setSecondTitle:nil image:nil];
-		self.thumb.label.alpha = 1.0;
-        self.thumb.imageView.alpha = 1.0;
+		self.thumb.secondLabel.alpha = self.thumb.secondImageView.alpha = 0.0;
+		self.thumb.label.alpha = self.thumb.imageView.alpha = 1.0;
 	}
     
     [self setThumbValuesForIndex:hoverIndex];
@@ -425,7 +423,7 @@
 							 self.thumb.frame = [[self.thumbRects objectAtIndex:segmentIndex] CGRectValue];
 
 							 if(self.crossFadeLabelsOnDrag)
-								 [self updateTitles];
+								 [self crossFadeThumbContent];
 						 }
 						 completion:^(BOOL finished){
                              if (finished) {
