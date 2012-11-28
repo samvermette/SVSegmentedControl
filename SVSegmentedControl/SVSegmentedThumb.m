@@ -16,6 +16,7 @@
 
 @property (nonatomic, readwrite) BOOL selected;
 @property (nonatomic, readonly) SVSegmentedControl *segmentedControl;
+@property (nonatomic, strong) UIImageView *thumbBackgroundImageView;
 @property (nonatomic, readonly) UIFont *font;
 
 @property (strong, nonatomic, readonly) UILabel *label;
@@ -38,7 +39,7 @@
 @synthesize label, secondLabel;
 @synthesize imageView = _imageView;
 @synthesize secondImageView = _secondImageView;
-
+@synthesize thumbBackgroundImageView = _thumbBackgroundImageView;
 
 - (id)initWithFrame:(CGRect)frame {
     
@@ -53,6 +54,7 @@
 		self.textShadowOffset = CGSizeMake(0, -1);
 		self.tintColor = [UIColor grayColor];
         self.shouldCastShadow = YES;
+        self.backgroundColor = [UIColor clearColor];
     }
 	
     return self;
@@ -119,6 +121,21 @@
     return _secondImageView;
 }
 
+- (UIImageView *)thumbBackgroundImageView {
+    if(!_thumbBackgroundImageView) {
+        _thumbBackgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(5+self.segmentedControl.thumbEdgeInset.left,
+                                                                                  self.segmentedControl.thumbEdgeInset.top,
+                                                                                  self.bounds.size.width-10-self.segmentedControl.thumbEdgeInset.left-self.segmentedControl.thumbEdgeInset.right,
+                                                                                  self.backgroundImage.size.height)];
+        _thumbBackgroundImageView.backgroundColor = [UIColor clearColor];
+        [self insertSubview:_thumbBackgroundImageView atIndex:0];
+        
+        self.clipsToBounds = NO;
+        self.segmentedControl.clipsToBounds = NO;
+    }
+    return _thumbBackgroundImageView;
+}
+
 - (SVSegmentedControl *)segmentedControl {
     return (SVSegmentedControl*)self.superview;
 }
@@ -136,12 +153,12 @@
     
     thumbRect = CGRectInset(thumbRect, 5, 0); // 5 is for thumb shadow
     
-    if(self.backgroundImage && !self.selected)
-        [self.backgroundImage drawInRect:rect];
-    
-    else if(self.highlightedBackgroundImage && self.selected)
-        [self.highlightedBackgroundImage drawInRect:rect];
-    
+    if(self.backgroundImage && !self.selected) {
+        self.thumbBackgroundImageView.image = self.backgroundImage;
+    }
+    else if(self.highlightedBackgroundImage && self.selected) {
+        self.thumbBackgroundImageView.image = self.highlightedBackgroundImage;
+    }
     else {
         
         CGFloat cornerRadius = self.segmentedControl.cornerRadius;
