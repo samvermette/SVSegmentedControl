@@ -56,10 +56,12 @@
 
 @implementation SVSegmentedControl
 
-@synthesize changeHandler, selectedIndex, animateToInitialSelection, accessibilityElements;
+@synthesize changeHandler, animateToInitialSelection, accessibilityElements;
 @synthesize cornerRadius, tintColor, backgroundImage, font, textColor, textShadowColor, textShadowOffset, titleEdgeInsets, height, crossFadeLabelsOnDrag;
 @synthesize sectionTitles, sectionImages, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight, thumbEdgeInset;
 @synthesize mustSlideToChange, minimumOverlapToChange, touchTargetMargins;
+
+@synthesize selectedIndex = _selectedIndex;
 
 #pragma mark -
 #pragma mark Life Cycle
@@ -76,10 +78,10 @@
         self.clipsToBounds = YES;
         self.userInteractionEnabled = YES;
         self.animateToInitialSelection = NO;
-
+        
         self.mustSlideToChange = NO;
         self.minimumOverlapToChange = 0.66;
-                
+        
         self.font = [UIFont boldSystemFontOfSize:15];
         self.textColor = [UIColor grayColor];
         self.textShadowColor = [UIColor blackColor];
@@ -104,27 +106,7 @@
     return thumb;
 }
 
-#pragma mark - Accessibility
-
-- (void)setFrame:(CGRect)frame {
-    [super setFrame:frame];
-    [self setNeedsDisplay];
-}
-
-- (void)setBounds:(CGRect)bounds {
-    [super setBounds:bounds];
-    self.segmentWidth = round(bounds.size.width/self.sectionTitles.count);
-    [self setupAccessibility];
-}
-
-- (void)setCenter:(CGPoint)center {
-    [super setCenter:center];
-    [self setupAccessibility];
-}
-
-- (void)willMoveToSuperview:(UIView *)newSuperview {
-    
-    if (newSuperview == nil) return; // control is being _removed_ from super view
+- (void)updateSectionRects {
     
     int c = [self.sectionTitles count];
 	int i = 0;
@@ -137,7 +119,7 @@
             
             if(self.sectionImages.count > i)
                 stringWidth+=[[self.sectionImages objectAtIndex:i] size].width+5;
-                
+            
             self.segmentWidth = MAX(stringWidth, self.segmentWidth);
             i++;
         }
@@ -172,13 +154,36 @@
 	self.thumb.font = self.font;
 	
 	[self insertSubview:self.thumb atIndex:0];
+}
+
+#pragma mark - Accessibility
+
+- (void)setFrame:(CGRect)frame {
+    [super setFrame:frame];
+    [self setNeedsDisplay];
+}
+
+- (void)setBounds:(CGRect)bounds {
+    [super setBounds:bounds];
+    self.segmentWidth = round(bounds.size.width/self.sectionTitles.count);
+    [self setupAccessibility];
+}
+
+- (void)setCenter:(CGPoint)center {
+    [super setCenter:center];
+    [self setupAccessibility];
+}
+
+- (void)willMoveToSuperview:(UIView *)newSuperview {
     
-    BOOL animateInitial = self.animateToInitialSelection;
+    if (newSuperview == nil)
+        return; // control is being _removed_ from super view
     
-    if(self.selectedIndex == 0)
-        animateInitial = NO;
-	
-    [self moveThumbToIndex:selectedIndex animate:animateInitial];
+    [self updateSectionRects];
+}
+
+- (void)didMoveToSuperview {
+    [self setSelectedIndex:self.selectedIndex animated:self.animateToInitialSelection];
 }
 
 - (void)setupAccessibility {
@@ -286,7 +291,7 @@
     
     CGPoint cPos = [touch locationInView:self];
     CGFloat posX = cPos.x-5;
-
+    
 	CGFloat pMaxX = CGRectGetMaxX(self.bounds);
 	CGFloat pMinX = CGRectGetMinX(self.bounds); // 5 is for thumb shadow
 	
@@ -308,8 +313,8 @@
             self.snapToIndex = potentialSnapToIndex;
         }
         [self snap:YES];
-    } 
-    else {        
+    }
+    else {
         if(posX < pMinX)
             posX = pMinX;
         
@@ -331,14 +336,14 @@
 #pragma mark -
 
 - (void)snap:(BOOL)animated {
-
+    
 	[self.thumb deactivate];
     
     if(self.crossFadeLabelsOnDrag) {
         self.thumb.secondLabel.alpha = 0;
         self.thumb.secondImageView.alpha = 0;
     }
-
+    
 	int index;
 	
 	if(self.snapToIndex != -1)
@@ -350,9 +355,9 @@
     
     if(self.changeHandler && self.snapToIndex != self.selectedIndex && !self.isTracking)
 		self.changeHandler(self.snapToIndex);
-
+    
 	if(animated)
-		[self moveThumbToIndex:index animate:YES];
+		[self setSelectedIndex:index animated:YES];
 	else
 		self.thumb.frame = [[self.thumbRects objectAtIndex:index] CGRectValue];
 }
@@ -385,10 +390,10 @@
 	self.trackingThumb = self.moved = NO;
 	
     [self setThumbValuesForIndex:self.selectedIndex];
-
-	[UIView animateWithDuration:0.1 
-						  delay:0 
-						options:UIViewAnimationOptionAllowUserInteraction 
+    
+	[UIView animateWithDuration:0.1
+						  delay:0
+						options:UIViewAnimationOptionAllowUserInteraction
 					 animations:^{
 						 self.activated = YES;
 						 [self.thumb activate];
@@ -407,35 +412,43 @@
 	[self snap:YES];
 }
 
-- (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate {
+- (void)setSelectedIndex:(NSUInteger)index {
+    [self setSelectedIndex:index animated:NO];
+}
 
-    self.selectedIndex = segmentIndex;
-    [self sendActionsForControlEvents:UIControlEventValueChanged];
+- (void)moveThumbToIndex:(NSUInteger)index animate:(BOOL)animate {
+    [self setSelectedIndex:index animated:animate];
+}
+
+- (void)setSelectedIndex:(NSUInteger)index animated:(BOOL)animated {
+    _selectedIndex = index;
     
-	if(animate) {
+    if(self.superview) {
+        [self sendActionsForControlEvents:UIControlEventValueChanged];
         
-        [self.thumb deactivate];
-		
-		[UIView animateWithDuration:0.2 
-							  delay:0 
-							options:UIViewAnimationOptionCurveEaseOut 
-						 animations:^{
-							 self.thumb.frame = [[self.thumbRects objectAtIndex:segmentIndex] CGRectValue];
-
-							 if(self.crossFadeLabelsOnDrag)
-								 [self crossFadeThumbContent];
-						 }
-						 completion:^(BOOL finished){
-                             if (finished) {
-                                 [self activate];
+        if(animated) {
+            [self.thumb deactivate];
+            [UIView animateWithDuration:0.2
+                                  delay:0
+                                options:UIViewAnimationOptionCurveEaseOut
+                             animations:^{
+                                 self.thumb.frame = [[self.thumbRects objectAtIndex:index] CGRectValue];
+                                 
+                                 if(self.crossFadeLabelsOnDrag)
+                                     [self crossFadeThumbContent];
                              }
-						 }];
-	}
-	
-	else {
-		self.thumb.frame = [[self.thumbRects objectAtIndex:segmentIndex] CGRectValue];
-		[self activate];
-	}
+                             completion:^(BOOL finished){
+                                 if (finished) {
+                                     [self activate];
+                                 }
+                             }];
+        }
+        
+        else {
+            self.thumb.frame = [[self.thumbRects objectAtIndex:index] CGRectValue];
+            [self activate];
+        }
+    }
 }
 
 #pragma mark -

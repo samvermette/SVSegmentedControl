@@ -43,7 +43,8 @@
 @property (nonatomic, readwrite) CGSize textShadowOffset;  // default is CGSizeMake(0, -1)
 
 - (SVSegmentedControl*)initWithSectionTitles:(NSArray*)titlesArray;
-- (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate;
+- (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate DEPRECATED_ATTRIBUTE; // use setSelectedIndex:animated:
+- (void)setSelectedIndex:(NSUInteger)index animated:(BOOL)animated;
 
 @end
 
