@@ -148,12 +148,12 @@
 		i++;
 	}
 	
-	self.thumb.frame = [[self.thumbRects objectAtIndex:0] CGRectValue];
-	self.thumb.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.thumb.bounds cornerRadius:2].CGPath;
-	[self setThumbValuesForIndex:0];
-	self.thumb.font = self.font;
-	
-	[self insertSubview:self.thumb atIndex:0];
+    self.thumb.frame = [[self.thumbRects objectAtIndex:self.selectedIndex] CGRectValue];
+    self.thumb.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.thumb.bounds cornerRadius:2].CGPath;
+    [self setThumbValuesForIndex:self.selectedIndex];
+    self.thumb.font = self.font;
+    
+    [self insertSubview:self.thumb atIndex:0];
 }
 
 #pragma mark - Accessibility
@@ -180,10 +180,6 @@
         return; // control is being _removed_ from super view
     
     [self updateSectionRects];
-}
-
-- (void)didMoveToSuperview {
-    [self setSelectedIndex:self.selectedIndex animated:self.animateToInitialSelection];
 }
 
 - (void)setupAccessibility {
