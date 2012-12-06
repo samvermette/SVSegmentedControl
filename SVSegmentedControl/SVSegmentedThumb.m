@@ -19,10 +19,10 @@
 @property (nonatomic, strong) UIImageView *thumbBackgroundImageView;
 @property (nonatomic, readonly) UIFont *font;
 
-@property (strong, nonatomic, readonly) UILabel *label;
-@property (strong, nonatomic, readonly) UILabel *secondLabel;
-@property (strong, nonatomic, readonly) UIImageView *imageView;
-@property (strong, nonatomic, readonly) UIImageView *secondImageView;
+@property (strong, nonatomic, readonly) UILabel *firstLabel;
+@property (strong, nonatomic, readonly) UILabel *secondLabel; // when crossFadeLabelsOnDrag == YES
+@property (strong, nonatomic, readonly) UIImageView *firstImageView;
+@property (strong, nonatomic, readonly) UIImageView *secondImageView; // when crossFadeLabelsOnDrag == YES
 
 @property (nonatomic, readonly) BOOL isAtLastIndex;
 @property (nonatomic, readonly) BOOL isAtFirstIndex;
@@ -36,8 +36,9 @@
 @implementation SVSegmentedThumb
 
 @synthesize segmentedControl, backgroundImage, highlightedBackgroundImage, font, tintColor, textColor, textShadowColor, textShadowOffset, shouldCastShadow, selected;
-@synthesize label, secondLabel;
-@synthesize imageView = _imageView;
+@synthesize firstLabel = _firstLabel;
+@synthesize secondLabel = _secondLabel;
+@synthesize firstImageView = _firstImageView;
 @synthesize secondImageView = _secondImageView;
 @synthesize thumbBackgroundImageView = _thumbBackgroundImageView;
 
@@ -62,53 +63,54 @@
 
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
     CGRect bounds = self.bounds;
-    return CGRectContainsPoint(CGRectMake(bounds.origin.x - self.segmentedControl.touchTargetMargins.left, bounds.origin.y - self.segmentedControl.touchTargetMargins.top,
+    return CGRectContainsPoint(CGRectMake(bounds.origin.x - self.segmentedControl.touchTargetMargins.left,
+                                          bounds.origin.y - self.segmentedControl.touchTargetMargins.top,
                                           bounds.size.width + self.segmentedControl.touchTargetMargins.left + self.segmentedControl.touchTargetMargins.right,
                                           bounds.size.height + self.segmentedControl.touchTargetMargins.bottom + self.segmentedControl.touchTargetMargins.top), point);
 }
 
 - (UILabel*)label {
     
-    if(label == nil) {
-        label = [[UILabel alloc] initWithFrame:self.bounds];
+    if(_firstLabel == nil) {
+        _firstLabel = [[UILabel alloc] initWithFrame:self.bounds];
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-		label.textAlignment = UITextAlignmentLeft;
+		_firstLabel.textAlignment = UITextAlignmentLeft;
 #else
-        label.textAlignment = NSTextAlignmentLeft;
+        _firstLabel.textAlignment = NSTextAlignmentLeft;
 #endif
-		label.font = self.font;
-		label.backgroundColor = [UIColor clearColor];
-		[self addSubview:label];
+		_firstLabel.font = self.font;
+		_firstLabel.backgroundColor = [UIColor clearColor];
+		[self addSubview:_firstLabel];
     }
     
-    return label;
+    return _firstLabel;
 }
 
 - (UILabel*)secondLabel {
     
-    if(secondLabel == nil) {
-		secondLabel = [[UILabel alloc] initWithFrame:self.bounds];
+    if(_secondLabel == nil) {
+		_secondLabel = [[UILabel alloc] initWithFrame:self.bounds];
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-		secondLabel.textAlignment = UITextAlignmentLeft;
+		_secondLabel.textAlignment = UITextAlignmentLeft;
 #else
-        secondLabel.textAlignment = NSTextAlignmentLeft;
+        _secondLabel.textAlignment = NSTextAlignmentLeft;
 #endif
-		secondLabel.font = self.font;
-		secondLabel.backgroundColor = [UIColor clearColor];
-		[self addSubview:secondLabel];
+		_secondLabel.font = self.font;
+		_secondLabel.backgroundColor = [UIColor clearColor];
+		[self addSubview:_secondLabel];
     }
     
-    return secondLabel;
+    return _secondLabel;
 }
 
 - (UIImageView *)imageView {
-    if(!_imageView) {
-        _imageView = [[UIImageView alloc] initWithFrame:CGRectZero];
-        _imageView.layer.shadowOpacity = 1;
-        _imageView.layer.shadowRadius = 0;
-        [self addSubview:_imageView];
+    if(!_firstImageView) {
+        _firstImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
+        _firstImageView.layer.shadowOpacity = 1;
+        _firstImageView.layer.shadowRadius = 0;
+        [self addSubview:_firstImageView];
     }
-    return _imageView;
+    return _firstImageView;
 }
 
 - (UIImageView *)secondImageView {
@@ -252,24 +254,7 @@
     
     self.label.text = title;
     self.imageView.image = image;
-    
-    CGFloat titleWidth = [title sizeWithFont:self.font].width;
-    CGFloat imageWidth = 0;
-    
-    if(image) {
-        imageWidth = image.size.width+5;
-        titleWidth+=imageWidth;
-    }
-    
-    CGFloat titlePosX = round((self.bounds.size.width-titleWidth)/2);
-    
-    if(image)
-        self.imageView.frame = CGRectMake(titlePosX,
-                                          round((self.segmentedControl.bounds.size.height-image.size.height)/2),
-                                          image.size.width,
-                                          image.size.height);
-    
-    self.label.frame = CGRectMake(titlePosX+imageWidth, self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom, titleWidth, self.bounds.size.height);
+    [self arrangeLabel:self.label imageView:self.imageView];
     
     [UIView setAnimationsEnabled:YES];
 }
@@ -279,26 +264,35 @@
     
     self.secondLabel.text = title;
     self.secondImageView.image = image;
-    
-    CGFloat titleWidth = [title sizeWithFont:self.font].width;
+    [self arrangeLabel:self.secondLabel imageView:self.secondImageView];
+
+    [UIView setAnimationsEnabled:YES];
+}
+
+- (void)arrangeLabel:(UILabel*)label imageView:(UIImageView*)imageView {
+    CGSize titleSize = [label.text sizeWithFont:self.font];
+    CGFloat titleWidth = titleSize.width;
     CGFloat imageWidth = 0;
     
-    if(image) {
-        imageWidth = image.size.width+5;
-        titleWidth+=imageWidth;
+    if(imageView.image) {
+        imageWidth = imageView.image.size.width+5;
+        titleWidth += imageWidth;
     }
     
     CGFloat titlePosX = round((self.bounds.size.width-titleWidth)/2);
     
-    if(image)
-        self.secondImageView.frame = CGRectMake(titlePosX,
-                                          round((self.segmentedControl.bounds.size.height-image.size.height)/2),
-                                          image.size.width,
-                                          image.size.height);
+    if(imageView.image)
+        imageView.frame = CGRectMake(titlePosX,
+                                     round((self.segmentedControl.bounds.size.height-imageView.image.size.height)/2),
+                                     imageView.image.size.width,
+                                     imageView.image.size.height);
     
-    self.secondLabel.frame = CGRectMake(titlePosX+imageWidth, self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom, titleWidth, self.bounds.size.height);
+    CGFloat posY = ceil((self.segmentedControl.bounds.size.height-titleSize.height)/2)+self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom;
     
-    [UIView setAnimationsEnabled:YES];
+    self.label.frame = CGRectMake(titlePosX+imageWidth,
+                                  posY,
+                                  titleWidth,
+                                  titleSize.height);
 }
 
 - (void)setBackgroundImage:(UIImage *)newImage {

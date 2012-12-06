@@ -150,10 +150,10 @@
 	
     self.thumb.frame = [[self.thumbRects objectAtIndex:self.selectedIndex] CGRectValue];
     self.thumb.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.thumb.bounds cornerRadius:2].CGPath;
-    [self setThumbValuesForIndex:self.selectedIndex];
     self.thumb.font = self.font;
     
     [self insertSubview:self.thumb atIndex:0];
+    [self setThumbValuesForIndex:self.selectedIndex];
 }
 
 #pragma mark - Accessibility
@@ -523,17 +523,14 @@
     
 	CGContextSetShadowWithColor(context, self.textShadowOffset, 0, self.textShadowColor.CGColor);
 	[self.textColor set];
-	
-	CGFloat posY = ceil((CGRectGetHeight(rect)-self.font.pointSize+self.font.descender)/2)+self.titleEdgeInsets.top-self.titleEdgeInsets.bottom;
-	int pointSize = self.font.pointSize;
-	
-	if(pointSize%2 != 0)
-		posY--;
-	
+		
 	int i = 0;
 	
 	for(NSString *titleString in self.sectionTitles) {
-        CGFloat titleWidth = [titleString sizeWithFont:self.font].width;
+        CGSize titleSize = [titleString sizeWithFont:self.font];
+        CGFloat titleWidth = titleSize.width;
+        CGFloat posY = ceil((CGRectGetHeight(rect)-titleSize.height)/2)+self.titleEdgeInsets.top-self.titleEdgeInsets.bottom;
+
         CGFloat imageWidth = 0;
         UIImage *image = nil;
         
