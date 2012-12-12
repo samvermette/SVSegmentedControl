@@ -359,7 +359,7 @@
 }
 
 - (void)crossFadeThumbContent {
-    float segmentOverlap = (self.thumb.center.x / self.segmentWidth); // how far along are we dragging through the current segment
+    float segmentOverlap = ((int)(self.thumb.center.x * 10 / self.segmentWidth))/10.0f; // how far along are we dragging through the current segment
     int hoverIndex = floor(segmentOverlap); // the segment the touch is current hovering
     BOOL secondTitleOnLeft = (segmentOverlap - hoverIndex) < 0.5;
     
@@ -377,7 +377,6 @@
 		self.thumb.secondLabel.alpha = self.thumb.secondImageView.alpha = 0.0;
 		self.thumb.label.alpha = self.thumb.imageView.alpha = 1.0;
 	}
-    
     [self setThumbValuesForIndex:hoverIndex];
 }
 
