@@ -118,7 +118,7 @@
             CGFloat stringWidth = [titleString sizeWithFont:self.font].width+(self.titleEdgeInsets.left+self.titleEdgeInsets.right+self.thumbEdgeInset.left+self.thumbEdgeInset.right);
             
             if(self.sectionImages.count > i)
-                stringWidth+=[[self.sectionImages objectAtIndex:i] size].width+5;
+                stringWidth+=[(UIImage*)[self.sectionImages objectAtIndex:i] size].width+5;
             
             self.segmentWidth = MAX(stringWidth, self.segmentWidth);
             i++;
