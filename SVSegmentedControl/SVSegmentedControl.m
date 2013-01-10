@@ -93,6 +93,8 @@
         self.cornerRadius = 4.0;
         
         self.selectedIndex = 0;
+        
+        [self setupAccessibility];
     }
     
 	return self;
@@ -204,8 +206,8 @@
 - (id)accessibilityElementAtIndex:(NSInteger)index {
     UIAccessibilityElement *element = [self.accessibilityElements objectAtIndex:index];
     
-    CGFloat posY = ceil((CGRectGetHeight(self.bounds)-self.font.pointSize+self.font.descender)/2)+self.titleEdgeInsets.top-self.titleEdgeInsets.bottom;
-    element.accessibilityFrame = [self.window convertRect:CGRectMake((self.segmentWidth*index), posY, self.segmentWidth, self.font.pointSize) fromView:self];
+    CGFloat posY = ceil((CGRectGetHeight(self.bounds)-self.font.pointSize+self.font.descender)/2)+self.titleEdgeInsets.top-self.titleEdgeInsets.bottom-self.font.pointSize/2;
+    element.accessibilityFrame = [self.window convertRect:CGRectMake((self.segmentWidth*index), posY, self.segmentWidth, self.font.pointSize*2) fromView:self];
     
     element.accessibilityTraits = UIAccessibilityTraitNone;
     if (index == self.selectedIndex)
