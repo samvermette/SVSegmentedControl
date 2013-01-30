@@ -195,6 +195,7 @@
         element.accessibilityHint = [NSString stringWithFormat:NSLocalizedString(@"Tab %d of %d",), i + 1, self.sectionTitles.count];
         
         [self.accessibilityElements addObject:element];
+        [element release];
         i++;
     }
 }
