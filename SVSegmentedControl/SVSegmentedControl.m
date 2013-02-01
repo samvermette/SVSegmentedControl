@@ -527,7 +527,8 @@
 	for(NSString *titleString in self.sectionTitles) {
         CGSize titleSize = [titleString sizeWithFont:self.font];
         CGFloat titleWidth = titleSize.width;
-        CGFloat posY = ceil((CGRectGetHeight(rect)-titleSize.height)/2)+self.titleEdgeInsets.top-self.titleEdgeInsets.bottom;
+        CGFloat posY = round((CGRectGetHeight(rect)-self.font.ascender-5)/2)+self.titleEdgeInsets.top-self.titleEdgeInsets.bottom;
+        //NSLog(@"%@ %f, height=%f, descender=%f, ascender=%f, lineHeight=%f", self.font.familyName, self.font.pointSize, titleSize.height, self.font.descender, self.font.ascender, self.font.lineHeight);
 
         CGFloat imageWidth = 0;
         UIImage *image = nil;

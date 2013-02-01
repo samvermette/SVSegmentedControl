@@ -287,7 +287,9 @@
                                      imageView.image.size.width,
                                      imageView.image.size.height);
     
-    CGFloat posY = ceil((self.segmentedControl.bounds.size.height-titleSize.height)/2)+self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom;
+    CGFloat posY = round((self.segmentedControl.height-self.font.ascender-5)/2)+self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom;
+
+    //CGFloat posY = ceil((self.segmentedControl.bounds.size.height-titleSize.height)/2)+self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom;
     
     label.frame = CGRectMake(titlePosX+imageWidth,
                              posY,
