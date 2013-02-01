@@ -140,12 +140,9 @@
     
 	for(NSString *titleString in self.sectionTitles) {
         CGRect thumbRect = CGRectMake(self.segmentWidth*i, 0, self.segmentWidth, self.bounds.size.height);
-        thumbRect.size.width+=10;
+        thumbRect.size.width+=10; // 5px drop shadow on each side
+        thumbRect.origin.x-=5;
         thumbRect.size.height-=1; // for segmented bottom gloss
-        
-        if(i == 0 || i == self.sectionTitles.count-1)
-            thumbRect.origin.x-=5;
-        
         [self.thumbRects addObject:[NSValue valueWithCGRect:thumbRect]];
 		i++;
 	}
