@@ -275,7 +275,7 @@
     CGFloat imageWidth = 0;
     
     if(imageView.image) {
-        imageWidth = imageView.image.size.width+5;
+        imageWidth = imageView.image.size.width + (titleSize.width > 0 ? 5 : 0);
         titleWidth += imageWidth;
     }
     
@@ -289,8 +289,6 @@
     
     CGFloat posY = round((self.segmentedControl.height-self.font.ascender-5)/2)+self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom;
 
-    //CGFloat posY = ceil((self.segmentedControl.bounds.size.height-titleSize.height)/2)+self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom;
-    
     label.frame = CGRectMake(titlePosX+imageWidth,
                              posY,
                              titleWidth,
