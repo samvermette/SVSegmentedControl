@@ -289,10 +289,10 @@
     
     CGFloat posY = ceil((self.segmentedControl.bounds.size.height-titleSize.height)/2)+self.segmentedControl.titleEdgeInsets.top-self.segmentedControl.titleEdgeInsets.bottom;
     
-    self.label.frame = CGRectMake(titlePosX+imageWidth,
-                                  posY,
-                                  titleWidth,
-                                  titleSize.height);
+    label.frame = CGRectMake(titlePosX+imageWidth,
+                             posY,
+                             titleWidth,
+                             titleSize.height);
 }
 
 - (void)setBackgroundImage:(UIImage *)newImage {
