@@ -11,6 +11,7 @@
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		223F841D16BC891900C3C219 /* SVSegmentedControl.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 223F841C16BC891900C3C219 /* SVSegmentedControl.podspec */; };
 		224B1756145F25D600BD2DDB /* README.textile in Resources */ = {isa = PBXBuildFile; fileRef = 224B1755145F25D600BD2DDB /* README.textile */; };
 		22783B59138CB04D00EE887C /* SVSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 22783B57138CB04D00EE887C /* SVSegmentedControl.m */; };
 		22783BEF138CB70400EE887C /* SVSegmentedThumb.m in Sources */ = {isa = PBXBuildFile; fileRef = 22783BEE138CB70400EE887C /* SVSegmentedThumb.m */; };
@@ -28,6 +29,7 @@
 		1D3623250D0F684500981E51 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* SVSC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SVSC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		223F841C16BC891900C3C219 /* SVSegmentedControl.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SVSegmentedControl.podspec; path = ../SVSegmentedControl.podspec; sourceTree = "<group>"; };
 		224B1755145F25D600BD2DDB /* README.textile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.textile; path = ../README.textile; sourceTree = "<group>"; };
 		22783B56138CB04D00EE887C /* SVSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVSegmentedControl.h; sourceTree = "<group>"; };
 		22783B57138CB04D00EE887C /* SVSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVSegmentedControl.m; sourceTree = "<group>"; };
@@ -95,8 +97,8 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				22A7488F1630AD4E004893A8 /* Default-568h@2x.png */,
 				224B1755145F25D600BD2DDB /* README.textile */,
+				223F841C16BC891900C3C219 /* SVSegmentedControl.podspec */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				22783B55138CB04D00EE887C /* SVSegmentedControl */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
@@ -110,6 +112,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				22A7488F1630AD4E004893A8 /* Default-568h@2x.png */,
 				32CA4F630368D1EE00C91783 /* SVSegmentedControl_Prefix.pch */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 			);
@@ -192,6 +195,7 @@
 				2899E5220DE3E06400AC0155 /* ViewController.xib in Resources */,
 				224B1756145F25D600BD2DDB /* README.textile in Resources */,
 				22A748901630AD4E004893A8 /* Default-568h@2x.png in Resources */,
+				223F841D16BC891900C3C219 /* SVSegmentedControl.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
