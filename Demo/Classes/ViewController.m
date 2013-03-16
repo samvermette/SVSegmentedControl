@@ -96,7 +96,17 @@
     tintSC.innerShadowColor = [UIColor colorWithWhite:0.4 alpha:0.8];
 	tintSC.center = CGPointMake(160, 450);
 
-	
+    SVSegmentedControl *tintSC2 = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Section 1", @"Section 2", nil]];
+    
+	[self.view addSubview:tintSC];
+    tintSC2.tintColor = [UIColor colorWithRed:0.647 green:1.000 blue:0.247 alpha:1.000];
+    tintSC2.thumb.tintColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+    tintSC2.thumb.textColor = [UIColor blackColor];
+    tintSC2.thumb.textShadowColor = [UIColor whiteColor];
+    tintSC2.textColor = [UIColor colorWithWhite:0.3 alpha:1];
+    tintSC2.textShadowColor = [UIColor whiteColor];
+	tintSC2.center = CGPointMake(160, 500);
+    [self.view addSubview:tintSC2];
 	
 	navSC.tag = 1;
 	redSC.tag = 2;
