@@ -41,6 +41,7 @@
 @property (nonatomic, strong) UIColor *textColor; // default is [UIColor grayColor];
 @property (nonatomic, strong) UIColor *textShadowColor;  // default is [UIColor blackColor]
 @property (nonatomic, readwrite) CGSize textShadowOffset;  // default is CGSizeMake(0, -1)
+@property (nonatomic, strong) UIColor *innerShadowColor; // default is [UIColor colorWithWhite:0 alpha:0.8]
 
 - (SVSegmentedControl*)initWithSectionTitles:(NSArray*)titlesArray;
 - (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate DEPRECATED_ATTRIBUTE; // use setSelectedIndex:animated:

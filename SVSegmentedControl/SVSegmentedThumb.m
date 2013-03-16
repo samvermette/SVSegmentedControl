@@ -56,6 +56,7 @@
 		self.tintColor = [UIColor grayColor];
         self.shouldCastShadow = YES;
         self.backgroundColor = [UIColor clearColor];
+        self.gradientIntensity = 0.15;
     }
 	
     return self;
@@ -209,7 +210,8 @@
         CGContextSaveGState(context);
         CGContextClip(context);
         
-        CGFloat fillComponents[4] = {0.5, CGColorGetAlpha(self.tintColor.CGColor),   0.35, CGColorGetAlpha(self.tintColor.CGColor)};
+        CGFloat gradientStart = 0.5;
+        CGFloat fillComponents[4] = {gradientStart, CGColorGetAlpha(self.tintColor.CGColor),   gradientStart-self.gradientIntensity, CGColorGetAlpha(self.tintColor.CGColor)};
         
         if(self.selected) {
             fillComponents[0]-=0.1;

@@ -78,6 +78,24 @@
 	[self.view addSubview:yellowRC];
 	
 	yellowRC.center = CGPointMake(160, 370);
+    
+    // Light Backgrounds
+    UIView *background = [[UIView alloc] initWithFrame:CGRectMake(0, 400, 320, 160)];
+    background.backgroundColor = [UIColor colorWithWhite:0.8 alpha:1];
+    [self.view addSubview:background];
+    SVSegmentedControl *tintSC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Section 1", @"Section 2", nil]];
+
+	[self.view addSubview:tintSC];
+    tintSC.tintColor = [UIColor colorWithWhite:0.9 alpha:1];
+    tintSC.thumb.tintColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+    tintSC.thumb.textColor = [UIColor blackColor];
+    tintSC.thumb.textShadowColor = [UIColor whiteColor];
+    tintSC.thumb.gradientIntensity = 0.075;
+    tintSC.textColor = [UIColor colorWithWhite:0.3 alpha:1];
+    tintSC.textShadowColor = [UIColor whiteColor];
+    tintSC.innerShadowColor = [UIColor colorWithWhite:0.4 alpha:0.8];
+	tintSC.center = CGPointMake(160, 450);
+
 	
 	
 	navSC.tag = 1;
