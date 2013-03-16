@@ -26,6 +26,7 @@
 
 @property (nonatomic, readonly) BOOL isAtLastIndex;
 @property (nonatomic, readonly) BOOL isAtFirstIndex;
+@property (nonatomic, assign) SVSegmentedControlTheme theme;
 
 - (void)activate;
 - (void)deactivate;
@@ -42,6 +43,29 @@
 @synthesize secondImageView = _secondImageView;
 @synthesize thumbBackgroundImageView = _thumbBackgroundImageView;
 
+- (id)initWithFrame:(CGRect)frame theme:(SVSegmentedControlTheme)theme {
+    self = [self initWithFrame:frame];
+    if (self) {
+        self.theme = theme;
+        switch (theme) {
+            case SVSegmentedControlThemeDark:
+                self.textColor = [UIColor whiteColor];
+                self.textShadowColor = [UIColor blackColor];
+                self.tintColor = [UIColor grayColor];                
+                break;
+            case SVSegmentedControlThemeLight:
+                self.textColor = [UIColor colorWithWhite:0 alpha:1.0];
+                self.textShadowColor = [UIColor colorWithWhite:1.0 alpha:1];
+                self.tintColor = [UIColor colorWithWhite:0.7 alpha:1.0];
+                break;
+            
+            default:
+                break;
+        }
+    }
+    return self;
+}
+
 - (id)initWithFrame:(CGRect)frame {
     
     self = [super initWithFrame:frame];
@@ -50,10 +74,7 @@
 		self.userInteractionEnabled = NO;
         self.clipsToBounds = YES;
 		self.backgroundColor = [UIColor clearColor];
-		self.textColor = [UIColor whiteColor];
-		self.textShadowColor = [UIColor blackColor];
 		self.textShadowOffset = CGSizeMake(0, -1);
-		self.tintColor = [UIColor grayColor];
         self.shouldCastShadow = YES;
         self.backgroundColor = [UIColor clearColor];
     }
@@ -209,7 +230,22 @@
         CGContextSaveGState(context);
         CGContextClip(context);
         
-        CGFloat fillComponents[4] = {0.5, CGColorGetAlpha(self.tintColor.CGColor),   0.35, CGColorGetAlpha(self.tintColor.CGColor)};
+        CGFloat firstColorComponent;
+        CGFloat secondColorComponent;
+        switch (self.theme) {
+            case SVSegmentedControlThemeDark:
+                firstColorComponent = 0.5;
+                secondColorComponent = 0.35;
+                break;
+            case SVSegmentedControlThemeLight:
+                firstColorComponent = 0.8;
+                secondColorComponent = 0.65;
+                break;
+            default:
+                break;
+        }
+        
+        CGFloat fillComponents[4] = {firstColorComponent, CGColorGetAlpha(self.tintColor.CGColor),   secondColorComponent, CGColorGetAlpha(self.tintColor.CGColor)};
         
         if(self.selected) {
             fillComponents[0]-=0.1;

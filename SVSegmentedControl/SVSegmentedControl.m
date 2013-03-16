@@ -20,6 +20,8 @@
 @property (nonatomic, readonly) UIImageView *imageView;
 @property (nonatomic, readonly) UIImageView *secondImageView;
 
+- (id)initWithFrame:(CGRect)frame theme:(SVSegmentedControlTheme)theme;
+
 - (void)setTitle:(NSString*)title image:(UIImage*)image;
 - (void)setSecondTitle:(NSString*)title image:(UIImage*)image;
 
@@ -51,6 +53,8 @@
 @property (nonatomic, readwrite) CGFloat segmentWidth;
 @property (nonatomic, readwrite) CGFloat thumbHeight;
 
+@property (nonatomic, assign) SVSegmentedControlTheme theme;  // default is dark
+
 @end
 
 
@@ -67,7 +71,11 @@
 #pragma mark Life Cycle
 
 - (id)initWithSectionTitles:(NSArray*)array {
-    
+    return [self initWithSectionTitles:array theme:SVSegmentedControlThemeDark];
+}
+
+- (id)initWithSectionTitles:(NSArray *)array theme:(SVSegmentedControlTheme)theme {
+
 	if (self = [super initWithFrame:CGRectZero]) {
         self.sectionTitles = array;
         self.thumbRects = [NSMutableArray arrayWithCapacity:[array count]];
@@ -82,9 +90,21 @@
         self.mustSlideToChange = NO;
         self.minimumOverlapToChange = 0.66;
         
+        switch (theme) {
+            case SVSegmentedControlThemeDark:
+                self.textColor = [UIColor grayColor];
+                self.textShadowColor = [UIColor blackColor];
+                break;
+            case SVSegmentedControlThemeLight:
+                self.textColor = [UIColor colorWithWhite:0.3 alpha:1.0f];
+                self.textShadowColor = [UIColor whiteColor];
+                break;
+                
+            default:
+                break;
+        }
         self.font = [UIFont boldSystemFontOfSize:15];
-        self.textColor = [UIColor grayColor];
-        self.textShadowColor = [UIColor blackColor];
+        self.theme = theme;
         self.textShadowOffset = CGSizeMake(0, -1);
         
         self.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 10);
@@ -93,6 +113,7 @@
         self.cornerRadius = 4.0;
         
         self.selectedIndex = 0;
+        
         
         [self setupAccessibility];
     }
@@ -103,7 +124,7 @@
 - (SVSegmentedThumb *)thumb {
     
     if(thumb == nil)
-        thumb = [[SVSegmentedThumb alloc] initWithFrame:CGRectZero];
+        thumb = [[SVSegmentedThumb alloc] initWithFrame:CGRectZero theme:self.theme];
     
     return thumb;
 }
@@ -476,7 +497,6 @@
 
 #pragma mark - Drawing
 
-
 - (void)drawRect:(CGRect)rect {
     
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -499,8 +519,22 @@
         CGContextClip(context);
         
         // background tint
-        CGFloat components[4] = {0.10, CGColorGetAlpha(self.tintColor.CGColor),  0.12, CGColorGetAlpha(self.tintColor.CGColor)};
-        CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);
+        CGGradientRef gradient;
+        switch (self.theme) {
+            case SVSegmentedControlThemeDark:{
+                CGFloat components[4] = {0.10, CGColorGetAlpha(self.tintColor.CGColor),  0.12, CGColorGetAlpha(self.tintColor.CGColor)};
+                gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);
+                break;
+            }
+            case SVSegmentedControlThemeLight:{
+                CGFloat components[4] = {0.90, CGColorGetAlpha(self.tintColor.CGColor),  0.93, CGColorGetAlpha(self.tintColor.CGColor)};
+                gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);
+                break;
+            }
+                
+            default:
+                break;
+        }
         CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
         CGGradientRelease(gradient);
         CGColorSpaceRelease(colorSpace);

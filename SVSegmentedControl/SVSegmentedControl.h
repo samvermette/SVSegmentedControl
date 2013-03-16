@@ -12,6 +12,11 @@
 #import "SVSegmentedThumb.h"
 #import <AvailabilityMacros.h>
 
+enum {
+    SVSegmentedControlThemeDark,
+    SVSegmentedControlThemeLight,
+}typedef SVSegmentedControlTheme;
+
 @protocol SVSegmentedControlDelegate;
 
 @interface SVSegmentedControl : UIControl
@@ -43,6 +48,8 @@
 @property (nonatomic, readwrite) CGSize textShadowOffset;  // default is CGSizeMake(0, -1)
 
 - (SVSegmentedControl*)initWithSectionTitles:(NSArray*)titlesArray;
+- (SVSegmentedControl*)initWithSectionTitles:(NSArray *)array theme:(SVSegmentedControlTheme)theme;
+
 - (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate DEPRECATED_ATTRIBUTE; // use setSelectedIndex:animated:
 - (void)setSelectedIndex:(NSUInteger)index animated:(BOOL)animated;
 
