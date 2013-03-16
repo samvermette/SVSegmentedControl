@@ -543,7 +543,19 @@
         UIRectFillUsingBlendMode(rect, kCGBlendModeOverlay);
         
         
-        UIColor *innerShadowColor = [UIColor colorWithWhite:0 alpha:0.8];
+        UIColor *innerShadowColor;
+        switch (self.theme) {
+            case SVSegmentedControlThemeDark:
+                innerShadowColor = [UIColor colorWithWhite:0 alpha:0.8];
+                break;
+            case SVSegmentedControlThemeLight:
+                innerShadowColor = [UIColor colorWithWhite:0.4 alpha:0.8];
+                break;
+                
+            default:
+                break;
+        }
+
         NSArray *paths = [NSArray arrayWithObject:[UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius]];
         UIImage *mask = [self maskWithPaths:paths bounds:CGRectInset(insetRect, -10, -10)];
         UIImage *invertedImage = [self invertedImageWithMask:mask color:innerShadowColor];

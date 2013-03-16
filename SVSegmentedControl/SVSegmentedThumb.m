@@ -238,8 +238,8 @@
                 secondColorComponent = 0.35;
                 break;
             case SVSegmentedControlThemeLight:
-                firstColorComponent = 0.8;
-                secondColorComponent = 0.65;
+                firstColorComponent = 0.7;
+                secondColorComponent = 0.55;
                 break;
             default:
                 break;
