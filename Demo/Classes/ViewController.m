@@ -78,12 +78,39 @@
 	[self.view addSubview:yellowRC];
 	
 	yellowRC.center = CGPointMake(160, 370);
+    
+    // Light Control using new theme approach
+    UIView *lightBackground = [[UIView alloc] initWithFrame:CGRectMake(0, 400, 320, 160)];
+    lightBackground.backgroundColor = [UIColor colorWithWhite:0.75 alpha:1.0];
+    [self.view addSubview:lightBackground];
+	
+	SVSegmentedControl *lightRC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"One", @"Two", @"Three", nil] theme:SVSegmentedControlThemeLight];
+    [lightRC addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
+    
+	lightRC.crossFadeLabelsOnDrag = YES;
+	[self.view addSubview:lightRC];
+	
+	lightRC.center = CGPointMake(160, 430);
+    
+    // Light Control using existing tint color option
+    SVSegmentedControl *lightTintRC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"One", @"Two", @"Three", nil]];
+    [lightTintRC addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
+    
+	lightTintRC.crossFadeLabelsOnDrag = YES;
+    lightTintRC.tintColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+    lightTintRC.thumb.tintColor = [UIColor colorWithWhite:0.6 alpha:1.0];
+	
+	[self.view addSubview:lightTintRC];
+	
+	lightTintRC.center = CGPointMake(160, 480);
 	
 	
 	navSC.tag = 1;
 	redSC.tag = 2;
 	grayRC.tag = 3;
 	yellowRC.tag = 4;
+   	lightRC.tag = 5;
+    lightTintRC.tag = 6;
 }
 
 
