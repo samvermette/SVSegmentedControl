@@ -12,7 +12,6 @@
 
 @implementation ViewController
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
@@ -29,10 +28,8 @@
 	
 	
 	// 2nd CONTROL
-	
 	SVSegmentedControl *redSC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"About", @"Help", @"Credits", nil]];
     [redSC addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
-	
 	redSC.crossFadeLabelsOnDrag = YES;
 	redSC.thumb.tintColor = [UIColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1];
 	redSC.selectedIndex = 1;
@@ -43,14 +40,11 @@
 	
 	
 	// 3rd CONTROL
-	
 	SVSegmentedControl *grayRC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Section 1", @"Section 2", nil]];
     [grayRC addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
-
 	grayRC.font = [UIFont boldSystemFontOfSize:19];
 	grayRC.titleEdgeInsets = UIEdgeInsetsMake(0, 14, 0, 14);
 	grayRC.height = 46;
-	
 	grayRC.thumb.tintColor = [UIColor colorWithRed:0 green:0.5 blue:0.1 alpha:1];
 	grayRC.mustSlideToChange = YES;
     
@@ -60,16 +54,13 @@
 	
 	
 	// 4th CONTROL
-	
 	SVSegmentedControl *yellowRC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"One", @"Two", @"Three", nil]];
     [yellowRC addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
-
 	yellowRC.crossFadeLabelsOnDrag = YES;
 	yellowRC.font = [UIFont fontWithName:@"Marker Felt" size:20];
 	yellowRC.titleEdgeInsets = UIEdgeInsetsMake(0, 14, 0, 14);
 	yellowRC.height = 40;
 	yellowRC.selectedIndex = 2;
-	
 	yellowRC.thumb.tintColor = [UIColor colorWithRed:0.999 green:0.889 blue:0.312 alpha:1.000];
 	yellowRC.thumb.textColor = [UIColor blackColor];
 	yellowRC.thumb.textShadowColor = [UIColor colorWithWhite:1 alpha:0.5];
@@ -81,33 +72,11 @@
 }
 
 
-#pragma mark -
-#pragma mark SPSegmentedControl
+#pragma mark - UIControlEventValueChanged
 
 - (void)segmentedControlChangedValue:(SVSegmentedControl*)segmentedControl {
 	NSLog(@"segmentedControl %i did select index %i (via UIControl method)", segmentedControl.tag, segmentedControl.selectedIndex);
 }
-
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-*/
-
-- (void)didReceiveMemoryWarning {
-	// Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-	
-	// Release any cached data, images, etc that aren't in use.
-}
-
-- (void)viewDidUnload {
-	// Release any retained subviews of the main view.
-	// e.g. self.myOutlet = nil;
-}
-
 
 
 @end
