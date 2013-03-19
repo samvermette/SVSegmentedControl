@@ -78,7 +78,57 @@
 	[self.view addSubview:yellowRC];
 	
 	yellowRC.center = CGPointMake(160, 370);
-	
+    
+    // Light Backgrounds
+    UIView *background = [[UIView alloc] initWithFrame:CGRectMake(0, 400, 320, 160)];
+    background.backgroundColor = [UIColor colorWithWhite:0.8 alpha:1];
+    [self.view addSubview:background];
+    
+    // Using Deprecated tintColor property
+    SVSegmentedControl *tintSC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Sec1", @"Sec2", nil]];
+    tintSC.tintColor = [UIColor colorWithWhite:0.9 alpha:1];
+    tintSC.thumb.tintColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+    tintSC.thumb.textColor = [UIColor blackColor];
+    tintSC.thumb.textShadowColor = [UIColor whiteColor];
+    tintSC.thumb.gradientIntensity = 0.075;
+    tintSC.textColor = [UIColor colorWithWhite:0.3 alpha:1];
+    tintSC.textShadowColor = [UIColor whiteColor];
+    tintSC.innerShadowColor = [UIColor colorWithWhite:0.4 alpha:0.8];
+	tintSC.center = CGPointMake(90, 440);
+	[self.view addSubview:tintSC];
+
+    SVSegmentedControl *tintSC2 = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Sec1", @"Sec2", nil]];
+    tintSC2.tintColor = [UIColor colorWithRed:0.647 green:1.000 blue:0.247 alpha:1.000];
+    tintSC2.thumb.tintColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+    tintSC2.thumb.textColor = [UIColor blackColor];
+    tintSC2.thumb.textShadowColor = [UIColor whiteColor];
+    tintSC2.textColor = [UIColor colorWithWhite:0.3 alpha:1];
+    tintSC2.textShadowColor = [UIColor whiteColor];
+	tintSC2.center = CGPointMake(90, 500);
+    [self.view addSubview:tintSC2];
+    
+    // Using New backgroundTintColor property
+    SVSegmentedControl *backgroundTintSC = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Sec1", @"Sec2", nil]];
+    backgroundTintSC.backgroundTintColor = [UIColor colorWithWhite:0.9 alpha:1];
+    backgroundTintSC.thumb.tintColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+    backgroundTintSC.thumb.textColor = [UIColor blackColor];
+    backgroundTintSC.thumb.textShadowColor = [UIColor whiteColor];
+    backgroundTintSC.thumb.gradientIntensity = 0.075;
+    backgroundTintSC.textColor = [UIColor colorWithWhite:0.3 alpha:1];
+    backgroundTintSC.textShadowColor = [UIColor whiteColor];
+    backgroundTintSC.innerShadowColor = [UIColor colorWithWhite:0.4 alpha:0.8];
+	backgroundTintSC.center = CGPointMake(230, 440);
+	[self.view addSubview:backgroundTintSC];
+    
+    SVSegmentedControl *backgroundTintSC2 = [[SVSegmentedControl alloc] initWithSectionTitles:[NSArray arrayWithObjects:@"Sec1", @"Sec2", nil]];
+    backgroundTintSC2.backgroundTintColor = [UIColor colorWithRed:0.647 green:1.000 blue:0.247 alpha:1.000];
+    backgroundTintSC2.thumb.tintColor = [UIColor colorWithWhite:0.9 alpha:1.0];
+    backgroundTintSC2.thumb.textColor = [UIColor blackColor];
+    backgroundTintSC2.thumb.textShadowColor = [UIColor whiteColor];
+    backgroundTintSC2.textColor = [UIColor colorWithWhite:0.3 alpha:1];
+    backgroundTintSC2.textShadowColor = [UIColor whiteColor];
+	backgroundTintSC2.center = CGPointMake(230, 500);
+    [self.view addSubview:backgroundTintSC2];
 	
 	navSC.tag = 1;
 	redSC.tag = 2;
