@@ -44,7 +44,7 @@ SVSegmentedControl can be customized with the following properties:
 @property (nonatomic, readwrite) CGFloat minimumOverlapToChange; // default is 0.66 - Only snap to a new segment if the thumb overlaps it by this fraction
 @property (nonatomic, readwrite) UIEdgeInsets touchTargetMargins; // default is UIEdgeInsetsMake(0, 0, 0, 0) - Enlarge touch target of control
 
-@property (nonatomic, retain) UIColor *tintColor; // default is [UIColor grayColor]
+@property (nonatomic, strong) UIColor *backgroundTintColor; // default is [UIColor colorWithWhite:0.1 alpha:1]
 @property (nonatomic, retain) UIImage *backgroundImage; // default is nil
 
 @property (nonatomic, readwrite) CGFloat height; // default is 32.0
@@ -54,6 +54,7 @@ SVSegmentedControl can be customized with the following properties:
 
 @property (nonatomic, retain) UIFont *font; // default is [UIFont boldSystemFontOfSize:15]
 @property (nonatomic, retain) UIColor *textColor; // default is [UIColor grayColor];
+@property (nonatomic, strong) UIColor *innerShadowColor; // default is [UIColor colorWithWhite:0 alpha:0.8]
 @property (nonatomic, retain) UIColor *textShadowColor;  // default is [UIColor blackColor]
 @property (nonatomic, readwrite) CGSize textShadowOffset;  // default is CGSizeMake(0, -1)
 ```
@@ -69,6 +70,7 @@ Its thumb (`SVSegmentedThumb`) can be customized as well:
 @property (nonatomic, assign) UIColor *textShadowColor; // default is [UIColor blackColor]
 @property (nonatomic, readwrite) CGSize textShadowOffset; // default is CGSizeMake(0, -1)
 @property (nonatomic, readwrite) BOOL shouldCastShadow; // default is YES (NO when backgroundImage is set)
+@property (nonatomic, assign) CGFloat gradientIntensity; // default is 0.15
 ```
 
 To customize the thumb's appearance, you'll have to set the properties through SVSegmentedControl's `thumb` property. For instance, setting the thumb's `tintColor` is done with:
