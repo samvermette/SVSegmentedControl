@@ -29,7 +29,8 @@
 @property (nonatomic, readwrite) CGFloat minimumOverlapToChange; // default is 0.66 - Only snap to a new segment if the thumb overlaps it by this fraction
 @property (nonatomic, readwrite) UIEdgeInsets touchTargetMargins; // default is UIEdgeInsetsMake(0, 0, 0, 0) - Enlarge touch target of control
 
-@property (nonatomic, strong) UIColor *tintColor; // default is [UIColor grayColor]
+@property (nonatomic, strong) UIColor *backgroundTintColor; // default is [UIColor colorWithWhite:0.1 alpha:1]
+@property (nonatomic, strong) UIColor *tintColor __attribute__((deprecated("use 'backgroundTintColor'"))); // default is [UIColor grayColor]
 @property (nonatomic, strong) UIImage *backgroundImage; // default is nil
 
 @property (nonatomic, readwrite) CGFloat height; // default is 32.0

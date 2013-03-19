@@ -57,7 +57,7 @@
 @implementation SVSegmentedControl
 
 @synthesize changeHandler, animateToInitialSelection, accessibilityElements;
-@synthesize cornerRadius, tintColor, backgroundImage, font, textColor, textShadowColor, textShadowOffset, titleEdgeInsets, height, crossFadeLabelsOnDrag;
+@synthesize cornerRadius, tintColor, backgroundTintColor, backgroundImage, font, textColor, textShadowColor, textShadowOffset, titleEdgeInsets, height, crossFadeLabelsOnDrag;
 @synthesize sectionTitles, sectionImages, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight, thumbEdgeInset;
 @synthesize mustSlideToChange, minimumOverlapToChange, touchTargetMargins;
 
@@ -74,7 +74,7 @@
         self.accessibilityElements = [NSMutableArray arrayWithCapacity:self.sectionTitles.count];
         
         self.backgroundColor = [UIColor clearColor];
-        self.tintColor = [UIColor colorWithWhite:0.1 alpha:1];
+        self.backgroundTintColor = [UIColor colorWithWhite:0.1 alpha:1];
         self.clipsToBounds = YES;
         self.userInteractionEnabled = YES;
         self.animateToInitialSelection = NO;
@@ -501,13 +501,18 @@
         CGContextClip(context);
         
         // background tint
-        CGFloat components[4] = {0.45, CGColorGetAlpha(self.tintColor.CGColor),  0.47, CGColorGetAlpha(self.tintColor.CGColor)};
+        CGFloat firstComponent = tintColor ? 0.10 : 0.45;
+        CGFloat secondComponent = tintColor ? 0.12 : 0.47;
+        
+        UIColor *tintColorToApply = tintColor ? tintColor : backgroundTintColor;
+        
+        CGFloat components[4] = {firstComponent, CGColorGetAlpha(tintColorToApply.CGColor),  secondComponent, CGColorGetAlpha(tintColorToApply.CGColor)};
         CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);
         CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
         CGGradientRelease(gradient);
         CGColorSpaceRelease(colorSpace);
         
-        [self.tintColor set];
+        [tintColorToApply set];
         UIRectFillUsingBlendMode(rect, kCGBlendModeOverlay);
         
         NSArray *paths = [NSArray arrayWithObject:[UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius]];
