@@ -47,7 +47,7 @@
 - (void)setSelectedSegmentIndex:(NSUInteger)index animated:(BOOL)animated;
 
 // deprecated
-@property (nonatomic, strong) UIColor *tintColor __attribute__((deprecated("darken your color (~ minus 0.4 of opacity) and assign it to 'backgroundTintColor' instead")));
+@property (nonatomic, strong) UIColor *tintColor __attribute__((deprecated("review your color (it doesn't get darkened automatically anymore) and assign it 'backgroundTintColor' instead")));
 @property (nonatomic, readwrite) NSUInteger selectedIndex __attribute__((deprecated("use 'setSelectedSegmentIndex:animated:' instead")));
 - (void)setSelectedIndex:(NSUInteger)index animated:(BOOL)animated __attribute__((deprecated("use 'setSelectedSegmentIndex:animated:' instead")));
 - (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate __attribute__((deprecated("use 'setSelectedSegmentIndex:animated:' instead")));
