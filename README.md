@@ -1,5 +1,3 @@
-_**If your project doesn't use ARC**: you must add the `-fobjc-arc` compiler flag to `SVSegmentedControl.m` in Target Settings > Build Phases > Compile Sources._
-
 # SVSegmentedControl
 
 SVSegmentedControl is a customizable `UIControl` class that mimics `UISegmentedControl` but that looks like an `UISwitch`.
@@ -8,8 +6,16 @@ SVSegmentedControl is a customizable `UIControl` class that mimics `UISegmentedC
 
 ## Installation
 
-* Drag the `SVSegmentedControl/SVSegmentedControl` folder into your project.
-* Add the *QuartzCore* framework to your project.
+### From CocoaPods
+
+Add `pod 'SVSegmentedControl'` to your Podfile or `pod 'SVSegmentedControl', :head` if you're feeling adventurous.
+
+### Manually
+
+_**Important note if your project doesn't use ARC**: you must add the `-fobjc-arc` compiler flag to `SVSegmentedControl.m` and `SVSegmentedThumb.m` in Target Settings > Build Phases > Compile Sources._
+
+* Drag the `SVSegmentedControl/SVSegmentedControl ` folder into your project. 
+* Add the **QuartzCore** framework to your project.
 
 ## Usage
 
