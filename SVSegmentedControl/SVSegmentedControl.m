@@ -61,7 +61,7 @@
 @synthesize sectionTitles, sectionImages, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight, thumbEdgeInset;
 @synthesize mustSlideToChange, minimumOverlapToChange, touchTargetMargins;
 
-@synthesize selectedIndex = _selectedIndex;
+@synthesize selectedSegmentIndex = _selectedSegmentIndex;
 
 #pragma mark -
 #pragma mark Life Cycle
@@ -92,7 +92,7 @@
         self.height = 32.0;
         self.cornerRadius = 4.0;
         
-        self.selectedIndex = 0;
+        self.selectedSegmentIndex = 0;
         
         self.innerShadowColor = [UIColor colorWithWhite:0 alpha:0.8];
         
@@ -149,12 +149,12 @@
 		i++;
 	}
 	
-    self.thumb.frame = [[self.thumbRects objectAtIndex:self.selectedIndex] CGRectValue];
+    self.thumb.frame = [[self.thumbRects objectAtIndex:self.selectedSegmentIndex] CGRectValue];
     self.thumb.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.thumb.bounds cornerRadius:2].CGPath;
     self.thumb.font = self.font;
     
     [self insertSubview:self.thumb atIndex:0];
-    [self setThumbValuesForIndex:self.selectedIndex];
+    [self setThumbValuesForIndex:self.selectedSegmentIndex];
 }
 
 #pragma mark - Accessibility
@@ -209,7 +209,7 @@
     element.accessibilityFrame = [self.window convertRect:CGRectMake((self.segmentWidth*index), posY, self.segmentWidth, self.font.pointSize*2) fromView:self];
     
     element.accessibilityTraits = UIAccessibilityTraitNone;
-    if (index == self.selectedIndex)
+    if (index == self.selectedSegmentIndex)
         element.accessibilityTraits = element.accessibilityTraits | UIAccessibilityTraitSelected;
     else if (!self.enabled)
         element.accessibilityTraits = element.accessibilityTraits | UIAccessibilityTraitNotEnabled;
@@ -350,11 +350,11 @@
 	
     [self setThumbValuesForIndex:index];
     
-    if(self.changeHandler && self.snapToIndex != self.selectedIndex && !self.isTracking)
+    if(self.changeHandler && self.snapToIndex != self.selectedSegmentIndex && !self.isTracking)
 		self.changeHandler(self.snapToIndex);
     
 	if(animated)
-		[self setSelectedIndex:index animated:YES];
+		[self setSelectedSegmentIndex:index animated:YES];
 	else
 		self.thumb.frame = [[self.thumbRects objectAtIndex:index] CGRectValue];
 }
@@ -385,7 +385,7 @@
 	
 	self.trackingThumb = self.moved = NO;
 	
-    [self setThumbValuesForIndex:self.selectedIndex];
+    [self setThumbValuesForIndex:self.selectedSegmentIndex];
     
 	[UIView animateWithDuration:0.1
 						  delay:0
@@ -408,16 +408,16 @@
 	[self snap:YES];
 }
 
-- (void)setSelectedIndex:(NSUInteger)index {
-    [self setSelectedIndex:index animated:NO];
+- (void)setSelectedSegmentIndex:(NSUInteger)index {
+    [self setSelectedSegmentIndex:index animated:NO];
 }
 
 - (void)moveThumbToIndex:(NSUInteger)index animate:(BOOL)animate {
-    [self setSelectedIndex:index animated:animate];
+    [self setSelectedSegmentIndex:index animated:animate];
 }
 
-- (void)setSelectedIndex:(NSUInteger)index animated:(BOOL)animated {
-    _selectedIndex = index;
+- (void)setSelectedSegmentIndex:(NSUInteger)index animated:(BOOL)animated {
+    _selectedSegmentIndex = index;
     
     if(self.superview) {
         [self sendActionsForControlEvents:UIControlEventValueChanged];

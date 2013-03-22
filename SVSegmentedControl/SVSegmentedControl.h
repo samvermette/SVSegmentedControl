@@ -21,7 +21,7 @@
 @property (nonatomic, strong) NSArray *sectionImages;
 
 @property (nonatomic, strong, readonly) SVSegmentedThumb *thumb;
-@property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
+@property (nonatomic, readwrite) NSUInteger selectedSegmentIndex; // default is 0
 @property (nonatomic, readwrite) BOOL animateToInitialSelection; // default is NO
 @property (nonatomic, readwrite) BOOL crossFadeLabelsOnDrag; // default is NO
 
@@ -46,7 +46,7 @@
 
 - (SVSegmentedControl*)initWithSectionTitles:(NSArray*)titlesArray;
 - (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate DEPRECATED_ATTRIBUTE; // use setSelectedIndex:animated:
-- (void)setSelectedIndex:(NSUInteger)index animated:(BOOL)animated;
+- (void)setSelectedSegmentIndex:(NSUInteger)index animated:(BOOL)animated;
 
 @end
 
