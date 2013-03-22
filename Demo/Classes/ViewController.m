@@ -32,7 +32,7 @@
     [redSC addTarget:self action:@selector(segmentedControlChangedValue:) forControlEvents:UIControlEventValueChanged];
 	redSC.crossFadeLabelsOnDrag = YES;
 	redSC.thumb.tintColor = [UIColor colorWithRed:0.6 green:0.2 blue:0.2 alpha:1];
-	redSC.selectedIndex = 1;
+    [redSC setSelectedSegmentIndex:1 animated:NO];
 	
 	[self.view addSubview:redSC];
 	
@@ -60,7 +60,7 @@
 	yellowRC.font = [UIFont fontWithName:@"Marker Felt" size:20];
 	yellowRC.titleEdgeInsets = UIEdgeInsetsMake(0, 14, 0, 14);
 	yellowRC.height = 40;
-	yellowRC.selectedIndex = 2;
+    [yellowRC setSelectedSegmentIndex:2 animated:NO];
 	yellowRC.thumb.tintColor = [UIColor colorWithRed:0.999 green:0.889 blue:0.312 alpha:1.000];
 	yellowRC.thumb.textColor = [UIColor blackColor];
 	yellowRC.thumb.textShadowColor = [UIColor colorWithWhite:1 alpha:0.5];
@@ -75,7 +75,7 @@
 #pragma mark - UIControlEventValueChanged
 
 - (void)segmentedControlChangedValue:(SVSegmentedControl*)segmentedControl {
-	NSLog(@"segmentedControl %i did select index %i (via UIControl method)", segmentedControl.tag, segmentedControl.selectedIndex);
+	NSLog(@"segmentedControl %i did select index %i (via UIControl method)", segmentedControl.tag, segmentedControl.selectedSegmentIndex);
 }
 
 

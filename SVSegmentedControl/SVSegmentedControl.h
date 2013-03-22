@@ -21,7 +21,7 @@
 @property (nonatomic, strong) NSArray *sectionImages;
 
 @property (nonatomic, strong, readonly) SVSegmentedThumb *thumb;
-@property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
+@property (nonatomic, readonly) NSUInteger selectedSegmentIndex; // default is 0
 @property (nonatomic, readwrite) BOOL animateToInitialSelection; // default is NO
 @property (nonatomic, readwrite) BOOL crossFadeLabelsOnDrag; // default is NO
 
@@ -30,7 +30,6 @@
 @property (nonatomic, readwrite) UIEdgeInsets touchTargetMargins; // default is UIEdgeInsetsMake(0, 0, 0, 0) - Enlarge touch target of control
 
 @property (nonatomic, strong) UIColor *backgroundTintColor; // default is [UIColor colorWithWhite:0.1 alpha:1]
-@property (nonatomic, strong) UIColor *tintColor __attribute__((deprecated("use 'backgroundTintColor'"))); // default is [UIColor grayColor]
 @property (nonatomic, strong) UIImage *backgroundImage; // default is nil
 
 @property (nonatomic, readwrite) CGFloat height; // default is 32.0
@@ -44,9 +43,14 @@
 @property (nonatomic, readwrite) CGSize textShadowOffset;  // default is CGSizeMake(0, -1)
 @property (nonatomic, strong) UIColor *innerShadowColor; // default is [UIColor colorWithWhite:0 alpha:0.8]
 
+// deprecated
+@property (nonatomic, strong) UIColor *tintColor __attribute__((deprecated("use 'backgroundTintColor' instead")));
+@property (nonatomic, readwrite) NSUInteger selectedIndex __attribute__((deprecated("use 'setSelectedSegmentIndex:animated:' instead")));
+- (void)setSelectedIndex:(NSUInteger)index animated:(BOOL)animated __attribute__((deprecated("use 'setSelectedSegmentIndex:animated:' instead")));
+
 - (SVSegmentedControl*)initWithSectionTitles:(NSArray*)titlesArray;
 - (void)moveThumbToIndex:(NSUInteger)segmentIndex animate:(BOOL)animate DEPRECATED_ATTRIBUTE; // use setSelectedIndex:animated:
-- (void)setSelectedIndex:(NSUInteger)index animated:(BOOL)animated;
+- (void)setSelectedSegmentIndex:(NSUInteger)index animated:(BOOL)animated;
 
 @end
 

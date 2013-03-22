@@ -36,7 +36,6 @@ SVSegmentedControl can be customized with the following properties:
 @property (nonatomic, strong) NSArray *sectionTitles;
 @property (nonatomic, strong) NSArray *sectionImages;
 
-@property (nonatomic, readwrite) NSUInteger selectedIndex; // default is 0
 @property (nonatomic, readwrite) BOOL animateToInitialSelection; // default is NO
 @property (nonatomic, readwrite) BOOL crossFadeLabelsOnDrag; // default is NO
 
