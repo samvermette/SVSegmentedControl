@@ -38,6 +38,7 @@
 - (void)toggle;
 - (void)setupAccessibility;
 
+@property (nonatomic, strong) SVSegmentedThumb *thumb;
 @property (nonatomic, strong) NSMutableArray *thumbRects;
 @property (nonatomic, strong) NSMutableArray *accessibilityElements;
 
@@ -57,16 +58,7 @@
 
 @implementation SVSegmentedControl
 
-@synthesize changeHandler, animateToInitialSelection, accessibilityElements;
-@synthesize cornerRadius, tintColor, backgroundTintColor, backgroundImage, font, textColor, textShadowColor, textShadowOffset, titleEdgeInsets, height, crossFadeLabelsOnDrag;
-@synthesize sectionTitles, sectionImages, thumb, thumbRects, snapToIndex, trackingThumb, moved, activated, halfSize, dragOffset, segmentWidth, thumbHeight, thumbEdgeInset;
-@synthesize mustSlideToChange, minimumOverlapToChange, touchTargetMargins;
-
-@synthesize selectedIndex = _selectedIndex;
-
-
-#pragma mark -
-#pragma mark Life Cycle
+#pragma mark - Life Cycle
 
 - (id)initWithSectionTitles:(NSArray*)array {
     
@@ -106,10 +98,10 @@
 
 - (SVSegmentedThumb *)thumb {
     
-    if(thumb == nil)
-        thumb = [[SVSegmentedThumb alloc] initWithFrame:CGRectZero];
+    if(_thumb == nil)
+        _thumb = [[SVSegmentedThumb alloc] initWithFrame:CGRectZero];
     
-    return thumb;
+    return _thumb;
 }
 
 - (void)updateSectionRects {
@@ -450,12 +442,12 @@
 
 - (void)setBackgroundImage:(UIImage *)newImage {
     
-    if(backgroundImage)
-        backgroundImage = nil;
+    if(_backgroundImage)
+        _backgroundImage = nil;
     
     if(newImage) {
-        backgroundImage = newImage;
-        self.height = backgroundImage.size.height;
+        _backgroundImage = newImage;
+        self.height = _backgroundImage.size.height;
     }
 }
 
@@ -514,10 +506,10 @@
         CGContextClip(context);
         
         // background tint
-        CGFloat firstComponent = tintColor ? 0.10 : 0.45;
-        CGFloat secondComponent = tintColor ? 0.12 : 0.47;
+        CGFloat firstComponent = _tintColor ? 0.10 : 0.45;
+        CGFloat secondComponent = _tintColor ? 0.12 : 0.47;
         
-        UIColor *tintColorToApply = tintColor ? tintColor : backgroundTintColor;
+        UIColor *tintColorToApply = _tintColor ? _tintColor : self.backgroundTintColor;
         
         CGFloat components[4] = {firstComponent, CGColorGetAlpha(tintColorToApply.CGColor),  secondComponent, CGColorGetAlpha(tintColorToApply.CGColor)};
         CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);
