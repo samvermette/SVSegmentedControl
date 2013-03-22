@@ -514,9 +514,10 @@
         CGContextClip(context);
         
         // background tint
+        CGFloat firstComponent = tintColor ? 0.10 : 0.45;
+        CGFloat secondComponent = tintColor ? 0.12 : 0.47;
+        
         UIColor *tintColorToApply = tintColor ? tintColor : backgroundTintColor;
-        CGFloat firstComponent = tintColorToApply ? 0.10 : 0.45;
-        CGFloat secondComponent = tintColorToApply ? 0.12 : 0.47;
         
         CGFloat components[4] = {firstComponent, CGColorGetAlpha(tintColorToApply.CGColor),  secondComponent, CGColorGetAlpha(tintColorToApply.CGColor)};
         CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);
