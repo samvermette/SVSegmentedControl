@@ -44,7 +44,7 @@
 @property (nonatomic, strong) UIColor *innerShadowColor; // default is [UIColor colorWithWhite:0 alpha:0.8]
 
 // deprecated
-@property (nonatomic, strong) UIColor *tintColor __attribute__((deprecated("use 'backgroundTintColor' instead")));
+@property (nonatomic, strong) UIColor *tintColor __attribute__((deprecated("darken your color (~ minus 0.4 of opacity) and assign it to 'backgroundTintColor' instead")));
 @property (nonatomic, readwrite) NSUInteger selectedIndex __attribute__((deprecated("use 'setSelectedSegmentIndex:animated:' instead")));
 - (void)setSelectedIndex:(NSUInteger)index animated:(BOOL)animated __attribute__((deprecated("use 'setSelectedSegmentIndex:animated:' instead")));
 
