@@ -68,7 +68,7 @@
         self.accessibilityElements = [NSMutableArray arrayWithCapacity:self.sectionTitles.count];
         
         self.backgroundColor = [UIColor clearColor];
-        self.backgroundTintColor = [UIColor colorWithWhite:0.1 alpha:1];
+        self.backgroundTintColor = [UIColor colorWithWhite:0.14 alpha:1];
         self.clipsToBounds = YES;
         self.userInteractionEnabled = YES;
         self.animateToInitialSelection = NO;
