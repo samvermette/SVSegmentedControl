@@ -104,6 +104,12 @@
     return _thumb;
 }
 
+- (void)sizeToFit
+{
+    self.frame = CGRectZero;
+    [self updateSectionRects];
+}
+
 - (void)updateSectionRects {
     
     int c = [self.sectionTitles count];
@@ -133,7 +139,7 @@
     self.thumbHeight = self.thumb.backgroundImage ? self.thumb.backgroundImage.size.height : self.height-(self.thumbEdgeInset.top+self.thumbEdgeInset.bottom);
     
     i = 0;
-    
+    self.thumbRects = [NSMutableArray new];
 	for(NSString *titleString in self.sectionTitles) {
         CGRect thumbRect = CGRectMake(self.segmentWidth*i, 0, self.segmentWidth, self.bounds.size.height);
         thumbRect.size.width+=10; // 5px drop shadow on each side
@@ -435,6 +441,22 @@
             self.thumb.frame = [[self.thumbRects objectAtIndex:index] CGRectValue];
             [self activate];
         }
+    }
+}
+
+#pragma mark - SectionTitles
+
+- (void)setSectionTitles:(NSArray *)sectionTitles
+{
+    if (_sectionTitles != sectionTitles) {
+        _sectionTitles = sectionTitles;
+        if (self.selectedSegmentIndex < _sectionTitles.count) {
+            
+        } else {
+            [self setSelectedSegmentIndex:0 animated:YES];
+        }
+        [self setNeedsDisplay];
+        [self setupAccessibility];
     }
 }
 
