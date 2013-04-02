@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name     = 'SVSegmentedControl'
-  s.version  = '0.1'
+  s.version  = '0.2'
   s.platform = :ios, '5.0'
   s.license  = 'MIT'
   s.summary  = 'A UISwitch-like segmented control for your iOS app. '
