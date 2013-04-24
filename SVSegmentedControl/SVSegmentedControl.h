@@ -32,6 +32,8 @@
 @property (nonatomic, strong) UIColor *backgroundTintColor UI_APPEARANCE_SELECTOR; // default is [UIColor colorWithWhite:0.1 alpha:1]
 @property (nonatomic, strong) UIImage *backgroundImage UI_APPEARANCE_SELECTOR; // default is nil
 
+@property (nonatomic, strong) UIColor *strokeColor UI_APPEARANCE_SELECTOR; // default is nil;
+
 @property (nonatomic, readwrite) CGFloat height UI_APPEARANCE_SELECTOR; // default is 32.0
 @property (nonatomic, readwrite) UIEdgeInsets thumbEdgeInset UI_APPEARANCE_SELECTOR; // default is UIEdgeInsetsMake(2, 2, 3, 2)
 @property (nonatomic, readwrite) UIEdgeInsets titleEdgeInsets UI_APPEARANCE_SELECTOR; // default is UIEdgeInsetsMake(0, 10, 0, 10)
