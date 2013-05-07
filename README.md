@@ -39,8 +39,8 @@ You can position it using either its `frame` or `center` property:
 SVSegmentedControl can be customized with the following properties:
 
 ```objective-c
-@property (nonatomic, strong) NSArray *sectionTitles;
-@property (nonatomic, strong) NSArray *sectionImages;
+@property (nonatomic, copy) NSArray *sectionTitles;
+@property (nonatomic, copy) NSArray *sectionImages;
 
 @property (nonatomic, readwrite) BOOL animateToInitialSelection; // default is NO
 @property (nonatomic, readwrite) BOOL crossFadeLabelsOnDrag; // default is NO
