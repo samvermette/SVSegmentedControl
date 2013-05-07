@@ -449,7 +449,7 @@
 - (void)setSectionTitles:(NSArray *)sectionTitles
 {
     if (_sectionTitles != sectionTitles) {
-        _sectionTitles = sectionTitles;
+        _sectionTitles = [sectionTitles copy];
         if (self.selectedSegmentIndex < _sectionTitles.count) {
             
         } else {
