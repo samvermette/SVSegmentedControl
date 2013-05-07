@@ -298,12 +298,16 @@
 }
 
 - (void)setBackgroundImage:(UIImage *)newImage {
+    if (newImage == backgroundImage)
+        return;
     
-    if(backgroundImage)
+    if(backgroundImage) {
+        [backgroundImage release];
         backgroundImage = nil;
+    }
     
     if(newImage) {
-        backgroundImage = newImage;
+        backgroundImage = [newImage retain];
         self.shouldCastShadow = NO;
     } else {
         self.shouldCastShadow = YES;
@@ -311,12 +315,16 @@
 }
 
 - (void)setTintColor:(UIColor *)newColor {
+    if (newColor == tintColor)
+        return;
     
-    if(tintColor)
+    if(tintColor) {
+        [tintColor release];
         tintColor = nil;
+    }
 	
 	if(newColor)
-		tintColor = newColor;
+        tintColor = [newColor retain];
 
 	[self setNeedsDisplay];
 }
@@ -327,13 +335,21 @@
 }
 
 - (void)setTextColor:(UIColor *)newColor {
-    textColor = newColor;
+    if (newColor == textColor)
+        return;
+    
+    [textColor release];
+    textColor = [newColor retain];
 	self.label.textColor = newColor;
     self.secondLabel.textColor = newColor;
 }
 
 - (void)setTextShadowColor:(UIColor *)newColor {
-    textShadowColor = newColor;
+    if (newColor == textShadowColor)
+        return;
+    
+    [textShadowColor release];
+    textShadowColor = [newColor retain];
 	self.label.shadowColor = newColor;
     self.secondLabel.shadowColor = newColor;
     self.imageView.layer.shadowColor = newColor.CGColor;
