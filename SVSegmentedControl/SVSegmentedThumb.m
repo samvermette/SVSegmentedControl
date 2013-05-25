@@ -107,6 +107,7 @@
         _firstImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         _firstImageView.layer.shadowOpacity = 1;
         _firstImageView.layer.shadowRadius = 0;
+        _firstImageView.layer.shadowOffset = CGSizeMake(0,-1);
         [self addSubview:_firstImageView];
     }
     return _firstImageView;
@@ -117,6 +118,7 @@
         _secondImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         _secondImageView.layer.shadowOpacity = 1;
         _secondImageView.layer.shadowRadius = 0;
+        _secondImageView.layer.shadowOffset = CGSizeMake(0,-1);
         [self addSubview:_secondImageView];
     }
     return _secondImageView;
