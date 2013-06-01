@@ -124,6 +124,11 @@
         self.height = self.frame.size.height;
     }
     
+    // Only call invalidate if we are < iOS 6
+    if ([self respondsToSelector:@selector(invalidateIntrinsicContentSize)]) {
+        [self invalidateIntrinsicContentSize];
+    }
+    
     self.thumbHeight = self.thumb.backgroundImage ? self.thumb.backgroundImage.size.height : self.height-(self.thumbEdgeInset.top+self.thumbEdgeInset.bottom);
     
     i = 0;
@@ -149,7 +154,6 @@
     if(CGRectIsEmpty(self.frame)) {
         self.segmentWidth = 0;
         int i = 0;
-        
         for(NSString *titleString in self.sectionTitles) {
             CGFloat stringWidth = [titleString sizeWithFont:self.font].width+(self.titleEdgeInsets.left+self.titleEdgeInsets.right+self.thumbEdgeInset.left+self.thumbEdgeInset.right);
             
