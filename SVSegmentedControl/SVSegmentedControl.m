@@ -124,7 +124,7 @@
         self.height = self.frame.size.height;
     }
     
-    // Only call invalidate if we are < iOS 6
+    // Invalidate only available in iOS 6
     if ([self respondsToSelector:@selector(invalidateIntrinsicContentSize)]) {
         [self invalidateIntrinsicContentSize];
     }
