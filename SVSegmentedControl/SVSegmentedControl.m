@@ -115,25 +115,18 @@
     int c = [self.sectionTitles count];
 	int i = 0;
 	
+    [self calculateSegmentWidth];
+    
     if(CGRectIsEmpty(self.frame)) {
-        self.segmentWidth = 0;
-        
-        for(NSString *titleString in self.sectionTitles) {
-            CGFloat stringWidth = [titleString sizeWithFont:self.font].width+(self.titleEdgeInsets.left+self.titleEdgeInsets.right+self.thumbEdgeInset.left+self.thumbEdgeInset.right);
-            
-            if(self.sectionImages.count > i)
-                stringWidth+=[(UIImage*)[self.sectionImages objectAtIndex:i] size].width+5;
-            
-            self.segmentWidth = MAX(stringWidth, self.segmentWidth);
-            i++;
-        }
-        
-        self.segmentWidth = ceil(self.segmentWidth/2.0)*2; // make it an even number so we can position with center
         self.bounds = CGRectMake(0, 0, self.segmentWidth*c, self.height);
     }
     else {
-        self.segmentWidth = round(self.frame.size.width/self.sectionTitles.count);
         self.height = self.frame.size.height;
+    }
+    
+    // Invalidate only available in iOS 6
+    if ([self respondsToSelector:@selector(invalidateIntrinsicContentSize)]) {
+        [self invalidateIntrinsicContentSize];
     }
     
     self.thumbHeight = self.thumb.backgroundImage ? self.thumb.backgroundImage.size.height : self.height-(self.thumbEdgeInset.top+self.thumbEdgeInset.bottom);
@@ -155,6 +148,37 @@
     
     [self insertSubview:self.thumb atIndex:0];
     [self setThumbValuesForIndex:self.selectedSegmentIndex];
+}
+
+- (void)calculateSegmentWidth {
+    if(CGRectIsEmpty(self.frame)) {
+        self.segmentWidth = 0;
+        int i = 0;
+        for(NSString *titleString in self.sectionTitles) {
+            CGFloat stringWidth = [titleString sizeWithFont:self.font].width+(self.titleEdgeInsets.left+self.titleEdgeInsets.right+self.thumbEdgeInset.left+self.thumbEdgeInset.right);
+            
+            if(self.sectionImages.count > i)
+                stringWidth+=[(UIImage*)[self.sectionImages objectAtIndex:i] size].width+5;
+            
+            self.segmentWidth = MAX(stringWidth, self.segmentWidth);
+            i++;
+        }
+        
+        self.segmentWidth = ceil(self.segmentWidth/2.0)*2; // make it an even number so we can position with center
+    }
+    else {
+        self.segmentWidth = round(self.frame.size.width/self.sectionTitles.count);
+    }
+}
+
+#pragma mark - Auto Layout
+- (CGSize)intrinsicContentSize {
+    if (self.segmentWidth == 0) {
+        [self calculateSegmentWidth];
+    }
+    
+    CGFloat intrinsicWidth = self.segmentWidth * [self.sectionTitles count];
+    return CGSizeMake(intrinsicWidth, self.height);
 }
 
 #pragma mark - Accessibility
@@ -517,7 +541,7 @@
         // bottom gloss
         CGRect insetRect = CGRectMake(0, 0, rect.size.width, rect.size.height-1);
         CGContextSetFillColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.1].CGColor);
-
+        
         UIBezierPath *bottomGlossPath = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:self.cornerRadius];
         [bottomGlossPath appendPath:[UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius]];
         bottomGlossPath.usesEvenOddFillRule = YES;
@@ -551,7 +575,7 @@
         CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
         CGGradientRelease(gradient);
         CGColorSpaceRelease(colorSpace);
-                
+        
         // inner shadow
         NSArray *paths = [NSArray arrayWithObject:[UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius]];
         UIImage *mask = [self maskWithPaths:paths bounds:CGRectInset(insetRect, -10, -10)];
@@ -564,7 +588,7 @@
     
 	CGContextSetShadowWithColor(context, self.textShadowOffset, 0, self.textShadowColor.CGColor);
 	[self.textColor set];
-		
+    
 	int i = 0;
 	
 	for(NSString *titleString in self.sectionTitles) {
@@ -572,7 +596,7 @@
         CGFloat titleWidth = titleSize.width;
         CGFloat posY = round((CGRectGetHeight(rect)-self.font.ascender-5)/2)+self.titleEdgeInsets.top-self.titleEdgeInsets.bottom;
         //NSLog(@"%@ %f, height=%f, descender=%f, ascender=%f, lineHeight=%f", self.font.familyName, self.font.pointSize, titleSize.height, self.font.descender, self.font.ascender, self.font.lineHeight);
-
+        
         CGFloat imageWidth = 0;
         UIImage *image = nil;
         
