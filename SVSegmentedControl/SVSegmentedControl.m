@@ -229,7 +229,7 @@
 - (id)accessibilityElementAtIndex:(NSInteger)index {
     UIAccessibilityElement *element = [self.accessibilityElements objectAtIndex:index];
     
-    CGFloat posY = ceil((CGRectGetHeight(self.bounds)-self.font.pointSize+self.font.descender)/2)+self.titleEdgeInsets.top-self.titleEdgeInsets.bottom-self.font.pointSize/2;
+    CGFloat posY = ceil((CGRectGetHeight(self.bounds)-self.font.pointSize-abs(self.font.descender))/2)+self.titleEdgeInsets.top-self.titleEdgeInsets.bottom-self.font.pointSize/2;
     element.accessibilityFrame = [self.window convertRect:CGRectMake((self.segmentWidth*index), posY, self.segmentWidth, self.font.pointSize*2) fromView:self];
     
     element.accessibilityTraits = UIAccessibilityTraitNone;
