@@ -149,6 +149,10 @@
 
 
 - (void)drawRect:(CGRect)rect {
+    if (self.isHidden) {
+        return;
+    }
+    
     CGRect thumbRect = CGRectMake(self.segmentedControl.thumbEdgeInset.left,
                                   self.segmentedControl.thumbEdgeInset.top,
                                   rect.size.width-self.segmentedControl.thumbEdgeInset.left-self.segmentedControl.thumbEdgeInset.right,
