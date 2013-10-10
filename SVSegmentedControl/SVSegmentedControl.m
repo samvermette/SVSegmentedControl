@@ -531,6 +531,9 @@
 
 
 - (void)drawRect:(CGRect)rect {
+    if (self.isHidden) {
+        return;
+    }
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     
