@@ -42,7 +42,6 @@
 @property (nonatomic, strong) NSMutableArray *thumbRects;
 @property (nonatomic, strong) NSMutableArray *accessibilityElements;
 
-@property (nonatomic, readwrite) NSUInteger selectedSegmentIndex;
 @property (nonatomic, readwrite) NSUInteger snapToIndex;
 @property (nonatomic, readwrite) BOOL trackingThumb;
 @property (nonatomic, readwrite) BOOL moved;

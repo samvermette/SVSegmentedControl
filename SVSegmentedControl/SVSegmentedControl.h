@@ -21,7 +21,7 @@
 @property (nonatomic, copy) NSArray *sectionImages;
 
 @property (nonatomic, strong, readonly) SVSegmentedThumb *thumb;
-@property (nonatomic, readonly) NSUInteger selectedSegmentIndex; // default is 0
+@property (nonatomic, readwrite) NSUInteger selectedSegmentIndex; // default is 0
 @property (nonatomic, readwrite) BOOL animateToInitialSelection; // default is NO
 @property (nonatomic, readwrite) BOOL crossFadeLabelsOnDrag; // default is NO
 
