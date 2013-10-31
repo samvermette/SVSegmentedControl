@@ -12,8 +12,6 @@
 #import "SVSegmentedThumb.h"
 #import <AvailabilityMacros.h>
 
-@protocol SVSegmentedControlDelegate;
-
 @interface SVSegmentedControl : UIControl
 
 @property (nonatomic, copy) void (^changeHandler)(NSUInteger newIndex); // you can also use addTarget:action:forControlEvents:
@@ -54,9 +52,3 @@
 
 @end
 
-
-@protocol SVSegmentedControlDelegate
-
-- (void)segmentedControl:(SVSegmentedControl*)segmentedControl didSelectIndex:(NSUInteger)index;
-
-@end
