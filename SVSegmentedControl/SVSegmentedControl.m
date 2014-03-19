@@ -613,7 +613,7 @@
             [[self sectionImage:image withTintColor:self.textColor] drawAtPoint:CGPointMake(titlePosX, round((rect.size.height-image.size.height)/2))];
         
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-		[titleString drawAtPoint:CGPointMake(titlePosX+imageWidth, posY) forWidth:self.segmentWidth withFont:self.font lineBreakMode:UILineBreakModeTailTruncation];
+		[titleString drawAtPoint:CGPointMake(titlePosX+imageWidth, posY) forWidth:self.segmentWidth withFont:self.font lineBreakMode:NSLineBreakByTruncatingTail];
 #else
         [titleString drawAtPoint:CGPointMake(titlePosX+imageWidth, posY) forWidth:self.segmentWidth withFont:self.font lineBreakMode:NSLineBreakByClipping];
 #endif
@@ -653,7 +653,7 @@
     
     // Create the bitmap with just an alpha channel.
     // When created, it has value 0 at every pixel.
-    CGContextRef gc = CGBitmapContextCreate(NULL, scaledSize.width, scaledSize.height, 8, scaledSize.width, NULL, kCGImageAlphaOnly);
+    CGContextRef gc = CGBitmapContextCreate(NULL, scaledSize.width, scaledSize.height, 8, scaledSize.width, NULL, kCGBitmapAlphaInfoMask);
     
     // Adjust the current transform matrix for the screen scale.
     CGContextScaleCTM(gc, scale, scale);
