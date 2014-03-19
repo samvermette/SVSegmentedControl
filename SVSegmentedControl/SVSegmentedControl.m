@@ -133,14 +133,14 @@
     
     i = 0;
     self.thumbRects = [NSMutableArray new];
-	for(NSString *titleString in self.sectionTitles) {
+    while (i < self.sectionTitles.count) {
         CGRect thumbRect = CGRectMake(self.segmentWidth*i, 0, self.segmentWidth, self.bounds.size.height);
         thumbRect.size.width+=10; // 5px drop shadow on each side
         thumbRect.origin.x-=5;
         thumbRect.size.height-=1; // for segmented bottom gloss
         [self.thumbRects addObject:[NSValue valueWithCGRect:thumbRect]];
 		i++;
-	}
+    }
 	
     self.thumb.frame = [[self.thumbRects objectAtIndex:self.selectedSegmentIndex] CGRectValue];
     self.thumb.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.thumb.bounds cornerRadius:2].CGPath;
