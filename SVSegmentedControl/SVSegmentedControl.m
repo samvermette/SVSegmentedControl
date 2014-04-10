@@ -140,7 +140,7 @@
     
     i = 0;
     self.thumbRects = [NSMutableArray new];
-	for(NSString *titleString in self.sectionTitles) {
+	for(__unused NSString *titleString in self.sectionTitles) {
         CGRect thumbRect = CGRectMake(self.segmentWidth*i, 0, self.segmentWidth, self.bounds.size.height);
         thumbRect.size.width+=10; // 5px drop shadow on each side
         thumbRect.origin.x-=5;
@@ -636,7 +636,7 @@
     
     // Create the bitmap with just an alpha channel.
     // When created, it has value 0 at every pixel.
-    CGContextRef gc = CGBitmapContextCreate(NULL, scaledSize.width, scaledSize.height, 8, scaledSize.width, NULL, kCGImageAlphaOnly);
+    CGContextRef gc = CGBitmapContextCreate(NULL, scaledSize.width, scaledSize.height, 8, scaledSize.width, NULL, (UInt32)kCGImageAlphaOnly);
     
     // Adjust the current transform matrix for the screen scale.
     CGContextScaleCTM(gc, scale, scale);
