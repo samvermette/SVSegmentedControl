@@ -617,7 +617,7 @@
         CGFloat tintColorRGBA[4];
         [tintColorToApply getRed:&tintColorRGBA[0] green:&tintColorRGBA[1] blue:&tintColorRGBA[2] alpha:&tintColorRGBA[3]];
         
-        float darkeningDelta = 0.2;
+        float darkeningDelta = (_stylePreset == SVSegmentedControlStylePresetDefault) ? 0.2 : 0; // no gradient on flat
         UIColor *darkerTintColor = [UIColor colorWithRed:(tintColorRGBA[0] - darkeningDelta) green:(tintColorRGBA[1] - darkeningDelta) blue:(tintColorRGBA[2] - darkeningDelta) alpha:(tintColorRGBA[3] + darkeningDelta*0.2)];
         CGFloat darkerTintColorRGBA[4];
         [darkerTintColor getRed:&darkerTintColorRGBA[0] green:&darkerTintColorRGBA[1] blue:&darkerTintColorRGBA[2] alpha:&darkerTintColorRGBA[3]];
