@@ -112,8 +112,8 @@
 
 - (void)updateSectionRects {
     
-    int c = [self.sectionTitles count];
-	int i = 0;
+    NSUInteger c = [self.sectionTitles count];
+	NSUInteger i = 0;
 	
     [self calculateSegmentWidth];
     
@@ -133,7 +133,7 @@
     
     i = 0;
     self.thumbRects = [NSMutableArray new];
-	for(NSString *titleString in self.sectionTitles) {
+	for(NSString *titleString __unused in self.sectionTitles) {
         CGRect thumbRect = CGRectMake(self.segmentWidth*i, 0, self.segmentWidth, self.bounds.size.height);
         thumbRect.size.width+=10; // 5px drop shadow on each side
         thumbRect.origin.x-=5;
@@ -365,7 +365,7 @@
         self.thumb.secondImageView.alpha = 0;
     }
     
-	int index;
+	NSUInteger index;
 	
 	if(self.snapToIndex != -1)
 		index = self.snapToIndex;
