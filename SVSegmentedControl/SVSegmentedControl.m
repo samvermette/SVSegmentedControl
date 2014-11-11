@@ -132,14 +132,14 @@
     
     i = 0;
     self.thumbRects = [NSMutableArray new];
-	for(NSString *titleString in self.sectionTitles) {
+    while (i < self.sectionTitles.count) {
         CGRect thumbRect = CGRectMake(self.segmentWidth*i, 0, self.segmentWidth, self.bounds.size.height);
         thumbRect.size.width+=10; // 5px drop shadow on each side
         thumbRect.origin.x-=5;
         thumbRect.size.height-=1; // for segmented bottom gloss
         [self.thumbRects addObject:[NSValue valueWithCGRect:thumbRect]];
 		i++;
-	}
+    }
 	
     self.thumb.frame = [[self.thumbRects objectAtIndex:self.selectedSegmentIndex] CGRectValue];
     self.thumb.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.thumb.bounds cornerRadius:2].CGPath;
@@ -612,7 +612,7 @@
             [[self sectionImage:image withTintColor:self.textColor] drawAtPoint:CGPointMake(titlePosX, round((rect.size.height-image.size.height)/2))];
         
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-		[titleString drawAtPoint:CGPointMake(titlePosX+imageWidth, posY) forWidth:self.segmentWidth withFont:self.font lineBreakMode:UILineBreakModeTailTruncation];
+		[titleString drawAtPoint:CGPointMake(titlePosX+imageWidth, posY) forWidth:self.segmentWidth withFont:self.font lineBreakMode:NSLineBreakByTruncatingTail];
 #else
         [titleString drawAtPoint:CGPointMake(titlePosX+imageWidth, posY) forWidth:self.segmentWidth withFont:self.font lineBreakMode:NSLineBreakByClipping];
 #endif
@@ -652,7 +652,7 @@
     
     // Create the bitmap with just an alpha channel.
     // When created, it has value 0 at every pixel.
-    CGContextRef gc = CGBitmapContextCreate(NULL, scaledSize.width, scaledSize.height, 8, scaledSize.width, NULL, kCGImageAlphaOnly);
+    CGContextRef gc = CGBitmapContextCreate(NULL, scaledSize.width, scaledSize.height, 8, scaledSize.width, NULL, kCGBitmapAlphaInfoMask);
     
     // Adjust the current transform matrix for the screen scale.
     CGContextScaleCTM(gc, scale, scale);
