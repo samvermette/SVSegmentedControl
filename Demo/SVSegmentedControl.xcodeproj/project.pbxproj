@@ -21,6 +21,12 @@
 		2899E5220DE3E06400AC0155 /* ViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2899E5210DE3E06400AC0155 /* ViewController.xib */; };
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		28D7ACF80DDB3853001CB0EB /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* ViewController.m */; };
+		651F8D091940E22A00345FC0 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 651F8D031940E22A00345FC0 /* 1.png */; };
+		651F8D0A1940E22A00345FC0 /* 1@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 651F8D041940E22A00345FC0 /* 1@2x.png */; };
+		651F8D0B1940E22A00345FC0 /* 2.png in Resources */ = {isa = PBXBuildFile; fileRef = 651F8D051940E22A00345FC0 /* 2.png */; };
+		651F8D0C1940E22A00345FC0 /* 2@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 651F8D061940E22A00345FC0 /* 2@2x.png */; };
+		651F8D0D1940E22A00345FC0 /* 3.png in Resources */ = {isa = PBXBuildFile; fileRef = 651F8D071940E22A00345FC0 /* 3.png */; };
+		651F8D0E1940E22A00345FC0 /* 3@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 651F8D081940E22A00345FC0 /* 3@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +50,12 @@
 		28D7ACF70DDB3853001CB0EB /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* SVSegmentedControl_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVSegmentedControl_Prefix.pch; sourceTree = "<group>"; };
+		651F8D031940E22A00345FC0 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
+		651F8D041940E22A00345FC0 /* 1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "1@2x.png"; sourceTree = "<group>"; };
+		651F8D051940E22A00345FC0 /* 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2.png; sourceTree = "<group>"; };
+		651F8D061940E22A00345FC0 /* 2@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "2@2x.png"; sourceTree = "<group>"; };
+		651F8D071940E22A00345FC0 /* 3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 3.png; sourceTree = "<group>"; };
+		651F8D081940E22A00345FC0 /* 3@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "3@2x.png"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* SVSegmentedControl-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "SVSegmentedControl-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -124,6 +136,12 @@
 			children = (
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				8D1107310486CEB800E47090 /* SVSegmentedControl-Info.plist */,
+				651F8D031940E22A00345FC0 /* 1.png */,
+				651F8D041940E22A00345FC0 /* 1@2x.png */,
+				651F8D051940E22A00345FC0 /* 2.png */,
+				651F8D061940E22A00345FC0 /* 2@2x.png */,
+				651F8D071940E22A00345FC0 /* 3.png */,
+				651F8D081940E22A00345FC0 /* 3@2x.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -165,7 +183,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0510;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "SVSegmentedControl" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -191,9 +209,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				651F8D0A1940E22A00345FC0 /* 1@2x.png in Resources */,
+				651F8D0E1940E22A00345FC0 /* 3@2x.png in Resources */,
+				651F8D0B1940E22A00345FC0 /* 2.png in Resources */,
+				651F8D0D1940E22A00345FC0 /* 3.png in Resources */,
+				651F8D091940E22A00345FC0 /* 1.png in Resources */,
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				2899E5220DE3E06400AC0155 /* ViewController.xib in Resources */,
 				224B1756145F25D600BD2DDB /* README.md in Resources */,
+				651F8D0C1940E22A00345FC0 /* 2@2x.png in Resources */,
 				22A748901630AD4E004893A8 /* Default-568h@2x.png in Resources */,
 				223F841D16BC891900C3C219 /* SVSegmentedControl.podspec in Resources */,
 			);
@@ -229,7 +253,6 @@
 				GCC_PREFIX_HEADER = SVSegmentedControl_Prefix.pch;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "SVSegmentedControl-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				PRODUCT_NAME = SVSC;
 				RUN_CLANG_STATIC_ANALYZER = YES;
 			};
@@ -254,11 +277,12 @@
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -266,11 +290,11 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 			};

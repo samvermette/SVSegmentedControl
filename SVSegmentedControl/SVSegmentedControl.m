@@ -42,7 +42,6 @@
 @property (nonatomic, strong) NSMutableArray *thumbRects;
 @property (nonatomic, strong) NSMutableArray *accessibilityElements;
 
-@property (nonatomic, readwrite) NSUInteger selectedSegmentIndex;
 @property (nonatomic, readwrite) NSUInteger snapToIndex;
 @property (nonatomic, readwrite) BOOL trackingThumb;
 @property (nonatomic, readwrite) BOOL moved;
@@ -68,7 +67,7 @@
         self.accessibilityElements = [NSMutableArray arrayWithCapacity:self.sectionTitles.count];
         
         self.backgroundColor = [UIColor clearColor];
-        self.backgroundTintColor = [UIColor colorWithWhite:0 alpha:0.5];
+        _backgroundTintColor = [UIColor colorWithWhite:0 alpha:0.5];
         self.clipsToBounds = YES;
         self.userInteractionEnabled = YES;
         self.animateToInitialSelection = NO;
@@ -76,21 +75,46 @@
         self.mustSlideToChange = NO;
         self.minimumOverlapToChange = 0.66;
         
-        self.font = [UIFont boldSystemFontOfSize:15];
-        self.textColor = [UIColor grayColor];
-        self.textShadowColor = [UIColor blackColor];
-        self.textShadowOffset = CGSizeMake(0, -1);
+        _font = [UIFont boldSystemFontOfSize:15];
+        _textColor = [UIColor grayColor];
+        _textShadowColor = [UIColor blackColor];
+        _textShadowOffset = CGSizeMake(0, -1);
         
-        self.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 10);
-        self.thumbEdgeInset = UIEdgeInsetsMake(2, 2, 3, 2);
-        self.height = 32.0;
-        self.cornerRadius = 4.0;
+        _titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 10);
+        _thumbEdgeInset = UIEdgeInsetsMake(2, 2, 3, 2);
+        _height = 32.0;
+        _cornerRadius = 4.0;
         
         self.selectedSegmentIndex = 0;
         
-        self.innerShadowColor = [UIColor colorWithWhite:0 alpha:0.8];
+        _innerShadowColor = [UIColor colorWithWhite:0 alpha:0.8];
         
         [self setupAccessibility];
+    }
+    
+	return self;
+}
+
+- (SVSegmentedControl*)initWithSectionTitles:(NSArray*)titlesArray stylePreset:(SVSegmentedControlStylePreset)stylePreset
+{
+    if (self = [self initWithSectionTitles:titlesArray]) {
+        _stylePreset = stylePreset;
+        
+        switch (_stylePreset) {
+            case SVSegmentedControlStylePresetFlat:
+                // remove shadows and gradient
+                self.textShadowColor = [UIColor clearColor];
+                self.innerShadowColor = [UIColor clearColor];
+                self.thumb.textShadowColor = [UIColor clearColor];
+                self.thumb.shouldCastShadow = FALSE;
+                self.thumb.gradientIntensity = 0.0f;
+                break;
+                
+            case SVSegmentedControlStylePresetDefault:
+            default:
+                // do nothing
+                break;
+        }
     }
     
 	return self;
@@ -112,8 +136,8 @@
 
 - (void)updateSectionRects {
     
-    int c = [self.sectionTitles count];
-	int i = 0;
+    NSUInteger c = [self.sectionTitles count];
+	NSUInteger i = 0;
 	
     [self calculateSegmentWidth];
     
@@ -133,14 +157,14 @@
     
     i = 0;
     self.thumbRects = [NSMutableArray new];
-	for(NSString *titleString in self.sectionTitles) {
+	for(NSString *titleString __unused in self.sectionTitles) {
         CGRect thumbRect = CGRectMake(self.segmentWidth*i, 0, self.segmentWidth, self.bounds.size.height);
         thumbRect.size.width+=10; // 5px drop shadow on each side
         thumbRect.origin.x-=5;
         thumbRect.size.height-=1; // for segmented bottom gloss
         [self.thumbRects addObject:[NSValue valueWithCGRect:thumbRect]];
 		i++;
-	}
+    }
 	
     self.thumb.frame = [[self.thumbRects objectAtIndex:self.selectedSegmentIndex] CGRectValue];
     self.thumb.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.thumb.bounds cornerRadius:2].CGPath;
@@ -319,7 +343,7 @@
     if(!self.mustSlideToChange && !self.moved && self.trackingThumb && [self.sectionTitles count] == 2)
         [self toggle];
     else if(!self.activated && posX > pMinX && posX < pMaxX) {
-        int potentialSnapToIndex = MIN(floor(cPos.x/self.segmentWidth), self.sectionTitles.count-1);
+        NSInteger potentialSnapToIndex = MIN(floor(cPos.x/self.segmentWidth), self.sectionTitles.count-1);
         
         if (self.mustSlideToChange) {
             CGRect potentialSegmentRect = CGRectMake(self.segmentWidth * potentialSnapToIndex, 0, self.segmentWidth, self.bounds.size.height);
@@ -365,7 +389,7 @@
         self.thumb.secondImageView.alpha = 0;
     }
     
-	int index;
+	NSUInteger index;
 	
 	if(self.snapToIndex != -1)
 		index = self.snapToIndex;
@@ -513,6 +537,32 @@
                          image:[self sectionImage:[self imageForSectionIndex:index] withTintColor:self.thumb.textColor]];
 }
 
+- (void)setStylePreset:(SVSegmentedControlStylePreset)stylePreset
+{
+    _stylePreset = stylePreset;
+    
+    switch (_stylePreset) {
+        case SVSegmentedControlStylePresetFlat:
+            // remove shadows and gradient
+            self.textShadowColor = [UIColor clearColor];
+            self.innerShadowColor = [UIColor clearColor];
+            self.thumb.textShadowColor = [UIColor clearColor];
+            self.thumb.shouldCastShadow = FALSE;
+            self.thumb.gradientIntensity = 0.0f;
+            break;
+            
+        case SVSegmentedControlStylePresetDefault:
+        default:
+            // do nothing
+            self.textShadowColor =  [UIColor blackColor];
+            self.innerShadowColor = [UIColor colorWithWhite:0 alpha:0.8];
+            self.thumb.textShadowColor = [UIColor blackColor];
+            self.thumb.shouldCastShadow = !!_backgroundImage;
+            self.thumb.gradientIntensity = 0.15f;
+            break;
+    }
+}
+
 #pragma mark - Deprecated methods
 
 - (void)setSelectedIndex:(NSUInteger)index {
@@ -534,21 +584,22 @@
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    if(self.backgroundImage)
+    if(self.backgroundImage) {
         [self.backgroundImage drawInRect:rect];
-    
-    else {
-        // bottom gloss
-        CGRect insetRect = CGRectMake(0, 0, rect.size.width, rect.size.height-1);
-        CGContextSetFillColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.1].CGColor);
+    } else {
+        CGRect insetRect = CGRectMake(0, 0, rect.size.width, rect.size.height-1);;
+        if (_stylePreset == SVSegmentedControlStylePresetDefault) {
+            // bottom gloss
+            CGContextSetFillColorWithColor(context, [UIColor colorWithWhite:1 alpha:0.1].CGColor);
+            
+            UIBezierPath *bottomGlossPath = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:self.cornerRadius];
+            [bottomGlossPath appendPath:[UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius]];
+            bottomGlossPath.usesEvenOddFillRule = YES;
+            [bottomGlossPath fill];
+        }
         
-        UIBezierPath *bottomGlossPath = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:self.cornerRadius];
-        [bottomGlossPath appendPath:[UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius]];
-        bottomGlossPath.usesEvenOddFillRule = YES;
-        [bottomGlossPath fill];
-        
-        CGPathRef roundedRect = [UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius].CGPath;
-        CGContextAddPath(context, roundedRect);
+        UIBezierPath *roundedRectPath = [UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius];
+        CGContextAddPath(context, roundedRectPath.CGPath);
         CGContextClip(context);
         
         // background tint
@@ -565,7 +616,7 @@
         CGFloat tintColorRGBA[4];
         [tintColorToApply getRed:&tintColorRGBA[0] green:&tintColorRGBA[1] blue:&tintColorRGBA[2] alpha:&tintColorRGBA[3]];
         
-        float darkeningDelta = 0.2;
+        float darkeningDelta = (_stylePreset == SVSegmentedControlStylePresetDefault) ? 0.2 : 0; // no gradient on flat
         UIColor *darkerTintColor = [UIColor colorWithRed:(tintColorRGBA[0] - darkeningDelta) green:(tintColorRGBA[1] - darkeningDelta) blue:(tintColorRGBA[2] - darkeningDelta) alpha:(tintColorRGBA[3] + darkeningDelta*0.2)];
         CGFloat darkerTintColorRGBA[4];
         [darkerTintColor getRed:&darkerTintColorRGBA[0] green:&darkerTintColorRGBA[1] blue:&darkerTintColorRGBA[2] alpha:&darkerTintColorRGBA[3]];
@@ -574,15 +625,24 @@
         CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);
         CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
         CGGradientRelease(gradient);
+        
+        if (self.strokeColor) {
+            [self.strokeColor setStroke];
+            roundedRectPath.lineWidth = 1.f;
+            [roundedRectPath stroke];
+        }
+        
         CGColorSpaceRelease(colorSpace);
         
-        // inner shadow
-        NSArray *paths = [NSArray arrayWithObject:[UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius]];
-        UIImage *mask = [self maskWithPaths:paths bounds:CGRectInset(insetRect, -10, -10)];
-        UIImage *invertedImage = [self invertedImageWithMask:mask color:self.innerShadowColor];
-        
-        CGContextSetShadowWithColor(context, CGSizeMake(0, 1), 2, self.innerShadowColor.CGColor);
-        [invertedImage drawAtPoint:CGPointMake(-10, -10)];
+        if (_stylePreset == SVSegmentedControlStylePresetDefault) {
+            // inner shadow
+            NSArray *paths = [NSArray arrayWithObject:[UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius]];
+            UIImage *mask = [self maskWithPaths:paths bounds:CGRectInset(insetRect, -10, -10)];
+            UIImage *invertedImage = [self invertedImageWithMask:mask color:self.innerShadowColor];
+            
+            CGContextSetShadowWithColor(context, CGSizeMake(0, 1), 2, self.innerShadowColor.CGColor);
+            [invertedImage drawAtPoint:CGPointMake(-10, -10)];
+        }
         
     }
     
@@ -613,7 +673,7 @@
             [[self sectionImage:image withTintColor:self.textColor] drawAtPoint:CGPointMake(titlePosX, round((rect.size.height-image.size.height)/2))];
         
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
-		[titleString drawAtPoint:CGPointMake(titlePosX+imageWidth, posY) forWidth:self.segmentWidth withFont:self.font lineBreakMode:UILineBreakModeTailTruncation];
+		[titleString drawAtPoint:CGPointMake(titlePosX+imageWidth, posY) forWidth:self.segmentWidth withFont:self.font lineBreakMode:NSLineBreakByTruncatingTail];
 #else
         [titleString drawAtPoint:CGPointMake(titlePosX+imageWidth, posY) forWidth:self.segmentWidth withFont:self.font lineBreakMode:NSLineBreakByClipping];
 #endif
@@ -653,7 +713,7 @@
     
     // Create the bitmap with just an alpha channel.
     // When created, it has value 0 at every pixel.
-    CGContextRef gc = CGBitmapContextCreate(NULL, scaledSize.width, scaledSize.height, 8, scaledSize.width, NULL, kCGImageAlphaOnly);
+    CGContextRef gc = CGBitmapContextCreate(NULL, scaledSize.width, scaledSize.height, 8, scaledSize.width, NULL, kCGBitmapAlphaInfoMask);
     
     // Adjust the current transform matrix for the screen scale.
     CGContextScaleCTM(gc, scale, scale);
@@ -707,6 +767,23 @@
         CGContextSetShadowWithColor(gc, offset, blur, color.CGColor);
         [invertedImage drawInRect:bounds];
     } CGContextRestoreGState(gc);
+}
+
+#pragma mark - Setters
+
+- (void)setFont:(UIFont *)font {
+    _font = font;
+    [self setNeedsDisplay];
+}
+
+- (void)setCornerRadius:(CGFloat)cornerRadius {
+    _cornerRadius = cornerRadius;
+    [self setNeedsLayout];
+}
+
+- (void)setHeight:(CGFloat)height {
+    _height = height;
+    [self setNeedsLayout];
 }
 
 @end
