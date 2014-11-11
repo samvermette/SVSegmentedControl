@@ -67,7 +67,7 @@
         self.accessibilityElements = [NSMutableArray arrayWithCapacity:self.sectionTitles.count];
         
         self.backgroundColor = [UIColor clearColor];
-        self.backgroundTintColor = [UIColor colorWithWhite:0 alpha:0.5];
+        _backgroundTintColor = [UIColor colorWithWhite:0 alpha:0.5];
         self.clipsToBounds = YES;
         self.userInteractionEnabled = YES;
         self.animateToInitialSelection = NO;
@@ -75,19 +75,19 @@
         self.mustSlideToChange = NO;
         self.minimumOverlapToChange = 0.66;
         
-        self.font = [UIFont boldSystemFontOfSize:15];
-        self.textColor = [UIColor grayColor];
-        self.textShadowColor = [UIColor blackColor];
-        self.textShadowOffset = CGSizeMake(0, -1);
+        _font = [UIFont boldSystemFontOfSize:15];
+        _textColor = [UIColor grayColor];
+        _textShadowColor = [UIColor blackColor];
+        _textShadowOffset = CGSizeMake(0, -1);
         
-        self.titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 10);
-        self.thumbEdgeInset = UIEdgeInsetsMake(2, 2, 3, 2);
-        self.height = 32.0;
-        self.cornerRadius = 4.0;
+        _titleEdgeInsets = UIEdgeInsetsMake(0, 10, 0, 10);
+        _thumbEdgeInset = UIEdgeInsetsMake(2, 2, 3, 2);
+        _height = 32.0;
+        _cornerRadius = 4.0;
         
         self.selectedSegmentIndex = 0;
         
-        self.innerShadowColor = [UIColor colorWithWhite:0 alpha:0.8];
+        _innerShadowColor = [UIColor colorWithWhite:0 alpha:0.8];
         
         [self setupAccessibility];
     }
@@ -598,8 +598,8 @@
             [bottomGlossPath fill];
         }
         
-        CGPathRef roundedRect = [UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius].CGPath;
-        CGContextAddPath(context, roundedRect);
+        UIBezierPath *roundedRectPath = [UIBezierPath bezierPathWithRoundedRect:insetRect cornerRadius:self.cornerRadius];
+        CGContextAddPath(context, roundedRectPath.CGPath);
         CGContextClip(context);
         
         // background tint
@@ -625,6 +625,13 @@
         CGGradientRef gradient = CGGradientCreateWithColorComponents(colorSpace, components, NULL, 2);
         CGContextDrawLinearGradient(context, gradient, CGPointMake(0,0), CGPointMake(0,CGRectGetHeight(rect)-1), 0);
         CGGradientRelease(gradient);
+        
+        if (self.strokeColor) {
+            [self.strokeColor setStroke];
+            roundedRectPath.lineWidth = 1.f;
+            [roundedRectPath stroke];
+        }
+        
         CGColorSpaceRelease(colorSpace);
         
         if (_stylePreset == SVSegmentedControlStylePresetDefault) {
@@ -760,6 +767,23 @@
         CGContextSetShadowWithColor(gc, offset, blur, color.CGColor);
         [invertedImage drawInRect:bounds];
     } CGContextRestoreGState(gc);
+}
+
+#pragma mark - Setters
+
+- (void)setFont:(UIFont *)font {
+    _font = font;
+    [self setNeedsDisplay];
+}
+
+- (void)setCornerRadius:(CGFloat)cornerRadius {
+    _cornerRadius = cornerRadius;
+    [self setNeedsLayout];
+}
+
+- (void)setHeight:(CGFloat)height {
+    _height = height;
+    [self setNeedsLayout];
 }
 
 @end

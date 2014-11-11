@@ -103,60 +103,62 @@ typedef NS_ENUM(NSInteger, SVSegmentedControlStylePreset)
  *  The color used in the background of the switch.
  *  The default is [UIColor colorWithWhite:0.1 alpha:1].
  */
-@property (nonatomic, strong) UIColor *backgroundTintColor; // default is [UIColor colorWithWhite:0.1 alpha:1]
+@property (nonatomic, strong) UIColor *backgroundTintColor UI_APPEARANCE_SELECTOR; // default is [UIColor colorWithWhite:0.1 alpha:1]
 
 /**
  *  The image used in the background of the switch.
  *  The default is nil.
  */
-@property (nonatomic, strong) UIImage *backgroundImage; // default is nil
+@property (nonatomic, strong) UIImage *backgroundImage UI_APPEARANCE_SELECTOR; // default is nil
+
+@property (nonatomic, strong) UIColor *strokeColor UI_APPEARANCE_SELECTOR; // default is nil;
 
 /**
  *  The height of the control.  The default is 32.0.
  */
-@property (nonatomic, readwrite) CGFloat height; // default is 32.0
+@property (nonatomic, readwrite) CGFloat height; UI_APPEARANCE_SELECTOR // default is 32.0
 
 /**
  *  The insets of the thumb from the boundries of the segment and the control.
  *  The default is UIEdgeInsetsMake(2, 2, 3, 2).
  */
-@property (nonatomic, readwrite) UIEdgeInsets thumbEdgeInset; // default is UIEdgeInsetsMake(2, 2, 3, 2)
+@property (nonatomic, readwrite) UIEdgeInsets thumbEdgeInset; UI_APPEARANCE_SELECTOR // default is UIEdgeInsetsMake(2, 2, 3, 2)
 
 /**
  *  The insets from the edge of the control to the edges of the segment titles.
  *  The default is UIEdgeInsetsMake(0, 10, 0, 10).
  */
-@property (nonatomic, readwrite) UIEdgeInsets titleEdgeInsets; // default is UIEdgeInsetsMake(0, 10, 0, 10)
+@property (nonatomic, readwrite) UIEdgeInsets titleEdgeInsets; UI_APPEARANCE_SELECTOR // default is UIEdgeInsetsMake(0, 10, 0, 10)
 
 /**
  *  The corner radius of the control.  The default is 4.0.
  */
-@property (nonatomic, readwrite) CGFloat cornerRadius; // default is 4.0
+@property (nonatomic, readwrite) CGFloat cornerRadius; UI_APPEARANCE_SELECTOR // default is 4.0
 
 /**
  *  The font used for the titles.  The default is [UIFont boldSystemFontOfSize:15].
  */
-@property (nonatomic, strong) UIFont *font; // default is [UIFont boldSystemFontOfSize:15]
+@property (nonatomic, strong) UIFont *font; UI_APPEARANCE_SELECTOR // default is [UIFont boldSystemFontOfSize:15]
 
 /**
  *  The color of the text in the segments that are not selected.  The default is [UIColor grayColor].
  */
-@property (nonatomic, strong) UIColor *textColor; // default is [UIColor grayColor];
+@property (nonatomic, strong) UIColor *textColor; UI_APPEARANCE_SELECTOR // default is [UIColor grayColor];
 
 /**
  *  The color of the shadow for the text in the segments that are not selected.  The default is [UIColor blackColor].
  */
-@property (nonatomic, strong) UIColor *textShadowColor;  // default is [UIColor blackColor]
+@property (nonatomic, strong) UIColor *textShadowColor; UI_APPEARANCE_SELECTOR  // default is [UIColor blackColor]
 
 /**
  *  The offset of the shadow from the text in the segments that are not selected.  The default is CGSizeMake(0, -1).
  */
-@property (nonatomic, readwrite) CGSize textShadowOffset;  // default is CGSizeMake(0, -1)
+@property (nonatomic, readwrite) CGSize textShadowOffset; UI_APPEARANCE_SELECTOR  // default is CGSizeMake(0, -1)
 
 /**
  *  The color of the shadow inside the control along the edges.  The default is [UIColor colorWithWhite:0 alpha:0.8].
  */
-@property (nonatomic, strong) UIColor *innerShadowColor; // default is [UIColor colorWithWhite:0 alpha:0.8]
+@property (nonatomic, strong) UIColor *innerShadowColor; UI_APPEARANCE_SELECTOR // default is [UIColor colorWithWhite:0 alpha:0.8]
 
 /**
  *  The preset style.  Setting this will change all documented shadow colors, the thumb gradient, 
