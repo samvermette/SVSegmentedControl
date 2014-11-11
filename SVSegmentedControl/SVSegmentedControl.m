@@ -136,8 +136,8 @@
 
 - (void)updateSectionRects {
     
-    int c = [self.sectionTitles count];
-	int i = 0;
+    NSInteger c = [self.sectionTitles count];
+	NSInteger i = 0;
 	
     [self calculateSegmentWidth];
     
@@ -343,7 +343,7 @@
     if(!self.mustSlideToChange && !self.moved && self.trackingThumb && [self.sectionTitles count] == 2)
         [self toggle];
     else if(!self.activated && posX > pMinX && posX < pMaxX) {
-        int potentialSnapToIndex = MIN(floor(cPos.x/self.segmentWidth), self.sectionTitles.count-1);
+        NSInteger potentialSnapToIndex = MIN(floor(cPos.x/self.segmentWidth), self.sectionTitles.count-1);
         
         if (self.mustSlideToChange) {
             CGRect potentialSegmentRect = CGRectMake(self.segmentWidth * potentialSnapToIndex, 0, self.segmentWidth, self.bounds.size.height);
@@ -389,7 +389,7 @@
         self.thumb.secondImageView.alpha = 0;
     }
     
-	int index;
+	NSInteger index;
 	
 	if(self.snapToIndex != -1)
 		index = self.snapToIndex;
