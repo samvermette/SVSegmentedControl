@@ -35,7 +35,6 @@
 
 @implementation SVSegmentedThumb
 
-@synthesize segmentedControl, backgroundImage, highlightedBackgroundImage, font, tintColor, textColor, textShadowColor, textShadowOffset, shouldCastShadow, selected;
 @synthesize firstLabel = _firstLabel;
 @synthesize secondLabel = _secondLabel;
 @synthesize firstImageView = _firstImageView;
@@ -50,13 +49,12 @@
 		self.userInteractionEnabled = NO;
         self.clipsToBounds = YES;
 		self.backgroundColor = [UIColor clearColor];
-		self.textColor = [UIColor whiteColor];
-		self.textShadowColor = [UIColor blackColor];
-		self.textShadowOffset = CGSizeMake(0, -1);
-		self.tintColor = [UIColor grayColor];
-        self.shouldCastShadow = YES;
-        self.backgroundColor = [UIColor clearColor];
-        self.gradientIntensity = 0.15;
+		_textColor = [UIColor whiteColor];
+		_textShadowColor = [UIColor blackColor];
+		_textShadowOffset = CGSizeMake(0, -1);
+		_tintColor = [UIColor grayColor];
+        _shouldCastShadow = YES;
+        _gradientIntensity = 0.15;
     }
 	
     return self;
@@ -109,6 +107,7 @@
         _firstImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         _firstImageView.layer.shadowOpacity = 1;
         _firstImageView.layer.shadowRadius = 0;
+        _firstImageView.layer.shadowOffset = CGSizeMake(0,-1);
         [self addSubview:_firstImageView];
     }
     return _firstImageView;
@@ -119,6 +118,7 @@
         _secondImageView = [[UIImageView alloc] initWithFrame:CGRectZero];
         _secondImageView.layer.shadowOpacity = 1;
         _secondImageView.layer.shadowRadius = 0;
+        _secondImageView.layer.shadowOffset = CGSizeMake(0,-1);
         [self addSubview:_secondImageView];
     }
     return _secondImageView;
@@ -299,11 +299,11 @@
 
 - (void)setBackgroundImage:(UIImage *)newImage {
     
-    if(backgroundImage)
-        backgroundImage = nil;
+    if(_backgroundImage)
+        _backgroundImage = nil;
     
     if(newImage) {
-        backgroundImage = newImage;
+        _backgroundImage = newImage;
         self.shouldCastShadow = NO;
     } else {
         self.shouldCastShadow = YES;
@@ -312,11 +312,11 @@
 
 - (void)setTintColor:(UIColor *)newColor {
     
-    if(tintColor)
-        tintColor = nil;
+    if(_tintColor)
+        _tintColor = nil;
 	
 	if(newColor)
-		tintColor = newColor;
+		_tintColor = newColor;
 
 	[self setNeedsDisplay];
 }
@@ -327,13 +327,13 @@
 }
 
 - (void)setTextColor:(UIColor *)newColor {
-    textColor = newColor;
+    _textColor = newColor;
 	self.label.textColor = newColor;
     self.secondLabel.textColor = newColor;
 }
 
 - (void)setTextShadowColor:(UIColor *)newColor {
-    textShadowColor = newColor;
+    _textShadowColor = newColor;
 	self.label.shadowColor = newColor;
     self.secondLabel.shadowColor = newColor;
     self.imageView.layer.shadowColor = newColor.CGColor;
@@ -341,7 +341,7 @@
 }
 
 - (void)setTextShadowOffset:(CGSize)newOffset {
-    textShadowOffset = newOffset;
+    _textShadowOffset = newOffset;
 	self.label.shadowOffset = newOffset;
     self.secondLabel.shadowOffset = newOffset;
     self.imageView.layer.shadowOffset = newOffset;
@@ -365,9 +365,9 @@
 
 - (void)setSelected:(BOOL)s {
 	
-	selected = s;
+	_selected = s;
 	
-	if(selected && !self.segmentedControl.crossFadeLabelsOnDrag && !self.highlightedBackgroundImage)
+	if(_selected && !self.segmentedControl.crossFadeLabelsOnDrag && !self.highlightedBackgroundImage)
 		self.alpha = 0.8;
 	else
 		self.alpha = 1;
