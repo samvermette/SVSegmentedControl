@@ -259,7 +259,7 @@
     self.imageView.image = image;
     [self arrangeLabel:self.label imageView:self.imageView];
     
-    [UIView setAnimationsEnabled:YES];
+    [UIView setAnimationsEnabled:NO];
 }
 
 - (void)setSecondTitle:(NSString*)title image:(UIImage*)image {
