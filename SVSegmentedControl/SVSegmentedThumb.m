@@ -57,6 +57,7 @@
         self.shouldCastShadow = YES;
         self.backgroundColor = [UIColor clearColor];
         self.gradientIntensity = 0.15;
+        self.showActiveState = YES;
     }
 	
     return self;
@@ -213,7 +214,7 @@
         CGFloat gradientStart = 0.5;
         CGFloat fillComponents[4] = {gradientStart, CGColorGetAlpha(self.tintColor.CGColor),   gradientStart-self.gradientIntensity, CGColorGetAlpha(self.tintColor.CGColor)};
         
-        if(self.selected) {
+        if(self.selected && self.showActiveState) {
             fillComponents[0]-=0.1;
             fillComponents[2]-=0.1;
         }

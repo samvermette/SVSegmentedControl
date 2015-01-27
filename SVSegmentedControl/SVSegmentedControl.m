@@ -90,6 +90,8 @@
         
         self.innerShadowColor = [UIColor colorWithWhite:0 alpha:0.8];
         
+        self.gradientIntensity = 0.2;
+        
         [self setupAccessibility];
     }
     
@@ -565,7 +567,7 @@
         CGFloat tintColorRGBA[4];
         [tintColorToApply getRed:&tintColorRGBA[0] green:&tintColorRGBA[1] blue:&tintColorRGBA[2] alpha:&tintColorRGBA[3]];
         
-        float darkeningDelta = 0.2;
+        float darkeningDelta = self.gradientIntensity;
         UIColor *darkerTintColor = [UIColor colorWithRed:(tintColorRGBA[0] - darkeningDelta) green:(tintColorRGBA[1] - darkeningDelta) blue:(tintColorRGBA[2] - darkeningDelta) alpha:(tintColorRGBA[3] + darkeningDelta*0.2)];
         CGFloat darkerTintColorRGBA[4];
         [darkerTintColor getRed:&darkerTintColorRGBA[0] green:&darkerTintColorRGBA[1] blue:&darkerTintColorRGBA[2] alpha:&darkerTintColorRGBA[3]];
